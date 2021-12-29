@@ -9,8 +9,8 @@
 注意事项 ： 一定要填写 hd bd 
 
 =============变量=============
-export zzkdhd = '{"Authorization":"", "User-Agent":""}'
-export zzkdbd = ''
+export zcyhd = '{"Authorization":"", "User-Agent":""}'
+export zcybd = ''
 =============变量获取==========
 圈x为例   开启http抓包
 打开app,观看一个视频,然后搜索关键字  step-money.quanxiangweilai.cn/api/gain_common_bonus  
