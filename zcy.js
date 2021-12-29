@@ -1,13 +1,4 @@
 /*
-
-nodejs变量(青龙等)
-export zzkdhd='{"Authorization":"", "User-Agent":""}'
-
-https://step-money.quanxiangweilai.cn/api/gain_common_bonus
-
-
-
-
 12.29 完成视频(二)模块 
 平台: node.js   青龙
 软件：  走财运app (看视频脚本5个视频)
@@ -17,6 +8,11 @@ https://step-money.quanxiangweilai.cn/api/gain_common_bonus
 =============变量=============
 export zzkdhd = '{"Authorization":"", "User-Agent":""}'
 export zzkdbd = ''
+=============变量获取==========
+圈x为例   开启http抓包
+打开app,观看一个视频,然后搜索关键字  step-money.quanxiangweilai.cn/api/gain_common_bonus  
+即可找到 Authorization , User-Agent ;   
+bd是请求体-文本查看里面的
 
 */
 
