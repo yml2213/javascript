@@ -1,0 +1,33 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "body-parser": "^1.19.1",
+    "crypto-js": "^4.0.0",
+    "dateformat": "^5.0.2",
+    "dotenv": "^10.0.0",
+    "download": "^6.2.5",
+    "got": "^11.8.3",
+    "http-server": "^0.12.3",
+    "jsdom": "^17.0.0",
+    "lemon-bot": "^0.6.0",
+    "moment": "^2.29.1",
+    "mysql": "^2.18.1",
+    "png-js": "^1.0.0",
+    "qrcode-terminal": "^0.12.0",
+    "qs": "^6.10.2",
+    "request": "^2.88.2",
+    "tough-cookie": "^4.0.0",
+    "tunnel": "0.0.6",
+    "ws": "^7.4.3"
+  }
+}
