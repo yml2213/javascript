@@ -7,6 +7,8 @@
 收益:  1000能量等于0.1元 每天不到1元   
 注意事项 ： 一定要仔细阅读以下内容
 定时: 每天一次
+[Script]
+cron "8 6 * * *" script-path=https://raw.githubusercontent.com/yml2213/javascript/master/zcy.js,tag=走财运
 =============变量=============
 1. export zcyhd='{"Authorization":"", "User-Agent":""}'
 2. export zcysp1=''

@@ -6,7 +6,8 @@
 软件:  走财运app 
 收益:  1000能量等于0.1元 每天不到1元   
 注意事项 ： 一定要仔细阅读一下内容
-定时: 每两小时执行一次 
+[Script]
+cron "0 1/2 * * *" script-path=https://raw.githubusercontent.com/yml2213/javascript/master/zcyqd.js,tag=走财运签到
 =============变量=============
 export zcyhd='{"Authorization":"", "User-Agent":""}'       
 export zcyqd='account_id=XXXX'
