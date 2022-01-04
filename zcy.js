@@ -1,20 +1,20 @@
 /*
-邀请码:  XWXW0K   
+邀请码:  XWXW0K    
 感谢填写
-12.29 完成视频(一)(二)模块  待000步数 
+1.4 更新 兼容安卓平台
 平台:   青龙
 软件:  走财运app 
 收益:  1000能量等于0.1元 每天不到1元   
 注意事项 ： 一定要填写 hd bd 
 =============变量=============
-1. export zcyhd = '{"Authorization":"", "User-Agent":""}'
-2. export zcysp1 = ''
-3. export zcysp2 = ''
-4. export zcynl1 = ''
-5. export zcynl2 = ''
-5. export zcybs1 = ''
-6. export zcybs2 = ''
-7. export zcybs3 = ''
+1. export zcyhd='{"Authorization":"", "User-Agent":""}'
+2. export zcysp1=''
+3. export zcysp2=''
+4. export zcynl1=''
+5. export zcynl2=''
+5. export zcybs1=''
+6. export zcybs2=''
+7. export zcybs3=''
 ......
 export zcybs20 = ''
 =============变量解释==========
@@ -22,18 +22,27 @@ sp:视频类变量
 nl:能量类变量
 bs:步数类变量
 其中第一条属于必填,其他根据自己需要填写;
-sp1 ,sp2  对应我的界面的视频一,二  
+sp1 ,sp2 , sp3  对应我的界面的视频一,二,三  
 nl1 ,nl2  对应我的界面的能量
 bs1 ,bs2 -- bs20  对应 健步 板块中的步数,非常简单,很好理解
 第一条是基础,其他均配合第一条,使用,可按需抓包使用
 
 =============变量获取==========
-可以使用圈x(需要把去广告功能关闭)  也可以使用 steam , thor 等工具
-圈x为例   开启http抓包
-打开app,观看一个视频,然后搜索关键字  step-money.quanxiangweilai.cn
-即可找到 Authorization , User-Agent ;
-bd是 请求体-文本 查看里面的
-视频1  视频2 等的 bd 是不同的,请自己抓取后按照格式填写
+ios:  可以使用圈x(需要把去广告功能关闭)  也可以使用 steam , thor 等工具
+      圈x为例   开启http抓包
+      打开app,观看一个视频,然后搜索关键字  step-money.quanxiangweilai.cn
+      即可找到 Authorization , User-Agent ;
+      bd是 请求体-文本 查看里面的
+      视频1  视频2 等的 bd 是不同的,请自己抓取后按照格式填写
+
+安卓:  使用小黄鸟进行抓包,Authorization , User-Agent 不在赘述,直接抓包后搜索关键字  step-money.quanxiangweilai.cn  即可获取
+      抓取视频一,视频二时,搜索关键字  gain_common_bonus  即可获得一条记录,点击总览右侧的 请求  请求  请求  ,然后点击下方的 text  text  text,即可获得包内容;然后根据一下模板填写即可
+      以视频一举例,其他同理:
+      zcysp1='account_id=你的id一串数字&bonus_type=award_bonus&gain_category=energy&sign=你的一串加密字符&type=' 
+      例如我的: zcysp1='account_id=147356&bonus_type=award_bonus&gain_category=energy&sign=b0b9dc00da03a4dbfbf341c81a77820d&type='
+
+还不会的请百度或者群里求助
+
 */
 
 const $ = new Env('走财运');
@@ -42,17 +51,19 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 /* 
 let status;
 status = (status = ($.getval(`zcystatus`) || "1")) > 1 ? `${status}` : "";    // 账号扩展字符       
- */
+*/
 
 let zcyhdArr = [];     //数组 Array
+let host=`https://step-money.quanxiangweilai.cn`;
 let zcyhd = { "Authorization": "", "User-Agent": "" };
 // let zcyhdstr = $.isNode() ? (process.env.zcyhd ? process.env.zcyhd : "") : ($.getdata('zcyhd') ? $.getdata('zcyhd') : "");   //字符串 str/String 
 let zcyhds = "";
 let zcybody1 = process.env.zcysp1;        //视频1      
 let zcybody2 = process.env.zcysp2;        //视频2   
+let zcybody3 = process.env.zcysp3;        //视频3  
 
-let zcynl1 = process.env.zcynl1;        //能量1      
-let zcynl2 = process.env.zcynl2;        //能量2
+let zcynl1 = process.env.zcynl1;          //能量1      
+let zcynl2 = process.env.zcynl2;          //能量2
 
 let zcybs1 = process.env.zcybs1;          //1000步数   
 let zcybs2 = process.env.zcybs2;          //2000步数   
@@ -78,7 +89,6 @@ let zcybs20 = process.env.zcybs20;        //20000步数
 
 
 
-let host=`https://step-money.quanxiangweilai.cn`;
 
 //开始运行 
 
@@ -110,37 +120,32 @@ let host=`https://step-money.quanxiangweilai.cn`;
   .catch((e) => $.logErr(e))
   .finally(() => $.done())
 
-/* 
-console.log(`下面是hd`);
-console.log(zcyhd);
-console.log(`======================================================`);
-console.log(`下面是hdarr`);
-console.log(zcyhdArr);
-console.log(`======================================================`);
- */
+
 
 
 // 1000 ms == 1 s    60000 ms == 1 min    600000 ms == 10 min
-//这里是要执行的代码     ======如果有您不需要的  请自行注释  使用 // 注释就行========   
+//这里是要执行的代码     ====== 如果有您不需要的  请自行注释  使用 // 注释就行 ========   
 async function byxiaopeng() {
   await wyy(); 
   await $.wait(2000);        // 延迟 2000ms  也就是2秒
   await sp1();
-  await $.wait(2000);        // 延迟 2 秒
+  await $.wait(60000);        // 延迟 1分钟
   await sp2();
   await $.wait(60000);        // 延迟1分钟
+  // await sp3();
+  // await $.wait(60000);        // 延迟1分钟
 
-  await nl1();
-  await $.wait(60000);       // 延迟1分钟
-  await bs1();
-  await $.wait(780000);      //延迟13分钟
-  await bs2();
-  await $.wait(780000);      //延迟13分钟
-  await bs3();
-  await $.wait(780000);      //延迟13分钟
-  await bs4();
-  await $.wait(780000);      //延迟13分钟
-  await bs5();
+  // await nl1();
+  // await $.wait(60000);       // 延迟1分钟
+  // await bs1();
+  // await $.wait(780000);      //延迟13分钟
+  // await bs2();
+  // await $.wait(780000);      //延迟13分钟
+  // await bs3();
+  // await $.wait(780000);      //延迟13分钟
+  // await bs4();
+  // await $.wait(780000);      //延迟13分钟
+  // await bs5();
   // await $.wait(780000);      //延迟13分钟
   // await bs6();
   // await $.wait(780000);      //延迟13分钟
@@ -229,7 +234,7 @@ function sp1(timeout = 0) {
         if (result.error_code == 0) {
           $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】看视频(一):${result.message} , 获得能量${result.data.money}`)
           await $.wait(60000)        //// 延时 1分钟
-          await sp1();
+          await sp1(); 
         } else {
           $.log(`\n【🎉 恭喜个屁 🎉】:看视频(一):失败🙅🏻了呢,可能是${result.message}`)
         }
@@ -291,6 +296,51 @@ function sp2(timeout = 0) {
 
 
 
+// 看视频3 
+function sp3(timeout = 0) {
+
+  return new Promise((resolve) => {
+    let url = {
+      url: `${host}/api/gain_common_bonus`,
+      headers: {
+        'Authorization': JSON.parse(zcyhd).Authorization,
+        'User-Agent': JSON.parse(zcyhd)['User-Agent']
+        
+      },
+      body: zcybody3
+    }
+
+    // console.log(url);
+
+
+    $.post(url, async (err, resp, data) => {
+      try {
+
+        // console.log(`输出data开始===================`);
+        // console.log(data);
+        // console.log(`输出data结束===================`);
+
+        
+        result = JSON.parse(data);     
+        if (result.error_code == 0) {
+          $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】看视频(三):${result.message} 获得能量${result.data.money}`)
+          await $.wait(2000);
+          await sp3();
+        } else {
+          $.log(`\n【🎉 恭喜个屁 🎉】:看视频(三):失败🙅🏻了呢,可能是${result.message}`)
+        }
+
+      } catch (e) {
+        $.logErr(e, resp);
+      } finally {
+        resolve()
+      }
+    }, timeout)
+  })
+}
+
+
+
 // 每天一次能量  
 // https://step-money.quanxiangweilai.cn/api/gain_common_bonus
 function nl1(timeout = 0) {
@@ -321,7 +371,7 @@ function nl1(timeout = 0) {
         if (result.error_code == 0) {
           $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】每天一次能量:${result.message} ,获得能量${result.data.money}`)
           await $.wait(2000);
-          await sp2();
+          // await nl1();
         } else {
           $.log(`\n【🎉 恭喜个屁 🎉】:每天一次能量:失败🙅🏻了呢,可能是${result.message}`)
         }
@@ -417,7 +467,6 @@ function bs2(timeout = 0) {
       result = JSON.parse(data);     
       if (result.error_code == 0) {
         $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】:${result.message} 获得能量${result.data.money}`)
-        // await $.wait(780000);      //延迟13分钟
         await $.wait(2000);      //延迟 2 秒
         
       } else {
@@ -462,7 +511,6 @@ function bs3(timeout = 0) {
       result = JSON.parse(data);     
       if (result.error_code == 0) {
         $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】:${result.message} 获得能量${result.data.money}`)
-        // await $.wait(780000);      //延迟13分钟
         await $.wait(2000);      //延迟 2 秒
         
       } else {
@@ -508,7 +556,6 @@ function bs4(timeout = 0) {
       result = JSON.parse(data);     
       if (result.error_code == 0) {
         $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】:${result.message} 获得能量${result.data.money}`)
-        // await $.wait(780000);      //延迟13分钟
         await $.wait(2000);      //延迟 2 秒
         
       } else {
@@ -553,7 +600,6 @@ function bs5(timeout = 0) {
       result = JSON.parse(data);     
       if (result.error_code == 0) {
         $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】:${result.message} 获得能量${result.data.money}`)
-        // await $.wait(780000);      //延迟13分钟
         await $.wait(2000);      //延迟 2 秒
         
       } else {
@@ -599,7 +645,6 @@ function bs6(timeout = 0) {
       result = JSON.parse(data);     
       if (result.error_code == 0) {
         $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】:${result.message} 获得能量${result.data.money}`)
-        // await $.wait(780000);      //延迟13分钟
         await $.wait(2000);      //延迟 2 秒
         
       } else {
