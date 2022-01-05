@@ -32,7 +32,7 @@ ios:  可以使用圈x(需要把去广告功能关闭)  也可以使用 steam , 
 
 */
 
-const $ = new Env('走财运');
+const $ = new Env('走财运签到');
 const notify = $.isNode() ? require('./sendNotify') : ''; 
 
 /* 
