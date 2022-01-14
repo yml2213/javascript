@@ -33,6 +33,7 @@ ios:  可以使用圈x(需要把去广告功能关闭)  也可以使用 steam , 
 
 const $ = new Env('永川头条签到');
 const host = 'api.cqliving.com';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let ycttua = process.env.ycttua;
 let ycttToken = process.env.ycttToken;
 let sessionId = process.env.sessionId;
