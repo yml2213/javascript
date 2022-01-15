@@ -86,7 +86,7 @@ async function yml() {
 
                     result = JSON.parse(data);
                     if (result.code == 0) {
-                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行开宝箱:${result.message} ✅ 了呢 , 获得积分${result.data.bonus}`)
+                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行开宝箱:${result.message} ✅ 了呢 , 获得积分${result.data.bonus}枚!!`)
                         // await $.wait(3 * 1000)
                     } else {
                         $.log(`\n【🎉 恭喜个屁 🎉】执行开宝箱 :失败 ❌ 了呢,原因可能是是:${result.message}`)
