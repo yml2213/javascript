@@ -6,7 +6,7 @@
 软件:  东方头条
 收益:  10000金币=1元
 [Script]
-cron "8 8,12,16,20 * * *" script-path=https://raw.githubusercontent.com/yml2213/javascript/master/dftt/dfttdzp.js,tag=东方头条大转盘
+cron "8 8,12,16,20,21 * * *" script-path=https://raw.githubusercontent.com/yml2213/javascript/master/dftt/dfttdzp.js,tag=东方头条大转盘
 注意事项 ： 一定要仔细阅读一下内容
 =============青龙变量格式=============
 export dfttua=''
@@ -108,7 +108,7 @@ function dzp(timeout = 0) {
 	})
 
 }
-
+// https://zhuanpan.dftoutiao.com/zhuanpan_v3/get_chest
 // https://zhuanpan.dftoutiao.com/zhuanpan_v3/get_chest
 // 大转盘宝箱任务
 function dzpbx(timeout = 0) {
@@ -130,7 +130,7 @@ function dzpbx(timeout = 0) {
 				result = JSON.parse(data);
 				if (result.code == 0) {
 					$.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】大转盘宝箱了领取成功 ✅了呢, 获得金币${result.data.gold}`)
-					await $.wait(2 * 1000)
+					await $.wait(10 * 1000)
 					await dzpbx();
 				} else {
 					$.log(`\n【🎉 恭喜个屁 🎉】大转盘宝箱领取:失败 ❌ 了呢,可能是:${result.message}`)
