@@ -88,7 +88,7 @@ async function yml() {
                     // console.log(`输出data结束===================`);
 
                     result = JSON.parse(data);
-                    if (result.data.status === 1) {
+                    if (result.data.status == 1) {
                         $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】时段奖励领取 成功 ✅ 了呢, 获得金币${result.data.coin}`)
                         await $.wait(2 * 1000)
                     } else {
