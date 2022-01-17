@@ -28,7 +28,7 @@ dfttboxbd:变量中的xxxx是你的body包数据,,可以搜索关键词  open_tr
 // https://shoutu2.dftoutiao.com/invite/open_treasure_box
 const $ = new Env('东方头条开宝箱');
 const host = 'shoutu2.dftoutiao.com';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let dfttua = process.env.dfttua;
 let body = process.env.dfttboxbd;
 
@@ -79,17 +79,17 @@ async function yml() {
             // console.log(url);
             $.post(url, async (err, resp, data) => {
                 try {
-                    //
-                    // console.log(`输出data开始===================`);
-                    // console.log(data);
-                    // console.log(`输出data结束===================`);
+
+                    console.log(`输出data开始===================`);
+                    console.log(data);
+                    console.log(`输出data结束===================`);
 
                     result = JSON.parse(data);
                     if (result.code == 0) {
-                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行开宝箱:${result.message} ✅ 了呢 , 获得积分${result.data.bonus}枚!!`)
+                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行开宝箱:${result.message} ✅ 了呢 , 获得积分${result.data.bonus}`)
                         // await $.wait(3 * 1000)
                     } else {
-                        $.log(`\n【🎉 恭喜个屁 🎉】执行开宝箱 :失败 ❌ 了呢,原因可能是是:${result.message}`)
+                        $.log(`\n【🎉 恭喜个屁 🎉】冷却中，开宝箱失败啦，两小时后再试!`)
                     }
                 } catch (e) {
                     $.logErr(e, resp);
