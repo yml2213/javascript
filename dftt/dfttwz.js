@@ -6,7 +6,7 @@
 软件:  东方头条
 收益:  10000金币=1元
 [Script]
-cron "10 6-22 * * *" https://raw.githubusercontent.com/yml2213/javascript/master/dftt/dfttwz.js,tag=东方头条文章
+cron "20 6-20 * * *" https://raw.githubusercontent.com/yml2213/javascript/master/dftt/dfttwz.js,tag=东方头条文章
 
 注意事项 ： 一定要仔细阅读一下内容
 =============青龙变量格式=============
