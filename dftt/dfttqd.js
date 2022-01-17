@@ -27,84 +27,85 @@ dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 new_user_si
 */
 
 const $ = new Env('东方头条签到');
-const host = 'sign2.dftoutiao.com';
-const notify = $.isNode() ? require('./sendNotify') : '';
+const host = 'sign.dftoutiao.com';
+const notify = $.isNode() ? require('../sendNotify') : '';
 let dfttua = process.env.dfttua;
 let body = process.env.dfttqdbd;
 
 //开始运行
 !(async () => {
-    await yml()
+	await yml()
 
 })()
-    .catch((e) => $.logErr(e))
-    .finally(() => $.done())
+	.catch((e) => $.logErr(e))
+	.finally(() => $.done())
 
 
 // https://sign2.dftoutiao.com/sign/signv4/new_user_sign
 //这里是要执行的代码     ====== 如果有您不需要的  请自行注释  使用 // 注释就行 ========
 async function yml() {
-    await wyy();
-    await qd();
+	await wyy();
+	await qd();
 
 //每日网抑云
-    function wyy(timeout = 3*1000) {
-        return new Promise((resolve) => {
-            let url = {
-                url: `https://keai.icu/apiwyy/api`
-            }
-            $.get(url, async (err, resp, data) => {
-                try {
-                    data = JSON.parse(data)
-                    $.log(`\n【网抑云时间】: ${data.content}  by--${data.music}`);
+	function wyy(timeout = 3*1000) {
+		return new Promise((resolve) => {
+			let url = {
+				url: `https://keai.icu/apiwyy/api`
+			}
+			$.get(url, async (err, resp, data) => {
+				try {
+					data = JSON.parse(data)
+					$.log(`\n【网抑云时间】: ${data.content}  by--${data.music}`);
 
-                } catch (e) {
-                    $.logErr(e, resp);
-                } finally {
-                    resolve()
-                }
-            }, timeout)
-        })
-    }
+				} catch (e) {
+					$.logErr(e, resp);
+				} finally {
+					resolve()
+				}
+			}, timeout)
+		})
+	}
 
 
-
+// https://sign.dftoutiao.com/sign/news_take_s
 // https://sign2.dftoutiao.com/sign/signv4/new_user_sign
 // 签到任务
-    function qd(timeout = 0) {
-        return new Promise((resolve) => {
-            let url = {
-                url: `https://${host}/sign/signv4/new_user_sign`,
-                headers: {
-                    'User-Agent': dfttua,
-                },
-                body: body
-            }
-            // console.log(url);
-            $.post(url, async (err, resp, data) => {
-                try {
-                    //
-                    // console.log(`输出data开始===================`);
-                    // console.log(data);
-                    // console.log(`输出data结束===================`);
+	function qd(timeout = 0) {
+		return new Promise((resolve) => {
+			let url = {
+				url: `https://${host}/sign/news_take_s`,
+				headers: {
+					'User-Agent': dfttua,
+				},
+				body: body
+			}
+			// console.log(url);
 
-                    result = JSON.parse(data);
-                    if (result.code == 0) {
-                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行签到: 成功 ✅ 了呢 , 获得积分${result.data.bonus}`)
-                        // await $.wait(3 * 1000)
-                    } else {
-                        $.log(`\n【🎉 恭喜个屁 🎉】执行签到:失败 ❌ 了呢,原因可能是是:${result.message}`)
-                    }
-                } catch (e) {
-                    $.logErr(e, resp);
-                } finally {
-                    resolve()
-                }
-            }, timeout)
+			$.post(url, async (err, resp, data) => {
+				try {
 
-        })
+					console.log(`输出data开始===================`);
+					console.log(data);
+					console.log(`输出data结束===================`);
 
-    }
+					result = JSON.parse(data);
+					if (result.status == true) {
+						$.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行签到: 成功 ✅ 了呢 , 获得积分${result.data.bonus}`)
+						await $.wait(3 * 1000)
+					} else {
+						$.log(`\n【🎉 恭喜个屁 🎉】执行签到:失败 ❌ 了呢,原因未知!`)
+					}
+				} catch (e) {
+					$.logErr(e, resp);
+				} finally {
+					resolve()
+				}
+			}, timeout)
+
+		})
+
+	}
 }
 
 
