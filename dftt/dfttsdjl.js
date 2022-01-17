@@ -34,6 +34,7 @@ let body = process.env.dfttsdjlbd;
 
 //开始运行
 !(async () => {
+    console.log(`交流群:1001401060  by-yml`);
     await yml()
 
 })()
