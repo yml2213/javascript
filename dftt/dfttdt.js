@@ -18,7 +18,7 @@ export dfttua='Mozilla/5.0 (iPhone; CPU iPhone OS 12_4_1 like Mac OS X) AppleWeb
 export dfttqdbd='params=H0QHGzkHERoCAFZeRCAbKicMAh1HWEYWGwc2BwwMHEdORoPFxbvL+UFeRxUHBR0QfUldW0VRRlVRQUJzUQwQBQwSDUROVigaAwpQSVYHDwANfUlHhcfrkenxkczdUUlBAwwQRlxWNS8DNhcdFxFWVERFbkdHT1AEFQ0CVk59HRAPHkdYRgkHVmVRDAwBR1hGFRsSKx0EDhdHTkYiMiALOiowUElWCBJWTn0+CTkCARkUExAaEQUwUxUcEAk8Hi0lMTcuNQkzNlQALj40Lw0jMBMdKDAubyYhOSIrIxRTLiw0AQEwSy8WICA4FzUxUTknXDorMD0OPR0JEyAyDFYwDU1qPVYlKDYhCBcmMAU2AQ0aEhEIKw0iCTFWABgzQDZWLiEMQRENJS0ENwUfMjQiVARHBkcuLiBEagooJAIcFywOGhAzMTI0Jy8jKSMyOwVCPyogDhdZRFhWKwcEABEMEEZcTExoR1dSRVBCSEQbETJRX0E2IyAwRFhWKRYXQUhHRkpQWkF9X0cMEwwQRlxWGiofCUFeRxkLBB0YOlFfQRwQGAhEWFYvGwoNFwsBCUROVjEGCQ9QSVYLFSsCOgEWCh0LVl5EHTsMU1RWXFdWSEQdGTpRX0EzUDUgUkc2bV5XJkchWVAjRjZyMVFXS0hBJiJDTBw3XFpLIUVGSlYVMRcXDBsBPQBETlZvQ1VTQlVEVEtERG9DSFNCVURJVkREb15VU0JVRFRWRERvQ1VBXkcXFQ8QVmVRJBMCNgALFBFWc1EBBgQMFwE5FgY+HQFBSEcaEQoYVnNRAQYEDBcBRE5WNiMNDBwARVBKRlYi'
 =============变量解释==========
 dfttua:UA 这个不需要解释了吧
-dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 new_user_sign 包里找到所有变量
+dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 nswer_question_new 包里找到所有变量
 
 =============变量获取==========
 懒得写了，自己研究吧
@@ -30,8 +30,7 @@ const $ = new Env('东方头条答题');
 const host = 'answer-question.dftoutiao.com';
 const notify = $.isNode() ? require('../sendNotify') : '';
 let dfttua = process.env.dfttua;
-let body = process.env.dfttdtbd;
-let dfttlt = process.env.dfttlt;
+let dfttdtbd = process.env.dfttdtbd;
 
 //开始运行
 !(async () => {
@@ -46,7 +45,9 @@ let dfttlt = process.env.dfttlt;
 //这里是要执行的代码     ====== 如果有您不需要的  请自行注释  使用 // 注释就行 ========
 async function yml() {
     await wyy();
-    await dt();
+    await dt1();
+    await dt2();
+
 
 //每日网抑云
     function wyy(timeout = 3*1000) {
@@ -73,28 +74,28 @@ async function yml() {
 // https://answer-question.dftoutiao.com/cheese_superman/answer_question_new/add_user_bonus
 
 // 答题闯关任务
-    function dt(timeout = 0) {
+    function dt1(timeout = 0) {
         return new Promise((resolve) => {
             let url = {
-                url: `https://${host}/cheese_superman/answer_question_new/double_bouns`,
+                url: `https://${host}/cheese_superman/answer_question_new/add_user_bonus`,
                 headers: {
                     'User-Agent': dfttua,
                 },
-                body: dfttlt
+                body: dfttdtbd,
             }
-            // console.log(url);
+            console.log(url);
 
             $.post(url, async (err, resp, data) => {
                 try {
 
-                    // console.log(`输出data开始===================`);
-                    // console.log(data);
-                    // console.log(`输出data结束===================`);
+                    console.log(`输出data开始===================`);
+                    console.log(data);
+                    console.log(`输出data结束===================`);
 
                     result = JSON.parse(data);
                     if (result.code == 0) {
-                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行答题闯关: 成功 ✅ 了呢 , 获得金币${result.data.bonus}\n已有金币${result.data.current_bonus}`)
-                        await $.wait(1 * 1000)
+                        $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行答题闯关: 成功 ✅ 了呢 , 获得金币${result.data.bonus}\n已累计获得金币共计${result.data.current_bonus}枚!`)
+                        await $.wait(3 * 1000)
                         await dt();
                     } else {
                         $.log(`\n【🎉 恭喜个屁 🎉】执行答题闯关:失败 ❌ 了呢,原因未知!`)
@@ -110,6 +111,44 @@ async function yml() {
 
     }
 }
+function dt2(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `https://${host}/cheese_superman/answer_question_new/double_bouns`,
+            headers: {
+                'User-Agent': dfttua,
+            },
+            body: dfttdtbd
+        }
+        console.log(url);
+
+        $.post(url, async (err, resp, data) => {
+            try {
+
+                console.log(`输出data开始===================`);
+                console.log(data);
+                console.log(`输出data结束===================`);
+
+                result = JSON.parse(data);
+                if (result.code == 0) {
+                    $.log(`\n【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】执行答题闯关翻倍奖励: 成功 ✅ 了呢 , 获得金币${result.data.bonus}\n已累计获得金币共计${result.data.current_bonus}枚!`)
+                    await $.wait(3 * 1000)
+                    await dt();
+                } else {
+                    $.log(`\n【🎉 恭喜个屁 🎉】执行答题闯关翻倍奖励:失败 ❌ 了呢,原因未知!`)
+                }
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve()
+            }
+        }, timeout)
+
+    })
+
+}
+
+
 
 
 
