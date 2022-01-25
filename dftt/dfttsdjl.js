@@ -28,7 +28,7 @@ dfttboxbd:变量中的xxxx是你的body包数据,,可以搜索关键词  timesaw
 // https://timesaward.dftoutiao.com/timesaward/timesaward/get_award
 const $ = new Env('东方头条时段奖励');
 const host = 'timesaward.dftoutiao.com';
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let dfttua = process.env.dfttua;
 let body = process.env.dfttsdjlbd;
 

@@ -28,7 +28,7 @@ dfttkspbd:变量中的xxxx是你的body包数据,可以从 关键词 send_gold/b
 
 const $ = new Env('东方头条看视频');
 const host = 'adv-invedio.dftoutiao.com';
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let dfttua = process.env.dfttua;
 let body = process.env.dfttkspbd;
 

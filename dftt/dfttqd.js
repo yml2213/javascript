@@ -29,7 +29,7 @@ dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 new_user_si
 
 const $ = new Env('东方头条签到');
 const host = 'sign.dftoutiao.com';
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let dfttua = process.env.dfttua;
 let body = process.env.dfttqdbd;
 
