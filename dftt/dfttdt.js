@@ -28,7 +28,7 @@ dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 nswer_quest
 
 const $ = new Env('东方头条答题');
 const host = 'answer-question.dftoutiao.com';
-const notify = $.isNode() ? require('../sendNotify') : '';
+const notify = $.isNode() ? require('./sendNotify') : '';
 let dfttua = process.env.dfttua;
 let dfttdtbd = process.env.dfttdtbd;
 
