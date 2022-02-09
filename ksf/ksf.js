@@ -1,12 +1,16 @@
 /*
 cron "18 8 * * *"
 
+2-9 发布第一版  签到+积分抽奖
+
+入口: https://github.com/yml2213/javascript/blob/master/ksf/ksf.jpg
+
 注意事项 ： 一定要仔细阅读一下内容
 =============青龙变量格式=============
-export yml_ksf_data='xxx&xxx@xxx&xxx'
-xxx&xxx :第一个为签到token,第二个为抽奖token    多账号使用 @ 分割
+export yml_ksf_data='xxx@xxx'
+xxx :xxx是token 签到,抽奖token相同(感谢全体测试人员);  多账号使用 @ 分割
 =============青龙变量实例=============
-export yml_ksf_data='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiNjg5MDQ0MTYxMzE3NzU4OTc2MS1XRUIiLCJleHAiOjE2NDQ5OTE5NTl9.uZ-6fmExOsAQoqTl7aTpGy-uS38BPEV3RrR89YLVfuc&eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiNjg5MDQ0MTYxMzE3NzU4OTc2MS1XRUIiLCJleHAiOjE2NDQ5OTQ2MzV9.72rW4JHQ4Y3NhXqp7J1-QMj9BLh1TyaD2AL3wskSLZ0'
+export yml_ksf_data='eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiNjg5MDQ0MTYxMzE3NzU4OTc2MS1XRUIiLCJleHAiOjE2NDQ5OTE5NTl9.uZ-6fmExOsAQoqTl7aTpGy-uS38BPEV3RrR89YLVfuc@eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJVU0VSX0lEIjoiNjg5MDQ0MTYxMzE3NzU4OTc2MS1XRUIiLCJleHAiOjE2NDQ5OTQ2MzV9.72rW4JHQ4Y3NhXqp7J1-QMj9BLh1TyaD2AL3wskSLZ0'
 =============变量解释==========
 签到token: 可以从 关键词 integralSignIn 包里找到
 抽奖token: 可以从 关键词 turntable/open 包里找到
@@ -54,16 +58,19 @@ const notify = $.isNode() ? require('./sendNotify') : '';
     for (i = 0; i < wx_yml_ksf_data.length; i++) {
         $.index = i + 1;
         console.log(`\n----- 开始【第 ${$.index} 个账号】-----`)
-        // console.log(`这里是分割后:${wx_yml_ksf_data}`)
-        qdtoken = wx_yml_ksf_data[i].split('&');
-        cjtoken = wx_yml_ksf_data[i].split('&');
-        // console.log(qdtoken[0]);
-        // console.log(cjtoken[1]);
+        // console.log(`这里是分割后:${wx_yml_ksf_data}`);
+        token = wx_yml_ksf_data[i].split('&');
+        // cjtoken = wx_yml_ksf_data[i].split('&');
+        // console.log(token[0]);
+        // console.log(cjtoken[0]);
 
         //执行某个板块
         // await test();
         await qd();
+        await $.wait(2 * 1000);
         await cj();
+        await $.wait(2 * 1000);
+
 
     }
 
@@ -108,7 +115,7 @@ function qd(timeout = 0) {
             url: `https://${host}/api/signIn/integralSignIn`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Token': qdtoken[0],
+                'Token': token[0],
             },
             // body: {},
 
@@ -154,7 +161,7 @@ function cj(timeout = 0) {
             url: `https://${host}/api/game/turntable/open`,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Token': cjtoken[1],
+                'Token': token[0],
             },
             // body: {},
 
