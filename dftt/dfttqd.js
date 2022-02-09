@@ -23,7 +23,7 @@ dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 new_user_si
 
 =============变量获取==========
 懒得写了，自己研究吧
-不会的请百度或者群里求助：QQ群：1001401060  tg：科技玩家@我即可
+不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg
 
 */
 
@@ -35,7 +35,7 @@ let body = process.env.dfttqdbd;
 
 //开始运行
 !(async () => {
-	console.log(`交流群:1001401060  by-yml`);
+	console.log(`交流群:1001401060   by-yml`);
 	await yml()
 
 })()
