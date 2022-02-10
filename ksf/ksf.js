@@ -46,11 +46,11 @@ const notify = $.isNode() ? require('./sendNotify') : '';
     console.log(`-------- 共 ${wx_yml_ksf_data.length} 个账号 --------`)
     // console.log(wx_yml_ksf_data);
     console.log(
-        `\n\n====== 脚本执行 - 北京时间(UTC+8)：${new Date(
+        `\n\n=== 脚本执行 - 北京时间(UTC+8)：${new Date(
             new Date().getTime() +
             new Date().getTimezoneOffset() * 60 * 1000 +
             8 * 60 * 60 * 1000
-        ).toLocaleString()} ======\n`);
+        ).toLocaleString()} ===\n`);
 
 
     await wyy();
