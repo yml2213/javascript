@@ -2,6 +2,7 @@
 cron "18 8 * * *"
 
 2-9 发布第一版  签到+积分抽奖
+2-18 增加积分查询功能
 
 入口: https://github.com/yml2213/javascript/blob/master/ksf/ksf.jpg
 
@@ -46,11 +47,16 @@ const notify = $.isNode() ? require('./sendNotify') : '';
     console.log(`-------- 共 ${wx_yml_ksf_data.length} 个账号 --------`)
     // console.log(wx_yml_ksf_data);
     console.log(
-        `\n\n=== 脚本执行 - 北京时间(UTC+8)：${new Date(
+        `\n\n====== 脚本执行 - 北京时间(UTC+8)：${new Date(
             new Date().getTime() +
             new Date().getTimezoneOffset() * 60 * 1000 +
             8 * 60 * 60 * 1000
-        ).toLocaleString()} ===\n`);
+        ).toLocaleString()} ======\n`);
+
+    console.log( `=======成功运行脚本后不要打开小程序，会导致token失效=======`);
+    console.log( `=======成功运行脚本后不要打开小程序，会导致token失效=======`);
+    console.log( `=======成功运行脚本后不要打开小程序，会导致token失效=======`);
+
 
 
     await wyy();
@@ -70,6 +76,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
         await $.wait(2 * 1000);
         await cj();
         await $.wait(2 * 1000);
+        await cx();
 
 
     }
@@ -200,7 +207,45 @@ function cj(timeout = 0) {
 
 }
 
+// https://club.biqr.cn/api/member/getMemberInfo
+// 积分查询
+function cx(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `https://${host}/api/member/getMemberInfo`,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Token': token[0],
+            },
 
+        }
+        // console.log(url);
+
+        $.get(url, async (err, resp, data) => {
+
+            try {
+
+                // console.log(`输出data开始===================`);
+                // console.log(data);
+                // console.log(`输出data结束===================`);
+
+                result = JSON.parse(data);
+                if (result.code === 0) {
+                    $.log(`\n 当前账号： ${result.data.nickname} , \n 查询积分：${result.data.integral} ，\n 累计获得查询积分：${result.data.totalIntegral}  `)
+
+                } else {
+                    $.log(`\n 查询积分:失败 ❌ 了呢,请重新获取token ! `)
+                }
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve()
+            }
+        }, timeout)
+
+    })
+
+}
 
 
 
