@@ -361,8 +361,8 @@ function tzid(timeout = 0) {
                 // console.log(`输出data结束===================`);
                 result = JSON.parse(data);
                 for (let n = 0; n < 3; n++) {
-                    tzid = result.data[n].id
-                    console.log(`开始回帖：id=${tzid}`)
+                    tzid1 = result.data[n].id
+                    console.log(`开始回帖：id=${tzid1}`)
                     await tzpl();
                     console.log(`延迟5秒`)
                     await $.wait(5 * 1000);
@@ -381,7 +381,7 @@ function tzid(timeout = 0) {
 // 帖子发布评论
 function tzpl(timeout = 0) {
     var axios = require('axios');
-    var data = `content=%E5%A4%AA%E6%BC%82%E4%BA%AE%E4%BA%86%E9%B8%AD&pid=${tzid}&uid=${uid}&source=android&ver=6.2.3&build=145`
+    var data = `content=%E5%A4%AA%E6%BC%82%E4%BA%AE%E4%BA%86%E9%B8%AD&pid=${tzid1}&uid=${uid}&source=android&ver=6.2.3&build=145`
     var config = {
         method: 'post',
         url: 'https://app.site.10yan.com.cn/index.php?s=/Api/Dynamic/reply',
