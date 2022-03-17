@@ -1,6 +1,5 @@
 /*
-[Script]
-cron "8 7 * * *"
+cron 8 7 * * *
 
 软件名称：十堰头条
 下载地址：http://appx.10yan.com.cn/appshare/
