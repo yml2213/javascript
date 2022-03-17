@@ -74,6 +74,8 @@ let uid;
         //执行任务
         await syttdl();
         await $.wait(2 * 1000);
+        await cxsy();
+        await $.wait(2 * 1000);
         await syttqd();
         await $.wait(2 * 1000);
         await plid();
@@ -145,6 +147,39 @@ function syttdl(timeout = 0) {
 
     })
 }
+
+
+// 查询收益
+function cxsy(timeout = 0) {
+    return new Promise((resolve) => {
+        let url = {
+            url: `https://app.site.10yan.com.cn/index.php?s=/Api/Activityv1/minemonetotal&id=5&uid=${uid}&source=android&ver=6.2.3&build=145`,
+            headers:'',
+        }
+        // console.log(url);
+        $.get(url, async (err, resp, data) => {
+            try {
+                // console.log(`========输出签到 data开始===========`);
+                // console.log(data);
+                // console.log(`========输出签到 data结束=========`);
+                result = JSON.parse(data);
+                if (result.code == 200) {
+                    $.log(`\n【🎉🎉🎉 查询收益 🎉🎉🎉】\n 今日收益${result.data.todaymoney} \n 累计收益${result.data.totalmoney} \n 待提现 ${result.data.cashmoney}   💪🏻 `)
+                    // await $.wait(3 * 1000)
+                }else {
+                    $.log(`\n【🎉🎉🎉 查询收益 🎉🎉🎉】:失败 ❌ 了呢,原因未知! `)
+                }
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve()
+            }
+        }, timeout)
+
+    })
+}
+
+
 
 // 签到
 function syttqd(timeout = 0) {
