@@ -110,6 +110,7 @@ let yml_xmlybody = $.getdata('yml_xmlybody')
 
                         await xmlyqd_qx()//你要执行的版块
                         await $.wait(2 * 1000); //你要延迟的时间  1000=1秒
+                        return
 
                     }
                 }
@@ -207,7 +208,7 @@ function xmlyqd_qx(timeout = 0) {
 
                 } else {
 
-                    console.log(`【🎉 恭喜个屁 🎉】签到转态:失败 ❌ 了呢,${data.data.msg} `)
+                    console.log(`【🎉 恭喜个屁 🎉】签到状态:失败 ❌ 了呢,${data.data.msg} `)
                 }
             } catch (e) {
 
