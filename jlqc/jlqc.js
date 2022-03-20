@@ -36,6 +36,14 @@ const $ = new Env('吉利汽车');
 const notify = $.isNode() ? require('./sendNotify') : '';
 let app_yml_jlqc_token = []
 
+// 圈x
+let status;
+status = (status = ($.getval("yml_jlqcstatus") || "1")) > 1 ? `${status}` : "";
+const yml_jlqcurlArr = [], yml_jlqchdArr = [], yml_jlqcbodyArr = [], yml_jlqccount = ''
+let yml_jlqcurl = $.getdata('yml_jlqcurl')
+let yml_jlqchd = $.getdata('yml_jlqchd')
+let yml_jlqcbody = $.getdata('yml_jlqcbody')
+
 !(async () => {
     if ($.isNode()) {
         if (!process.env.yml_jlqc_token) {
