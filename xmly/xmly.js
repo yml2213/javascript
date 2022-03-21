@@ -17,7 +17,7 @@ export yml_xmly_data='cookie1@cookie2'
 =============青龙变量实例=============
 export yml_xmly_cookie='Cookie: domain=.ximalaya.com; path=/; channel=ios-b1; 1&_device=iPhone&32866292-70F5-45A8-9F03-33A3DDEA3A94&9.0.22; impl=com.gemd.iting; XUM=32866292-70F5-45A8-9F03-33A3DDEA3A94; c-oper=%E8%81%94%E9%80%9A; net-mode=WIFI; res=1170%2C2532; 1&_token=230652218&497C23E0340C08D51383BE1B784794F0BC6D50F82B09F52FEA8D4A73F13AD896AA97DB615728147M825F3393CED220B_; idfa=32866292-70F5-45A8-9F03-33A3DDEA3A94; device_model=iPhone%2013%20Pro; XD=wrbjHmU5xnR+9Nz5Tx/zPg2yNxJSLDRQKe9VGyFxirbG6aQ5HmxbVGs0Mg17Xff92KG0ARPtymt8WsOejmP5VQ==; fp=009317647e2322q22164v05b2500000020211100200000001200001000; freeFlowType=0; minorProtectionStatus=0'
 =============变量解释==========
-只需要自己抓包一个token即可
+只需要自己抓包一个 cookie 即可
 =============变量获取==========
 懒得写了，自己研究吧
 
@@ -25,7 +25,7 @@ export yml_xmly_cookie='Cookie: domain=.ximalaya.com; path=/; channel=ios-b1; 1&
 ============= mimt(主机名) =============
 mimt= hybrid.ximalaya.com
 ============= 重写 =============
-http://hybrid.ximalaya.com/web-activity/signIn/v2  url  script-request-body  https://raw.githubusercontent.com/yml2213/javascript/master/xmly/xmly.js
+http://hybrid.ximalaya.com/web-activity  url  script-request-body  https://raw.githubusercontent.com/yml2213/javascript/master/xmly/xmly.js
 
 还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg
 
@@ -107,7 +107,7 @@ let yml_xmlybody = $.getdata('yml_xmlybody')
                     //循环运行
                     for (let c = 0; c < 1; c++) {
                         $.index = c + 1
-
+                        await wyy();
                         await xmlyqd_qx()//你要执行的版块
                         await $.wait(2 * 1000); //你要延迟的时间  1000=1秒
                         return
@@ -118,18 +118,18 @@ let yml_xmlybody = $.getdata('yml_xmlybody')
         }
     }
 
-
+// 青龙执行部分
     console.log(
-        `\n=== 脚本执行 - 北京时间：${new Date(
+        `\n==== 脚本执行 - 北京时间：${new Date(
             new Date().getTime() +
             new Date().getTimezoneOffset() * 60 * 1000 +
             8 * 60 * 60 * 1000
-        ).toLocaleString()} ===\n`
+        ).toLocaleString()} ====\n`
     );
 
     await wyy();
 
-    console.log(`===【共 ${app_yml_xmly_cookie.length} 个账号】===\n`);
+    console.log(`====【共 ${app_yml_xmly_cookie.length} 个账号】====\n`);
     for (i = 0; i < app_yml_xmly_cookie.length; i++) {
         yml_xmly_cookie = app_yml_xmly_cookie[i]
         // console.log(yml_xmly_cookie)
@@ -202,25 +202,18 @@ function xmlyqd_qx(timeout = 0) {
                 data = JSON.parse(data)
 
                 if (data.data.code == 0) {
-
                     console.log(`【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】签到状态:签到成功  ✅ `)
-
-
                 } else {
-
                     console.log(`【🎉 恭喜个屁 🎉】签到状态:失败 ❌ 了呢,${data.data.msg} `)
                 }
             } catch (e) {
-
+                $.logErr(e, resp);
             } finally {
                 resolve()
             }
         }, timeout)
     })
 }
-
-
-
 
 
 // 签到  ql执行
@@ -238,21 +231,22 @@ function yml_xmly_qd(timeout = 3 * 1000) {
             })
 
         }
-        console.log(url);
-        $.post(url,async (error, response, data) => {
+        // console.log(url);
+        $.post(url, async (error, response, data) => {
             try {
-                console.log(data)
+                // console.log(data)
                 let result = JSON.parse(data);
+                console.log(`开始尝试执行签到任务`)
                 if (result.data.code == 0) {
 
                     console.log(`【🎉🎉🎉 恭喜您鸭 🎉🎉🎉】签到状态:${result.data.msg}  ✅ `)
 
-                } else if (result.data.code == -2){
+                } else if (result.data.code == -2) {
 
-                    console.log(`【🎉 恭喜个屁 🎉】签到转态:失败 ❌ 了呢,${result.data.msg} `)
+                    console.log(`【🎉 恭喜个屁 🎉】签到状态:未能成功签到,原因是${result.data.msg} `)
 
                 } else {
-                    console.log(`【🎉 恭喜个屁 🎉】签到转态:失败 ❌ 了呢,原因未知! `)
+                    console.log(`【🎉 恭喜个屁 🎉】签到状态:失败 ❌ 了呢,原因未知! `)
                 }
 
             } catch (e) {
@@ -260,10 +254,9 @@ function yml_xmly_qd(timeout = 3 * 1000) {
             } finally {
                 resolve();
             }
-        },timeout)
+        }, timeout)
     })
 }
-
 
 
 function Env(t, e) {
