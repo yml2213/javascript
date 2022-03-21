@@ -103,7 +103,6 @@ let yml_xmlybody = $.getdata('yml_xmlybody')
                     $.index = i + 1;
                     console.log(`\n\n开始【喜马拉雅${$.index}】`)
 
-
                     //循环运行
                     for (let c = 0; c < 1; c++) {
                         $.index = c + 1
