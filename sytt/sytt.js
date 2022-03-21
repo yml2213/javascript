@@ -5,6 +5,7 @@ cron 8 7 * * * yml_javascript/sytt.js
 下载地址：http://appx.10yan.com.cn/appshare/
 或者自己搜索下载
 3-17   完成签到、评论、分享、回帖 任务
+3-21   关闭评论、回帖功能   需要的自行打开，并自行设置回复内容
 感谢所有测试人员
 
 自行安装  axios  qs  依赖；  自行安装 axios  qs  依赖；  自行安装  axios  qs  依赖；
@@ -32,6 +33,11 @@ let app_yml_sytt_data='';
 let user = '';
 let pwd = '';
 let uid;
+// 这里设置评论内容  打开的请 自行修改内容   默认关闭
+// 回帖评论
+let htpl='十堰太美了呀！'
+// 评论红包
+let plhb='十堰太美了呀！'
 
 
 !(async () => {
@@ -47,11 +53,13 @@ let uid;
             app_yml_sytt_data = process.env.yml_sytt_data.split();
         }
     }
+    console.log(`=============================更新内容==================================`)
+    console.log(`\n3-21   默认关闭评论、回帖功能；需要的自行打开，并自行设置回复内容，脚本内有清晰注释\n\n`)
 
     console.log(`-------- 共 ${app_yml_sytt_data.length} 个账号 --------`)
     // console.log(app_yml_sytt_data)
     console.log(
-        `\n\n====== 脚本执行 - 北京时间(UTC+8)：${new Date(
+        `\n====== 脚本执行 - 北京时间(UTC+8)：${new Date(
             new Date().getTime() +
             new Date().getTimezoneOffset() * 60 * 1000 +
             8 * 60 * 60 * 1000
@@ -78,12 +86,12 @@ let uid;
         await $.wait(2 * 1000);
         await syttqd();
         await $.wait(2 * 1000);
-        await plid();
-        await $.wait(2 * 1000);
-        await fxwz();
-        await $.wait(2 * 1000);
-        await tzid();
-        await $.wait(2 * 1000);
+        // await plid();
+        // await $.wait(2 * 1000);
+        // await fxwz();
+        // await $.wait(2 * 1000);
+        // await tzid();
+        // await $.wait(2 * 1000);
     }
 
 })()
@@ -251,11 +259,11 @@ function plid(timeout = 0) {
 
     })
 }
-// 发布评论
+// 发布评论（评论红包）
 function fbpl(timeout = 0) {
     let axios = require('axios')
     axios
-        .post(`https://app.site.10yan.com.cn/index.php?s=/Api/Article/artReply/&actiontype=12&contentid=${wzid}&reply=good!&sessionid=801cf37e86eaa651914b3cac0c756f9a&title=%%E6%%88%%91%%E5%%B8%%82%%E4%%B8%%80%%E5%%BD%%A9%%E5%%8F%%8B%%E5%%88%%AE%%E4%%B8%%AD%%E2%%80%%9C%%E5%%A5%%BD%%E8%%BF%%90%%E5%%8D%%81%%E5%%80%%8D%%E2%%80%%9D%%E5%%A4%%B4%%E5%%A5%%9640%%E4%%B8%%87&uid=${uid}&source=android&build=145`, {
+        .post(`https://app.site.10yan.com.cn/index.php?s=/Api/Article/artReply/&actiontype=12&contentid=${wzid}&reply=${plhb}&sessionid=801cf37e86eaa651914b3cac0c756f9a&title=%%E6%%88%%91%%E5%%B8%%82%%E4%%B8%%80%%E5%%BD%%A9%%E5%%8F%%8B%%E5%%88%%AE%%E4%%B8%%AD%%E2%%80%%9C%%E5%%A5%%BD%%E8%%BF%%90%%E5%%8D%%81%%E5%%80%%8D%%E2%%80%%9D%%E5%%A4%%B4%%E5%%A5%%9640%%E4%%B8%%87&uid=${uid}&source=android&build=145`, {
         })
         .then(res => {
             // console.log(res.data)
@@ -416,7 +424,7 @@ function tzid(timeout = 0) {
 // 帖子发布评论
 function tzpl(timeout = 0) {
     var axios = require('axios');
-    var data = `content=%E5%A4%AA%E6%BC%82%E4%BA%AE%E4%BA%86%E9%B8%AD&pid=${tzid1}&uid=${uid}&source=android&ver=6.2.3&build=145`
+    var data = `content=${htpl}&pid=${tzid1}&uid=${uid}&source=android&ver=6.2.3&build=145`
     var config = {
         method: 'post',
         url: 'https://app.site.10yan.com.cn/index.php?s=/Api/Dynamic/reply',
@@ -428,7 +436,7 @@ function tzpl(timeout = 0) {
 
     axios(config)
         .then(function (response) {
-            // console.log(JSON.stringify(response.data));
+            console.log(JSON.stringify(response.data));
         })
         .catch(function (error) {
             console.log(error);
