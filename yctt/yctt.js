@@ -39,7 +39,6 @@ let ycttToken = process.env.ycttToken;
 let sessionId = process.env.sessionId;
 let body = `appId=9&sessionId=${sessionId}&token=${ycttToken}&v=1`;
 
-
 //开始运行 
 !(async () => {
 	await yml()
