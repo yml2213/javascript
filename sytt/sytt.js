@@ -86,10 +86,16 @@ let plhb='十堰太美了呀！'
         await $.wait(2 * 1000);
         await syttqd();
         await $.wait(2 * 1000);
+        await fxwz();
+        await $.wait(2 * 1000);
+
+        
+        // 发布评论（评论红包）
         // await plid();
         // await $.wait(2 * 1000);
-        // await fxwz();
-        // await $.wait(2 * 1000);
+
+         
+        //  回复帖子
         // await tzid();
         // await $.wait(2 * 1000);
     }
