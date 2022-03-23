@@ -1,7 +1,8 @@
 /*
-cron "18 8 * * *"
+cron "18 8 * * *" yml_javascript/lnz.js tag=狸猫赚, enabled=fglse
 20220305 tom
 2022-3-15 yml瞎改（账号密码登录）
+不能签到了  可以禁用脚本了
 
 软件名称：狸猫赚
 tom大佬邀请：下载地址：http://www.limaozhan.com/home/auth/registerr.html?i=12064
