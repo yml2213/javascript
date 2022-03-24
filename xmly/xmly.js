@@ -11,7 +11,7 @@ cron 28 7 * * * yml_javascript/xmly.js
 注意事项 ： 一定要仔细阅读一下内容
               青龙填写格式
 =============青龙变量格式=============
-export yml_xmly_data='cookie1@cookie2'
+export yml_xmly_cookie='cookie1@cookie2'
  多账号使用 @ 分割；
 (给小白啰嗦一句:export XXX ==> 是青龙 "配置文件" 变量格式; 如果要在 "环境变量" 中添加,不需要export)
 =============青龙变量实例=============
