@@ -12,7 +12,7 @@ cron 18 7 * * * yml_javascript/bsly.js
 注意事项 ： 一定要仔细阅读一下内容
               青龙填写格式
 =============青龙变量格式=============
-必填变量：  export yml_bsly_data='xxx&xxxx@xxx&xxxx'   
+必填变量：  export yml_bsly_data='xxxx@xxxx'   
 可选变量    yml_bsly_UA='xxxxxx'
  多账号使用 @ 分割；
 (再给小白啰嗦一句:export XXX ==> 是青龙 "配置文件" 变量格式; 如果要在 "环境变量" 中添加,不需要export)
