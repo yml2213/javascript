@@ -1,6 +1,6 @@
 /**
  * 微笑微泡 
- * cron 18 7 * * *  yml_javascript/wxwp.js
+ * cron 18 7 * * *  yml2213_javascript_master/wxwp.js
  * 
  * 微笑微泡 微信小程序 
  * 3-27   签到任务 、 分享小程序  点赞 完成  有效期测试中 已稳定2天 
