@@ -1,8 +1,8 @@
 /**
- * 微笑微泡 
+ * 微笑趣泡 
  * cron 18 7 * * *  yml2213_javascript_master/wxwp.js
  * 
- * 微笑微泡 微信小程序 
+ * 微笑趣泡 微信小程序 
  * 3-27   签到任务 、 分享小程序  点赞 完成  有效期测试中 已稳定2天 
  * 感谢所有测试人员
  * ========= 青龙 =========
@@ -12,7 +12,7 @@
  * 还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg
  */
 
-const $ = new Env("微笑微泡");
+const $ = new Env("微笑趣泡");
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
 const debug = 0; //0为关闭调试，1为打开调试,默认为0
