@@ -1,10 +1,10 @@
 /**
  * 抖音果园 
- * cron 5 8,12,15,23 * * *  yml2213_javascript_master/dygy.js
+ * cron 10 8,12,17,23 * * *  yml2213_javascript_master/dygy.js
  * 
  * 抖音果园   入口：抖音点击"我"- "抖音商城" - "果园"   有的号可能没有 ，暂时不知道原因
  * 3-29   签到任务、新手彩蛋、每日免费领水滴、三餐礼包、宝箱、盒子领取  初步完成   脚本刚写完，难免有bug，请及时反馈  ；ck有效期测试中 
- * 修改通知
+ * 3-29-2  更改签到逻辑 ， 修复每天免费水滴bug 
  * 
  * 抓包记得先打开果园，然后再打开抓包软件，就能正常抓包了   关于抖音的任务都没网络，抓不到包
  * 
@@ -93,20 +93,17 @@ let msg = '';
 
 
 			console.log('开始 【获取任务列表】');
-			console.log('开始 【获取任务列表】')
 			await tasks_list(ck);
 			await $.wait(2 * 1000);
 
 
 			console.log('开始 【戳鸭子】');
-			console.log('开始 【戳鸭子】')
 			await touch_Duck(ck);
 			await $.wait(2 * 1000);
 
 
 
 			console.log('开始 【浇水】');
-			console.log('开始 【浇水】')
 			await watering(ck);
 			await $.wait(2 * 1000);
 
@@ -264,27 +261,23 @@ function tasks_list(ck, timeout = 3 * 1000) {
 						// console.log(`${value.round_info.current_round}`);
 						if (value.id == 2) {   // 三餐任务
 
-							console.log(`\n 任务状态\n 这是${value.name} 任务\n `)
+							console.log(`\n 任务状态\n 现在是 ${value.name} 时间\n `)
 
 							let d = new Date();
 							let n = d.getHours();
-							// console.log(n);
+							console.log(n);
 
 
 							if (n > 8 && n < 9) {
 
 								console.log('开始 【早餐礼包】');
-								console.log('开始 【早餐礼包】')
 								await eat_package(ck, '早餐');
 								await $.wait(2 * 1000);
 
 
 								console.log('开始 【收集瓶子水滴】');
-								console.log('开始 【收集瓶子水滴】')
 								await sig(ck);
 								await $.wait(2 * 1000);
-
-
 
 
 							} else {
@@ -486,8 +479,8 @@ function touch_Duck(ck, timeout = 3 * 1000) {
 					// $.msg(`\n【戳鸭子】成功了🎉 `)
 					touch_Duck_status = result.data.red_point[0].round_info.current_round
 					touch_Duck_status_max = result.data.red_point[0].round_info.total_round
-					console.log(touch_Duck_status);
-					console.log(touch_Duck_status_max);
+					// console.log(touch_Duck_status);
+					// console.log(touch_Duck_status_max);
 
 
 					if (touch_Duck_status < touch_Duck_status_max) {
@@ -560,8 +553,8 @@ function watering(ck, timeout = 3 * 1000) {
 				if (result.status_code == 0) {
 
 
-
-					console.log(`\n【浇水】${result.message} 了🎉 `)
+					let watering_unm = 1;
+					console.log(`\n【浇水】${result.message} 🎉 `)
 
 					// msg += `\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级(实在不知道等级对应啥了，将就看吧。基本就是啥 发芽、长大、开花、结果、成熟啥的)\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n宝箱状态:${JSON.stringify(result.data.red_points.challenge)} ,box(幸运盒子):${JSON.stringify(result.data.red_points.box)} \n`
 
@@ -616,7 +609,7 @@ function watering(ck, timeout = 3 * 1000) {
 					if (result.data.red_points.challenge.state !== 0) {
 
 
-						console.log(`time`);
+						// console.log(`time`);
 						console.log(result.data.red_points.challenge.times);
 
 						if (result.data.red_points.challenge.times == 0) {
