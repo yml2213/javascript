@@ -1,10 +1,10 @@
 /**
  * 抖音果园 
- * cron 5 6,12,15,23 * * *  yml2213_javascript_master/dygy.js
+ * cron 5 8,12,15,23 * * *  yml2213_javascript_master/dygy.js
  * 
  * 抖音果园   入口：抖音点击"我"- "抖音商城" - "果园"   有的号可能没有 ，暂时不知道原因
  * 3-29   签到任务、新手彩蛋、每日免费领水滴、三餐礼包、宝箱、盒子领取  初步完成   脚本刚写完，难免有bug，请及时反馈  ；ck有效期测试中 
- * 3-29-2 修改签到逻辑，修复每日免费水滴bug
+ * 修改通知
  * 
  * 抓包记得先打开果园，然后再打开抓包软件，就能正常抓包了   关于抖音的任务都没网络，抓不到包
  * 
@@ -18,8 +18,9 @@
  * 
  * 还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg  通知：https://t.me/yml2213_tg
  */
-
-const $ = new Env("抖音果园");
+const jsname = "抖音果园";
+const $ = Env(jsname);
+// const $ = new Env("抖音果园");
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
 const debug = 0; //0为关闭调试，1为打开调试,默认为0
@@ -560,7 +561,7 @@ function watering(ck, timeout = 3 * 1000) {
 
 
 
-					console.log(`\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n宝箱状态:${JSON.stringify(result.data.red_points.challenge)} ,box(幸运盒子):${JSON.stringify(result.data.red_points.box)} \n`)
+					console.log(`\n【浇水】${result.message} 了🎉 `)
 
 					// msg += `\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级(实在不知道等级对应啥了，将就看吧。基本就是啥 发芽、长大、开花、结果、成熟啥的)\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n宝箱状态:${JSON.stringify(result.data.red_points.challenge)} ,box(幸运盒子):${JSON.stringify(result.data.red_points.box)} \n`
 
@@ -570,35 +571,50 @@ function watering(ck, timeout = 3 * 1000) {
 
 
 
-					if (result.data.red_points.green_gift !== null) {
 
-						// console.log('开始 【新手彩蛋】')
-						console.log(`开始 【新手彩蛋】`);
-						await newcomer_egg(ck);
-						// await newcomer_egg(ck);
 
-					} else {
-						console.log(`已经领取过 【新手彩蛋】，执行【签到】`);
-						await sign_in(ck);
-						await $.wait(2 * 1000);
+					// ==========================一天运行一次==========================
+					let num_max = 1;
+					if (num_max < 2) {
+						if (result.data.red_points.green_gift !== null) {
+
+							// console.log('开始 【新手彩蛋】')
+							console.log(`开始 【新手彩蛋】`);
+							await newcomer_egg(ck);
+							// await newcomer_egg(ck);
+
+						} else {
+							console.log(`已经领取过 【新手彩蛋】，执行【签到】`);
+							await sign_in(ck);
+							await $.wait(2 * 1000);
+
+						}
+
+						console.log(`开始 【选择金宝箱】`);
+						await choose_gold(ck);
+
+
+						// 23点执行数量变为1
+						num_max++
+						let myDate = new Date();
+						myDate.getHours();
+						Hours = myDate.getHours()
+						if (Hours > 22) {
+							num_max = 1;
+						}
 
 					}
-
+					// ==========================一天运行一次结束==========================
 
 
 					// 宝箱挑战 (选择金宝箱)
 					// console.log(result.data.red_points.challenge);
 
-					// console.log('开始 【选择金宝箱】')
-					// await choose_gold(ck);
 
-					console.log(result.data.red_points.challenge.state);
+
 
 					if (result.data.red_points.challenge.state !== 0) {
 
-						console.log(`开始 【选择金宝箱】`);
-						// console.log('开始 【选择金宝箱】')
-						await choose_gold(ck);
 
 						console.log(`time`);
 						console.log(result.data.red_points.challenge.times);
@@ -628,8 +644,6 @@ function watering(ck, timeout = 3 * 1000) {
 							// console.log('开始 【领取盒子奖励】')
 							await open_box(ck);
 							// await $.wait(5 * 1000);
-							// await watering(ck);
-
 
 						}
 
@@ -642,9 +656,9 @@ function watering(ck, timeout = 3 * 1000) {
 
 					} else {  // 浇水完成
 
-						console.log(`\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n宝箱状态:${JSON.stringify(result.data.red_points.challenge)} ,box(幸运盒子):${JSON.stringify(result.data.red_points.box)} \n`)
+						console.log(`\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
 
-						// msg += `\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级(实在不知道等级对应啥了，将就看吧。基本就是啥 发芽、长大、开花、结果、成熟啥的)\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n宝箱状态:${JSON.stringify(result.data.red_points.challenge)} ,box(幸运盒子):${JSON.stringify(result.data.red_points.box)} \n`
+						msg = msg(title = `${jsname}`, desc = `\n【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
 
 
 					}
@@ -657,6 +671,9 @@ function watering(ck, timeout = 3 * 1000) {
 					console.log(`\n 浇水】 失败 ,可能是: ${result.message}!\n `)
 					// msg += `\n【浇水】 失败 ,可能是: ${result.message}!\n`
 					// $.msg(`【${$.name}】 【浇水】: ${result.message}`)
+
+					console.log(`等待3分钟，再次尝试浇水！`);
+					await $.wait(3 * 60 * 1000);
 
 				} else {
 
