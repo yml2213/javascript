@@ -21,7 +21,6 @@
  */
 const jsname = "抖音果园";
 const $ = Env(jsname);
-// const $ = new Env("抖音果园");
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
 const debug = 0; //0为关闭调试，1为打开调试,默认为0
@@ -96,14 +95,14 @@ let watering_unm = 1;
 			await polling_info(ck);
 			await $.wait(2 * 1000);
 
-			// console.log('开始 【获取任务列表】');
-			// await tasks_list(ck);
-			// await $.wait(2 * 1000);
+			console.log('开始 【获取任务列表】');
+			await tasks_list(ck);
+			await $.wait(2 * 1000);
 
 
-			// console.log('开始 【戳鸭子】');
-			// await touch_Duck(ck);
-			// await $.wait(2 * 1000);
+			console.log('开始 【戳鸭子】');
+			await touch_Duck(ck);
+			await $.wait(2 * 1000);
 
 
 			console.log('开始 【浇水】');
@@ -326,9 +325,9 @@ function eat_package(ck, name, timeout = 3 * 1000) {
 				let result = JSON.parse(data);
 				if (result.status_code == 0) {
 
-					console.log(`\n 【${name}礼包】领取成功了🎉 ，获得水滴${result.data.task.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 个水滴 !`)
-					// msg += `\n 【${name}礼包】领取成功了🎉 ，获得水滴${result.data.task.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 个水滴 !`
-					// $.msg(`\n 【${name}礼包】领取成功了🎉 ，获得水滴${result.data.task.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 个水滴 !`)
+					console.log(`\n 【${name}礼包】领取成功了🎉 ，获得水滴${result.data.task.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 水滴 !`)
+					// msg += `\n 【${name}礼包】领取成功了🎉 ，获得水滴${result.data.task.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 水滴 !`
+					// $.msg(`\n 【${name}礼包】领取成功了🎉 ，获得水滴${result.data.task.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 水滴 !`)
 
 				} else if (result.status_code === "1001") {
 
@@ -381,9 +380,9 @@ function newcomer_egg(ck, timeout = 3 * 1000) {
 				let result = JSON.parse(data);
 				if (result.status_code == 0) {
 
-					console.log(`\n 【新手彩蛋】砸蛋成功了鸭🎉 ，获得水滴${result.data.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 个水滴 !`)
-					// msg += `\n 【新手彩蛋】砸蛋成功了鸭🎉 ，获得水滴${result.data.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 个水滴 !`
-					// $.msg(`\n 【新手彩蛋】砸蛋成功了鸭🎉 ，获得水滴${result.data.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 个水滴 !`)
+					console.log(`\n 【新手彩蛋】砸蛋成功了鸭🎉 ，获得水滴${result.data.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 水滴 !`)
+					// msg += `\n 【新手彩蛋】砸蛋成功了鸭🎉 ，获得水滴${result.data.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 水滴 !`
+					// $.msg(`\n 【新手彩蛋】砸蛋成功了鸭🎉 ，获得水滴${result.data.reward_item.num} 个 ， 领取后后共有 ${result.data.kettle.water_num} 水滴 !`)
 
 					console.log(`耐心等待6分钟，等下一个彩蛋孵化鸭`);
 
@@ -444,15 +443,13 @@ function touch_Duck(ck, timeout = 3 * 1000) {
 				let result = JSON.parse(data);
 				if (result.status_code == 0) {
 
-					console.log(`\n 【戳鸭子】成功了🎉 `)
+					console.log(`\n 【戳鸭子】成功了🎉 获得 ${result.data.reward_item.num} 水滴，领取后后共有 ${result.data.kettle.water_num} 水滴 !`)
 					// msg += `\n 【戳鸭子】成功了🎉  `
 					// $.msg(`\n 【戳鸭子】成功了🎉 `)
 					touch_Duck_status = result.data.red_point[0].round_info.current_round
 					touch_Duck_status_max = result.data.red_point[0].round_info.total_round
 					// console.log(touch_Duck_status);
 					// console.log(touch_Duck_status_max);
-
-
 					if (touch_Duck_status < touch_Duck_status_max) {
 
 						console.log(`\n 请耐心等待 10 s\n`)
@@ -466,10 +463,9 @@ function touch_Duck(ck, timeout = 3 * 1000) {
 				} else if (result.status_code === "1001") {
 
 					console.log(`\n 【戳鸭子】 失败 ,可能是: ${result.message}! 可能是次数被限制了，休息一会再试试吧！\n `)
-					// msg += `\n 【戳鸭子】 失败 ,可能是: ${result.message}! 可能是次数被限制了，休息一会再试试吧！\n `
-					// $.msg(`【${$.name}】 \n 【戳鸭子】 失败 ,可能是: ${result.message}! 可能是次数被限制了，休息一会再试试吧！\n`)
-					// console.log(`\n 请耐心等待 1 分钟，一分钟后我们再试试\n`)
-					// await $.wait(60 * 1000);
+
+					console.log(`\n 请耐心等待 1 分钟，一分钟后我们再试试\n`)
+					await $.wait(60 * 1000);
 
 				} else {
 
@@ -526,12 +522,11 @@ function watering(ck, timeout = 3 * 1000) {
 
 					if (result.data.kettle.water_num > 10) {
 						await watering(ck);
-						console.log(`hhhh`);
 					} else {  // 浇水完成
 
 						console.log(`\n 【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
 
-						msg = msg(`\n 【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
+						msg += `\n 【浇水】${result.message} 了🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次，${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`
 						watering_unm++
 
 
@@ -1010,7 +1005,7 @@ function polling_info(ck, timeout = 3 * 1000) {
 					} else if (result.data.show_info.show_nutrient) {
 						console.log(`展示 养分 牌子，化肥功能已开启`);
 						// await nutrient_sign(ck);
-						if (result.data.fertilizer.nomal != 0) {
+						if (result.data.fertilizer.normal != 0) {
 							console.log(`使用 正常 化肥`);
 							await fertilizer_nomal(ck);
 						} else if (result.data.fertilizer.lite != 0) {
