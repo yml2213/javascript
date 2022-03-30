@@ -5,7 +5,8 @@
  * 抖音果园   入口：抖音点击"我"- "抖音商城" - "果园"   有的号可能没有 ，暂时不知道原因
  * 3-29    签到任务、新手彩蛋、每日免费领水滴、三餐礼包、宝箱、盒子领取  初步完成   脚本刚写完，难免有bug，请及时反馈  ；ck有效期测试中 
  * 3-29-2  更改签到逻辑 ， 修复每天免费水滴bug
- * 3-30    修改整体逻辑，简化通知,修复逻辑问题
+ * 3-30    修改整体逻辑，简化通知
+ * 3-30-2  修复时间判断bug
  * 
  * 抓包记得先打开果园，然后再打开抓包软件，就能正常抓包了   关于抖音的任务都没网络，抓不到包
  * 
@@ -427,9 +428,9 @@ function tasks_list(ck, timeout = 3 * 1000) {
 
 							let d = new Date();
 							let n = d.getHours();
-							// console.log(n);
+							console.log(`现在时间 ${n} 时`);
 
-							if (n > 8 && n < 9) {
+							if (n >= 8 && n <= 9) {
 								console.log('开始 【早餐礼包】');
 								await eat_package(ck, '早餐');
 								await $.wait(2 * 1000);
@@ -438,11 +439,11 @@ function tasks_list(ck, timeout = 3 * 1000) {
 								await water_bottle(ck);
 								await $.wait(2 * 1000);
 
-							} else if (n > 12 && n < 14) {
+							} else if (n >= 12 && n <= 14) {
 								console.log('开始 【午餐礼包】')
 								await eat_package(ck, '午餐');
 								await $.wait(2 * 1000);
-							} else if (n > 18 && n < 21) {
+							} else if (n >= 18 && n <= 21) {
 								console.log('开始 【晚餐礼包】')
 								await eat_package(ck, '晚餐');
 								await $.wait(2 * 1000);
