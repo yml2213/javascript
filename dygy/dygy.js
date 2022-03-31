@@ -1,12 +1,13 @@
 /**
  * 抖音果园 
- * cron 10 8,12,17,23 * * *  yml2213_javascript_master/dygy.js
+ * cron 10,40 8,12,17,23 * * *  yml2213_javascript_master/dygy.js
  * 
  * 抖音果园   入口：抖音点击"我"- "抖音商城" - "果园"   有的号可能没有 ，暂时不知道原因
  * 3-29    签到任务、新手彩蛋、每日免费领水滴、三餐礼包、宝箱、盒子领取  初步完成   脚本刚写完，难免有bug，请及时反馈  ；ck有效期测试中 
  * 3-29-2  更改签到逻辑 ， 修复每天免费水滴bug
  * 3-30    修改整体逻辑，简化通知
  * 3-30-2  修复时间判断bug,增加脚本版本号（一半功能）
+ * 3-31    修复选择宝箱bug，默认开启debug模式，方便排错，不需要的自觉行关闭
  * 
  * 抓包记得先打开果园，然后再打开抓包软件，就能正常抓包了   关于抖音的任务都没网络，抓不到包
  * 
@@ -24,7 +25,7 @@
  const $ = Env(jsname);
  const notify = $.isNode() ? require('./sendNotify') : '';
  const Notify = 1; //0为关闭通知，1为打开通知,默认为1
- const debug = 0; //0为关闭调试，1为打开调试,默认为0
+ const debug = 1; //0为关闭调试，1为打开调试,默认为0
  
  
  let dygyCookies = ($.isNode() ? process.env.dygyCookies : $.getdata('dygyCookies')) || "";
@@ -44,7 +45,7 @@
 		 return;
 	 else {
  
-		 console.log(`本地脚本3-20-2 , 远程脚本xxxx(等我会写了加上，哈哈哈哈，自己根据本地判断吧！)`);
+		 console.log(`本地脚本3-31 , 远程脚本xxxx(等我会写了加上，哈哈哈哈，自己根据本地判断吧！)`);
  
 		 console.log(
 			 `\n\n=========================================    脚本执行 - 北京时间(UTC+8)：${new Date(
@@ -226,33 +227,44 @@
 				 }
 				 let result = JSON.parse(data);
 				 if (result.status_code == 0) {
+					 if (debug) {
+						 console.log(`新手彩蛋`);
+						 console.log(result.data.show_info.show_green_gift);
+						 console.log(`宝箱 challenge `);
+						 console.log(result.data.show_info.show_challenge);
+						 console.log(`养分牌子`);
+						 console.log(result.data.show_info.show_nutrient);
+						 console.log(`养分签到`);
+						 console.log(result.data.red_points.nutrient_sign);
+						 console.log(`七天签到`);
+						 console.log(result.data.red_points.sign);
  
-					 // console.log(result.data.show_info.show_green_gift);
-					 // console.log(result.data.show_info.show_challenge);
-					 // console.log(result.data.show_info.show_nutrient);
-					 // console.log(result.data.red_points.nutrient_sign);
-					 // console.log(result.data.red_points.sign);
-					 // console.log(`====`);
-					 // console.log(result.data.red_points.box.rounds);
-					 // console.log(result.data.red_points.box.times);
-					 // console.log(result.data.red_points.challenge.times);
+						 console.log(`盒子剩余次数`);
+						 console.log(result.data.red_points.box.rounds);
+						 console.log(`盒子是否可以领取,0可以领取`);
+						 console.log(result.data.red_points.box.times);
+ 
+						 console.log(`宝箱是否可以领取,0可以领取`);
+						 console.log(result.data.red_points.challenge.times);
+ 
+					 }
+ 
  
  
 					 if (result.data.show_info.show_green_gift) {
 						 console.log(`开始 【新手彩蛋】`);
 						 await newcomer_egg(ck);
 					 }
-					 if (result.data.show_info.show_challenge != true) {
-						 // console.log(`选择金宝箱【宝箱挑战】`);
-						 await choose_gold(ck);
-					 }
-					 if (result.data.show_info.nutrient_sign) {
-						 console.log(`开始 化肥签到`);
-						 await fertilizer_sign(ck);
-					 }
-					 if (result.data.show_info.sign) {
+					 // if (result.data.show_info.show_challenge != true) {
+					 // 	console.log(`选择金宝箱【宝箱挑战】`);
+					 // 	await choose_gold(ck);
+					 // }
+ 
+					 if (result.data.red_points.sign) {
 						 console.log(`开始 七日签到`);
 						 await sign_in(ck);
+						 console.log(`选择金宝箱【宝箱挑战】`);
+						 await choose_gold(ck);
 					 }
 					 if (result.data.red_points.box.rounds != 0 && result.data.red_points.box.times == 0) {
 						 console.log(`开盒子 box `);
@@ -265,6 +277,10 @@
 					 if (result.data.show_info.show_nutrient) {
 						 console.log(`展示 养分 牌子，化肥功能已开启`);
 						 // await nutrient_sign(ck);
+						 if (result.data.red_points.nutrient_sign) {
+							 console.log(`开始 化肥签到`);
+							 await fertilizer_sign(ck);
+						 }
 						 if (result.data.fertilizer.normal != 0) {
 							 console.log(`使用 正常 化肥`);
 							 await fertilizer_nomal(ck);
@@ -273,7 +289,6 @@
 							 await fertilizer_lite(ck);
 						 }
 					 }
- 
  
 				 } else if (result.status_code === "1001") {
  
