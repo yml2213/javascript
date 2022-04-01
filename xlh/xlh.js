@@ -437,7 +437,7 @@ function articles(timeout = 3 * 1000) {
 
         let d = new Date();
         let y = d.getFullYear();
-        let m = d.getMonth() + 1;
+        let m = d.getMonth();
         m = m.toString();
         if (m.length == 1) {
             m = `0${m}`
