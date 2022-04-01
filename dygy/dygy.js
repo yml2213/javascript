@@ -8,7 +8,7 @@
  * 3-30    修改整体逻辑，简化通知
  * 3-30-2  修复时间判断bug,增加脚本版本号（一半功能）
  * 3-31    修复选择宝箱bug，默认开启debug模式，方便排错，不需要的自觉行关闭
- * 4-1     修复浇水频繁循环bug，关闭默认debug模式，基本可用
+ * 4-1     修复几个循环bug，关闭默认debug模式
  * 
  * 抓包记得先打开果园，然后再打开抓包软件，就能正常抓包了   关于抖音的任务都没网络，抓不到包
  * 
@@ -46,7 +46,7 @@ let choose_gold_num = 1;
 		return;
 	else {
 
-		console.log(`本地脚本3-31 , 远程脚本xxxx(等我会写了加上，哈哈哈哈，自己根据本地判断吧！)`);
+		console.log(`本地脚本4-1 , 远程脚本xxxx(等我会写了加上，哈哈哈哈，自己根据本地判断吧！)`);
 
 		console.log(
 			`\n\n=========================================    脚本执行 - 北京时间(UTC+8)：${new Date(
@@ -98,13 +98,14 @@ let choose_gold_num = 1;
 			if (debug) {
 				console.log(`\n 【debug】 这是你第 ${num} 账号信息:\n ck:${ck}\n`);
 			}
-			console.log('开始 【获取首页图标】');
-			await polling_info(ck);
-			await $.wait(2 * 1000);
 
-			console.log('开始 【获取任务列表】');
-			await tasks_list(ck);
-			await $.wait(2 * 1000);
+			// console.log('开始 【获取首页图标】');
+			// await polling_info(ck);
+			// await $.wait(2 * 1000);
+
+			// console.log('开始 【获取任务列表】');
+			// await tasks_list(ck);
+			// await $.wait(2 * 1000);
 
 
 			console.log('开始 【戳鸭子】');
@@ -112,9 +113,9 @@ let choose_gold_num = 1;
 			await $.wait(2 * 1000);
 
 
-			console.log('开始 【浇水】');
-			await watering(ck);
-			await $.wait(2 * 1000);
+			// console.log('开始 【浇水】');
+			// await watering(ck);
+			// await $.wait(2 * 1000);
 
 			await SendMsg(msg);
 		}
@@ -511,19 +512,18 @@ function touch_Duck(ck, timeout = 3 * 1000) {
 
 		$.get(request_url, async (error, response, data) => {
 			try {
-				if (debug) {
+				if (1) {
 					console.log(`\n\n 【debug】===============这是 戳鸭子 返回data==============`);
-					// console.log(data)
-					// console.log(`======`)
+					console.log(data)
+					console.log(`======`)
 					console.log(JSON.parse(data))
 
 				}
 				let result = JSON.parse(data);
-				if (result.status_code == 0) {
+				if (result.status_code == 0 && result.data.reward_item != null) {
 
 					console.log(`\n 【戳鸭子】成功了🎉 获得 ${result.data.reward_item.num} 水滴，领取后后共有 ${result.data.kettle.water_num} 水滴 !`)
-					// msg += `\n 【戳鸭子】成功了🎉  `
-					// $.msg(`\n 【戳鸭子】成功了🎉 `)
+
 					touch_Duck_status = result.data.red_point[0].round_info.current_round
 					touch_Duck_status_max = result.data.red_point[0].round_info.total_round
 					// console.log(touch_Duck_status);
@@ -544,12 +544,11 @@ function touch_Duck(ck, timeout = 3 * 1000) {
 
 					console.log(`\n 请耐心等待 1 分钟，一分钟后我们再试试\n`)
 					await $.wait(60 * 1000);
+					await touch_Duck(ck);
 
 				} else {
 
 					console.log(`\n 【戳鸭子】 失败 ❌ 了呢,可能是网络被外星人抓走了!\n `)
-					// msg += `\n 【戳鸭子】 失败 ❌ 了呢,可能是网络被外星人抓走了!\n`
-					// $.msg(`【${$.name}】 【戳鸭子】: 失败 ❌ 了呢,可能是网络被外星人抓走了!`)
 
 				}
 
