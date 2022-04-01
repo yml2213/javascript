@@ -99,13 +99,13 @@ let choose_gold_num = 1;
 				console.log(`\n 【debug】 这是你第 ${num} 账号信息:\n ck:${ck}\n`);
 			}
 
-			// console.log('开始 【获取首页图标】');
-			// await polling_info(ck);
-			// await $.wait(2 * 1000);
+			console.log('开始 【获取首页图标】');
+			await polling_info(ck);
+			await $.wait(2 * 1000);
 
-			// console.log('开始 【获取任务列表】');
-			// await tasks_list(ck);
-			// await $.wait(2 * 1000);
+			console.log('开始 【获取任务列表】');
+			await tasks_list(ck);
+			await $.wait(2 * 1000);
 
 
 			console.log('开始 【戳鸭子】');
@@ -113,9 +113,9 @@ let choose_gold_num = 1;
 			await $.wait(2 * 1000);
 
 
-			// console.log('开始 【浇水】');
-			// await watering(ck);
-			// await $.wait(2 * 1000);
+			console.log('开始 【浇水】');
+			await watering(ck);
+			await $.wait(2 * 1000);
 
 			await SendMsg(msg);
 		}
@@ -512,7 +512,7 @@ function touch_Duck(ck, timeout = 3 * 1000) {
 
 		$.get(request_url, async (error, response, data) => {
 			try {
-				if (1) {
+				if (debug) {
 					console.log(`\n\n 【debug】===============这是 戳鸭子 返回data==============`);
 					console.log(data)
 					console.log(`======`)
