@@ -19,7 +19,7 @@ const $ = new Env("广汽传祺");
 // const $ = Env(jsname);
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
-const debug = 0; //0为关闭调试，1为打开调试,默认为0
+const debug = 1; //0为关闭调试，1为打开调试,默认为0
 //////////////////////
 const salt = '17aaf8118ffb270b766c6d6774317a133.4.0'
 let gqcq_dataArr = [];
@@ -70,7 +70,7 @@ let add_comment_text = add_comment_text_arr[ram_num];
 				console.log(`\n 【debug】 这是你第 ${num} 账号信息:\n ${data}\n`);
 			}
 
-			console.log('开始 任务列表');
+			console.log('开始 检查任务列表');
 			await task_list();
 			await $.wait(2 * 1000);
 
@@ -158,7 +158,7 @@ function task_list(timeout = 3 * 1000) {
 						await $.wait(2 * 1000);
 
 
-						console.log(`\n 发帖：执行第一次发帖,评论，删除评论 \n`);
+						console.log(`\n 发帖：执行第二次发帖,评论，删除评论 \n`);
 						await post_topic();
 						await $.wait(3 * 1000);
 
@@ -590,8 +590,7 @@ function add_comment(timeout = 3 * 1000) {
 				let result = JSON.parse(data);
 				if (result.errorCode == 20000) {
 
-					console.log(`\n 评论帖子:${result.errorMessage} 🎉 \n帖子ID: ${result.data.postId} `);
-					topic_id = result.data.postId;
+					console.log(`\n 评论帖子:${result.errorMessage} 🎉 \n`);
 
 				} else {
 
