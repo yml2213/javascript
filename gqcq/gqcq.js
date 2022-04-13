@@ -155,7 +155,7 @@ function task_list(timeout = 3 * 1000) {
 						await $.wait(2 * 1000);
 
 						await delete_topic();
-						await $.wait(2 * 1000);
+						await $.wait(30 * 1000);
 
 
 						console.log(`\n 发帖：执行第二次发帖,评论，删除评论 \n`);
