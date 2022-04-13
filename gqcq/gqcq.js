@@ -133,7 +133,7 @@ function task_list(timeout = 3 * 1000) {
 						console.log(`\n 获取签到状态:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
 					}
 
-					if (result.data[3].finishedNum == 0) {
+					if (result.data[3].finishedNum < 2) {
 
 						console.log(`\n 分享状态：${result.data[3].finishedNum} / ${result.data[3].total} \n`);
 
