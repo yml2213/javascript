@@ -144,7 +144,6 @@ function task_list(timeout = 3 * 1000) {
 					} else {
 						console.log(`\n 获取签到状态:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
 					}
-
 					if (result.data[1].finishedNum < 2) {
 						console.log(`\n 发帖：${result.data[1].finishedNum} / ${result.data[1].total} \n`);
 
@@ -170,7 +169,7 @@ function task_list(timeout = 3 * 1000) {
 						await $.wait(2 * 1000);
 
 
-					} else if (result.data[0].finishedNum == 2) {
+					} else if (result.data[1].finishedNum == 2) {
 						console.log(`\n 今天已经发帖了，明天再来吧！\n `);
 					} else {
 						console.log(`\n 获取发帖状态:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
@@ -196,7 +195,7 @@ function task_list(timeout = 3 * 1000) {
 						await $.wait(2 * 1000);
 
 
-					} else if (result.data[0].finishedNum == 2) {
+					} else if (result.data[3].finishedNum == 2) {
 						// await Article_list();
 						// await share();
 
