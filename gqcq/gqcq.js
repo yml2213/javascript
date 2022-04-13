@@ -2,8 +2,8 @@
  * 广汽传祺 
  * cron 10 8 * * *  yml2213_javascript_master/gqcq.js
  * 
- * 广汽传祺app  
- * 4-13  完成签到 抽奖任务   分享任务测试中    有bug及时反馈
+ * 广汽传祺 app  
+ * 4-13  完成签到 抽奖 分享 发帖 评论 任务   有bug及时反馈
  * 
  * 感谢所有测试人员
  * ========= 青龙 =========
@@ -14,8 +14,9 @@
  * 还是不会的请百度或者群里求助: QQ群: 1101401060  tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
  */
 
-const jsname = "广汽传祺";
-const $ = Env(jsname);
+const $ = new Env("广汽传祺");
+// const jsname = "广汽传祺";
+// const $ = Env(jsname);
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
 const debug = 0; //0为关闭调试，1为打开调试,默认为0
@@ -26,6 +27,15 @@ let topicNames = '', postId = '';
 let gqcq_data = process.env.gqcq_data;
 let ts = Math.round(new Date().getTime()).toString();
 
+/////////////////////////////////////////////////////////
+let textarr = ['最简单的提高观赏性的办法就是把地球故事的部分剪辑掉半小时， emo的部分剪辑掉半小时。这样剩下的90分钟我们就看看外星人，看看月球，看看灾难片大场面就不错。', '顶着叛国罪的风险无比坚信前妻，这种还会离婚？', '你以为它是灾难片，其实它是科幻片；你以为它是科幻片，其实它是恐怖片；你以为它是恐怖片，其实它是科教片', '我的天，剧情真的好阴谋论，但是还算是能自圆其说', '大杂烩啊……我能理解这电影为什么在海外卖的不好了，因为核心创意真的已经太老套了', '一开始我以为这就是外国人看《流浪地球》时的感受啊，后来发现这不是我当初看《胜利号》的感受么']
+let add_comment_text_arr = ['感谢推荐的电影呢', '有时间一定看看这个电影怎么样', '晚上就去看', '66666666666', '这部电影我看过，非常好看']
+ram_num = randomInt(1, 5)
+
+let text = textarr[ram_num];
+let add_comment_text = add_comment_text_arr[ram_num];
+
+/////////////////////////////////////////////////////////
 
 !(async () => {
 
@@ -64,6 +74,7 @@ let ts = Math.round(new Date().getTime()).toString();
 			await task_list();
 			await $.wait(2 * 1000);
 
+
 		}
 
 
@@ -76,7 +87,7 @@ let ts = Math.round(new Date().getTime()).toString();
 
 
 /**
- * 任务列表  task_list
+ * 任务列表  task_list   post
  * https://gsp.gacmotor.com/gw/app/community/api/mission/getlistv1?place=1
  */
 function task_list(timeout = 3 * 1000) {
@@ -99,6 +110,7 @@ function task_list(timeout = 3 * 1000) {
 				'Accept-Encoding': 'gzip',
 
 			},
+			body: '',
 		}
 
 		if (debug) {
@@ -133,6 +145,39 @@ function task_list(timeout = 3 * 1000) {
 						console.log(`\n 获取签到状态:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
 					}
 
+					if (result.data[1].finishedNum < 2) {
+						console.log(`\n 发帖：${result.data[1].finishedNum} / ${result.data[1].total} \n`);
+
+						console.log(`\n 发帖：执行第一次发帖,评论，删除评论 \n`);
+						await post_topic();
+						await $.wait(3 * 1000);
+
+						await add_comment();
+						await $.wait(2 * 1000);
+
+						await delete_topic();
+						await $.wait(2 * 1000);
+
+
+						console.log(`\n 发帖：执行第一次发帖,评论，删除评论 \n`);
+						await post_topic();
+						await $.wait(3 * 1000);
+
+						await add_comment();
+						await $.wait(2 * 1000);
+
+						await delete_topic();
+						await $.wait(2 * 1000);
+
+
+					} else if (result.data[0].finishedNum == 2) {
+						console.log(`\n 今天已经发帖了，明天再来吧！\n `);
+					} else {
+						console.log(`\n 获取发帖状态:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
+					}
+
+
+
 					if (result.data[3].finishedNum < 2) {
 
 						console.log(`\n 分享状态：${result.data[3].finishedNum} / ${result.data[3].total} \n`);
@@ -143,7 +188,6 @@ function task_list(timeout = 3 * 1000) {
 						await share();
 						await $.wait(2 * 1000);
 
-						console.log(`\n 分享状态：${result.data[3].finishedNum} / ${result.data[3].total} \n`);
 
 						await Article_list();
 						await $.wait(2 * 1000);
@@ -152,7 +196,7 @@ function task_list(timeout = 3 * 1000) {
 						await $.wait(2 * 1000);
 
 
-					} else if (result.data[0].finishedNum == 1) {
+					} else if (result.data[0].finishedNum == 2) {
 						// await Article_list();
 						// await share();
 
@@ -180,11 +224,8 @@ function task_list(timeout = 3 * 1000) {
 
 
 
-
-
-
 /**
- * 签到
+ * 签到   get
  * https://gsp.gacmotor.com/gateway/app-api/sign/submit
  */
 function signin(timeout = 3 * 1000) {
@@ -249,7 +290,7 @@ function signin(timeout = 3 * 1000) {
 
 
 /**
- * 抽奖  每天免费一次  其他50G豆一次  trunaround
+ * 抽奖  每天免费一次  其他50G豆一次  trunaround   post
  * https://gsp.gacmotor.com/gw/app/activity/api/cge/trunaround
  */
 function lottery(timeout = 3 * 1000) {
@@ -312,7 +353,7 @@ function lottery(timeout = 3 * 1000) {
 
 
 /**
- * 获取 文章列表  Article_list
+ * 获取 文章列表  Article_list   get
  * https://gsp.gacmotor.com/gw/app/community/api/post/channelPostList?current=1&size=20&channelId=&sortType=1
  */
 function Article_list(timeout = 3 * 1000) {
@@ -380,7 +421,7 @@ function Article_list(timeout = 3 * 1000) {
 
 
 /**
- * 分享文章  每天两次
+ * 分享文章  每天两次   post
  * https://gsp.gacmotor.com/gw/app/community/api/post/forward
  */
 function share(timeout = 3 * 1000) {
@@ -438,6 +479,227 @@ function share(timeout = 3 * 1000) {
 		}, timeout)
 	})
 }
+
+
+/**
+ * 发布帖子  post
+ * https://gsp.gacmotor.com/gw/app/community/api/topic/appsavepost
+ */
+function post_topic(timeout = 3 * 1000) {
+	let reqNonc = randomInt(100000, 999999)
+	let reqSign = MD5Encrypt(`signature${reqNonc}${ts}${salt}`)
+
+	return new Promise((resolve) => {
+		let url = {
+			url: `https://gsp.gacmotor.com/gw/app/community/api/topic/appsavepost`,
+			headers: {
+
+				'User-Agent': 'okhttp/3.10.0',
+				'token': data[0],
+				'verification': 'signature',
+				'reqTs': ts,
+				'reqNonc': reqNonc,
+				'reqSign': reqSign,
+				'Host': 'gsp.gacmotor.com',
+				'Connection': 'Keep-Alive',
+				'Accept-Encoding': 'gzip',
+			},
+			body: `postId=&postType=2&topicId=176&columnId=&postTitle=那些年我们看过的电影&postContent=[{"text":"${text}"}]&coverImg=https://pic-gsp.gacmotor.com/app/42a97ad9-0bfb-4205-b838-8170ad3289e2.png&publishedTime=&contentWords=${text}&contentImgNums=1&lng=&lat=&address=&cityId=`
+
+
+
+			// `postId=&postType=2&topicId=176&columnId=&postTitle=那些年我们看过的电影&postContent=[{"text":"最简单的提高观赏性的办法就是把地球故事的部分剪辑掉半小时， emo的部分剪辑掉半小时。这样剩下的90分钟我们就看看外星人，看看月球，看看灾难片大场面就不错。"}]&coverImg=https://pic-gsp.gacmotor.com/app/42a97ad9-0bfb-4205-b838-8170ad3289e2.png&publishedTime=&contentWords=最简单的提高观赏性的办法就是把地球故事的部分剪辑掉半小时， emo的部分剪辑掉半小时。这样剩下的90分钟我们就看看外星人，看看月球，看看灾难片大场面就不错。&contentImgNums=1&lng=&lat=&address=&cityId=`
+		}
+
+		if (debug) {
+			console.log(`\n 【debug】=============== 这是 发布帖子 请求 url ===============`);
+			console.log(url);
+		}
+		$.post(url, async (error, response, data) => {
+			try {
+				if (debug) {
+					console.log(`\n\n 【debug】===============这是 发布帖子 返回data==============`);
+					// console.log(data)
+					console.log(`======`)
+					console.log(JSON.parse(data))
+				}
+				let result = JSON.parse(data);
+				if (result.errorCode == 20000) {
+
+					console.log(`\n 发布帖子:${result.errorMessage} 🎉 \n帖子ID: ${result.data.postId} `);
+					topic_id = result.data.postId;
+
+				} else {
+
+					console.log(`\n 发布帖子:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
+				}
+
+			} catch (e) {
+				console.log(e)
+			} finally {
+				resolve();
+			}
+		}, timeout)
+	})
+}
+
+
+
+
+/**
+ * 评论帖子  post
+ * https://gsp.gacmotor.com/gw/app/community/api/comment/add
+ */
+function add_comment(timeout = 3 * 1000) {
+	let reqNonc = randomInt(100000, 999999)
+	let reqSign = MD5Encrypt(`signature${reqNonc}${ts}${salt}`)
+
+	return new Promise((resolve) => {
+		let url = {
+			url: `https://gsp.gacmotor.com/gw/app/community/api/comment/add`,
+			headers: {
+
+				'User-Agent': 'okhttp/3.10.0',
+				'token': data[0],
+				'verification': 'signature',
+				'reqTs': ts,
+				'reqNonc': reqNonc,
+				'reqSign': reqSign,
+				'Host': 'gsp.gacmotor.com',
+				'Content-Type': 'application/x-www-form-urlencoded'
+
+			},
+			body: `commentType=0&postId=${topic_id}&commentContent=${add_comment_text}&commentId=0&commentatorId=NDIwNTA0NQ==&isReplyComment=1`
+
+
+
+			// commentType=0&postId=3904810&commentContent=感谢推荐&commentId=0&commentatorId=NDIwNTA0NQ==&isReplyComment=1
+		}
+
+		if (debug) {
+			console.log(`\n 【debug】=============== 这是 评论帖子 请求 url ===============`);
+			console.log(url);
+		}
+		$.post(url, async (error, response, data) => {
+			try {
+				if (debug) {
+					console.log(`\n\n 【debug】===============这是 评论帖子 返回data==============`);
+					// console.log(data)
+					console.log(`======`)
+					console.log(JSON.parse(data))
+				}
+				let result = JSON.parse(data);
+				if (result.errorCode == 20000) {
+
+					console.log(`\n 评论帖子:${result.errorMessage} 🎉 \n帖子ID: ${result.data.postId} `);
+					topic_id = result.data.postId;
+
+				} else {
+
+					console.log(`\n 评论帖子:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
+				}
+
+			} catch (e) {
+				console.log(e)
+			} finally {
+				resolve();
+			}
+		}, timeout)
+	})
+}
+
+
+
+
+/**
+ * 删除帖子  post
+ * https://gsp.gacmotor.com/gw/app/community/api/post/delete
+ */
+function delete_topic(timeout = 3 * 1000) {
+
+	return new Promise((resolve) => {
+		let url = {
+			url: `https://gsp.gacmotor.com/gw/app/community/api/post/delete`,
+			headers: {
+
+				'Origin': 'https://gsp.gacmotor.com',
+				'Accept': 'application/json, text/plain, */*',
+				'Cache-Control': 'no-cache',
+				'Sec-Fetch-Dest': 'empty',
+				'token': data[0],
+				'X-Requested-With': 'com.cloudy.component',
+				'Sec-Fetch-Site': 'same-origin',
+				'Sec-Fetch-Mode': 'cors',
+				'Referer': 'https://gsp.gacmotor.com/h5/html/community/myHome.html?userId=NDIwNTA0NQ==&version=newApp',
+				'Accept-Language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+				'Content-Type': 'application/x-www-form-urlencoded'
+
+			},
+			body: `postId=${topic_id}`,
+
+		}
+
+		if (debug) {
+			console.log(`\n 【debug】=============== 这是 删除帖子 请求 url ===============`);
+			console.log(url);
+		}
+		$.post(url, async (error, response, data) => {
+			try {
+				if (debug) {
+					console.log(`\n\n 【debug】===============这是 删除帖子 返回data==============`);
+					// console.log(data)
+					console.log(`======`)
+					console.log(JSON.parse(data))
+				}
+				let result = JSON.parse(data);
+				if (result.errorCode == 20000) {
+
+					console.log(`\n 删除帖子: 帖子ID: ${topic_id} , 执行删除 ${result.errorMessage} 🎉 \n`)
+
+				} else {
+
+					console.log(`\n 删除帖子:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
+
+				}
+
+			} catch (e) {
+				console.log(e)
+			} finally {
+				resolve();
+			}
+		}, timeout)
+	})
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
