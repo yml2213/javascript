@@ -4,6 +4,7 @@
  * 
  * 广汽传祺 app  
  * 4-13  完成签到 抽奖 分享 发帖 评论 任务   有bug及时反馈
+ * 4-14  修复已知bug  恢复正常使用
  * 
  * 感谢所有测试人员
  * ========= 青龙 =========
@@ -43,11 +44,11 @@ let add_comment_text = add_comment_text_arr[ram_num];
 		return;
 	else {
 
-		console.log(`本地脚本4-13 )`);
+		console.log(`本地脚本4-14 )`);
 
-		console.log(`\n 脚本测试中,有bug及时反馈! \n`);
-		console.log(`\n 脚本测试中,有bug及时反馈! \n`);
-		console.log(`\n 脚本测试中,有bug及时反馈! \n`);
+		console.log(`\n 脚本已恢复正常状态,请及时更新! \n`);
+		// console.log(`\n 脚本测试中,有bug及时反馈! \n`);
+		// console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 
 		console.log(`\n\n=========================================    \n脚本执行 - 北京时间(UTC+8): ${new Date(
 			new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 +
@@ -149,7 +150,7 @@ function task_list(timeout = 3 * 1000) {
 
 						console.log(`\n 发帖：执行第一次发帖,评论，删除评论 \n`);
 						await post_topic();
-						await $.wait(3 * 1000);
+						await $.wait(30 * 1000);
 
 						await add_comment();
 						await $.wait(2 * 1000);
@@ -160,7 +161,7 @@ function task_list(timeout = 3 * 1000) {
 
 						console.log(`\n 发帖：执行第二次发帖,评论，删除评论 \n`);
 						await post_topic();
-						await $.wait(3 * 1000);
+						await $.wait(30 * 1000);
 
 						await add_comment();
 						await $.wait(2 * 1000);
@@ -196,8 +197,6 @@ function task_list(timeout = 3 * 1000) {
 
 
 					} else if (result.data[3].finishedNum == 2) {
-						// await Article_list();
-						// await share();
 
 						console.log(`\n 今天已经分享过了鸭，明天再来吧！\n `);
 					} else {
