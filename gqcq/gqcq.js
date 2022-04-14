@@ -18,7 +18,7 @@
 const $ = new Env("广汽传祺");
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
-const debug = 0; //0为关闭调试，1为打开调试,默认为0
+const debug = 1; //0为关闭调试，1为打开调试,默认为0
 //////////////////////
 const salt = '17aaf8118ffb270b766c6d6774317a133.4.0'
 let gqcq_dataArr = [];
@@ -42,20 +42,22 @@ let add_comment_text = add_comment_text_arr[ram_num];
 		return;
 	else {
 
-		console.log(`本地脚本4-14 )`);
+		console.log(`\n本地脚本4-14 `);
 
-		console.log(`\n 脚本已恢复正常状态,请及时更新! \n`);
+		console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 		// console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 		// console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 
-		console.log(`\n\n=========================================    \n脚本执行 - 北京时间(UTC+8): ${new Date(
-			new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 +
-			8 * 60 * 60 * 1000).toLocaleString()} \n=========================================\n`);
+		console.log(`\n================================================\n脚本执行 - 北京时间(UTC+8): ${new Date(
+			new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000).toLocaleString()} \n================================================\n`);
 
 		await wyy();
 
 
 		console.log(`\n=================== 共找到 ${gqcq_dataArr.length} 个账号 ===================`)
+		if (debug) {
+			console.log(`【debug】 这是你的账号数组:\n ${gqcq_dataArr}`);
+		}
 
 
 		for (let index = 0; index < gqcq_dataArr.length; index++) {
@@ -704,7 +706,6 @@ function delete_topic(timeout = 3 * 1000) {
 //#region 固定代码
 // ============================================变量检查============================================ \\
 async function Envs() {
-	console.log(gqcq_data);
 	if (gqcq_data) {
 		if (gqcq_data.indexOf("@") != -1) {
 			gqcq_data.split("@").forEach((item) => {
