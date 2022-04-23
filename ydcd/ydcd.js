@@ -90,8 +90,8 @@
   * https://dict.youdao.com/dictusertask/withdraw/redpacket?pointParam=product,appVersion,keyfrom,mid,screen,keyid,mysticTime,isFinished,bzkro,network,abtest,yduuid,vendor,client,imei,model,newImei,oaid,gdidcwesspvu&yduuid=ebd03285b7d6f3ef&sign=8108fe30ae9fc1217d6ebce3dafb47e6&keyid=dict-usertask-key&mysticTime=1650701557324&isFinished=1&gdidcwesspvu=uxtohgsdbldsqbvok&bzkro=pnmeanwemrbkdcso&product=mdict&appVersion=9.2.4&keyfrom=mdict.9.2.4.android&mid=9&screen=1080x1920&ssid=&network=wifi&abtest=2&vendor=xiaomi&client=android&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&model=MI_6&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%253D&oaid=ebd03285b7d6f3ef
   */
  function receive_redpacket(timeout = 3 * 1000) {
-	 _sign = `abtest=2&appVersion=9.2.4&bzkro=pnmeanwemrbkdcso&client=android&gdidcwesspvu=uxtohgsdbldsqbvok&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&isFinished=1&keyfrom=mdict.9.2.4.android&keyid=dict-usertask-key&mid=9&model=MI_6&mysticTime=${ts}&network=wifi&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%3D&oaid=ebd03285b7d6f3ef&product=mdict&screen=1080x1920&vendor=xiaomi&yduuid=ebd03285b7d6f3ef&key=ttfMFaa7tiPyAc3DanKeIMzEejm`
-	 sign = MD5Encrypt(_sign)
+	 let _sign = `abtest=2&appVersion=9.2.4&bzkro=pnmeanwemrbkdcso&client=android&gdidcwesspvu=uxtohgsdbldsqbvok&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&isFinished=1&keyfrom=mdict.9.2.4.android&keyid=dict-usertask-key&mid=9&model=MI_6&mysticTime=${ts}&network=wifi&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%3D&oaid=ebd03285b7d6f3ef&product=mdict&screen=1080x1920&vendor=xiaomi&yduuid=ebd03285b7d6f3ef&key=ttfMFaa7tiPyAc3DanKeIMzEejm`
+	 let sign = MD5Encrypt(_sign)
 	 return new Promise((resolve) => {
 		 let url = {
 			 url: `https://dict.youdao.com/dictusertask/withdraw/redpacket?pointParam=product,appVersion,keyfrom,mid,screen,keyid,mysticTime,isFinished,bzkro,network,abtest,yduuid,vendor,client,imei,model,newImei,oaid,gdidcwesspvu&yduuid=ebd03285b7d6f3ef&sign=${sign}&keyid=dict-usertask-key&mysticTime=${ts}&isFinished=1&gdidcwesspvu=uxtohgsdbldsqbvok&bzkro=pnmeanwemrbkdcso&product=mdict&appVersion=9.2.4&keyfrom=mdict.9.2.4.android&mid=9&screen=1080x1920&ssid=&network=wifi&abtest=2&vendor=xiaomi&client=android&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&model=MI_6&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%253D&oaid=ebd03285b7d6f3ef`,
@@ -144,13 +144,14 @@
  
  /**
   * 幸运礼盒查询  get
-  * https://dict.youdao.com/dictusertask/lottery/info?abtest=4&add_param_s_g_0=A735B467-B174-4ACC-B050-16FF218EC8BD&add_param_s_g_1=CEE4A0E1-95AE-41EB-99D0-426BFEEFF5E6&appVersion=9.2.6&client=iphonepro&idfa=&imei=7e516737dbd22e41f942c7760501306f&keyfrom=mdict.9.2.6.iphonepro&keyid=dict-usertask-key&mid=15.4.1&model=iPhone14%2C2&mysticTime=1650715716096&network=wifi&pointParam=add_param_s_g_0%2Cadd_param_s_g_1%2CmysticTime&product=mdict&screen=390x844&sign=A0331EDD960E1F4685A723FD3FD5F9F8&vendor=AppStore&yduuid=00000000-0000-0000-0000-000000000000
+  * https://dict.youdao.com/dictusertask/lottery/info?pointParam=product,appVersion,keyfrom,pxkbxktiymxbjzynl,mid,screen,keyid,mysticTime,network,abtest,yduuid,vendor,client,imei,xrwnrrpokxcswmkycn,model,newImei,oaid&yduuid=ebd03285b7d6f3ef&pxkbxktiymxbjzynl=jsqlp&sign=83993b33018eb7a1fcf2027e22f0bf38&keyid=dict-usertask-key&xrwnrrpokxcswmkycn=cuaueflzuoauwne&mysticTime=1650727535059&product=mdict&appVersion=9.2.4&keyfrom=mdict.9.2.4.android&mid=9&screen=1080x1920&ssid=&network=wifi&abtest=2&vendor=xiaomi&client=android&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&model=MI_6&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%253D&oaid=ebd03285b7d6f3ef
   */
   function box_info(timeout = 3 * 1000) {
-	 
+	 let _sign = `abtest=2&appVersion=9.2.4&client=android&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&keyfrom=mdict.9.2.4.android&keyid=dict-usertask-key&mid=9&model=MI_6&mysticTime=${ts}&network=wifi&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%3D&oaid=ebd03285b7d6f3ef&product=mdict&pxkbxktiymxbjzynl=jsqlp&screen=1080x1920&vendor=xiaomi&xrwnrrpokxcswmkycn=cuaueflzuoauwne&yduuid=ebd03285b7d6f3ef&key=ttfMFaa7tiPyAc3DanKeIMzEejm`
+	 let sign = MD5Encrypt(_sign)
 	 return new Promise((resolve) => {
 		 let url = {
-			 url: `https://dict.youdao.com/dictusertask/lottery/info?abtest=4&add_param_s_g_0=A735B467-B174-4ACC-B050-16FF218EC8BD&add_param_s_g_1=CEE4A0E1-95AE-41EB-99D0-426BFEEFF5E6&appVersion=9.2.6&client=iphonepro&idfa=&imei=7e516737dbd22e41f942c7760501306f&keyfrom=mdict.9.2.6.iphonepro&keyid=dict-usertask-key&mid=15.4.1&model=iPhone14%2C2&mysticTime=1650715716096&network=wifi&pointParam=add_param_s_g_0%2Cadd_param_s_g_1%2CmysticTime&product=mdict&screen=390x844&sign=A0331EDD960E1F4685A723FD3FD5F9F8&vendor=AppStore&yduuid=00000000-0000-0000-0000-000000000000`,
+			 url: `https://dict.youdao.com/dictusertask/lottery/info?pointParam=product,appVersion,keyfrom,pxkbxktiymxbjzynl,mid,screen,keyid,mysticTime,network,abtest,yduuid,vendor,client,imei,xrwnrrpokxcswmkycn,model,newImei,oaid&yduuid=ebd03285b7d6f3ef&pxkbxktiymxbjzynl=jsqlp&sign=${sign}&keyid=dict-usertask-key&xrwnrrpokxcswmkycn=cuaueflzuoauwne&mysticTime=${ts}&product=mdict&appVersion=9.2.4&keyfrom=mdict.9.2.4.android&mid=9&screen=1080x1920&ssid=&network=wifi&abtest=2&vendor=xiaomi&client=android&imei=a1946f7d-b716-48cb-8112-3eb1e993a42c&model=MI_6&newImei=CQk5YTM0ZmEzZmIxZjY5MWExCXVua25vd24%253D&oaid=ebd03285b7d6f3ef`,
 			 headers: {
 				 'Host': 'dict.youdao.com',
 				 'Cookie': data,
