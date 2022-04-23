@@ -32,7 +32,7 @@ let msg = '';
 		return;
 	else {
 
-		console.log(`\n本地脚本4-19`);
+		console.log(`\n本地脚本4-23`);
 
 		//  console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 		console.log(`\n 脚本测试中,有bug及时反馈! \n`);
