@@ -10,14 +10,14 @@
  * ========= 青龙 =========
  * 变量格式: export ydcd_data=' cookie1 @ cookie12 '   多个账号用 @分割 
  * 
- * 抓包： , 抓签到包  , 找到有 cookie 的包就行了
+ * 抓包： 抓dict.youdao.com , 抓签到包  , 找到有 cookie 的包就行了   ck中 不能有 @
  * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
  */
 
 const $ = new Env("有道词典");
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
-const debug = 1; //0为关闭调试，1为打开调试,默认为0
+const debug = 0; //0为关闭调试，1为打开调试,默认为0
 //////////////////////
 let ydcd_dataArr = [];
 let ydcd_data = process.env.ydcd_data;
