@@ -10,7 +10,7 @@
  * ========= 青龙 =========
  * 变量格式: export ydcd_data=' cookie1 @ cookie12 '   多个账号用 @分割 
  * 
- * 抓包： , 抓签到包  , 找到有 cookie 的包就行了
+ * 抓包： 抓dict.youdao.com , 抓签到包  , 找到有 cookie 的包就行了   ck中 不能有 @
  * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
  */
 
