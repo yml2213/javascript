@@ -22,8 +22,7 @@
  * 
  * 还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg  通知：https://t.me/yml2213_tg
  */
-const jsname = "抖音果园";
-const $ = Env(jsname);
+const $ = new Env("抖音果园");
 const notify = $.isNode() ? require('./sendNotify') : '';
 const Notify = 1; //0为关闭通知，1为打开通知,默认为1
 const debug = 0; //0为关闭调试，1为打开调试,默认为0
