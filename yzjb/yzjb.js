@@ -2,6 +2,7 @@
  * 柚子计步 app   安卓,需要从抖音下载 
  * cron 0-59/15 6-22 * * *  yml2213_javascript_master/yzjb.js
  * 
+ * 进去先提现0.3 元 ， 提现不了就放弃吧
  * 最近很火的,写了 签到 , 开宝箱 , 大转盘 , 摇红包 等任务 ; 领现金没抓到包 
  * 
  * 先跑着吧,慢慢完善
@@ -12,7 +13,7 @@
  * 感谢投稿人员,感谢所有测试人员
  * ========= 青龙 =========
  * 变量格式: export yzjb_data=' AZ 1 @ AZ 2 '  多个账号用 @分割 
- * 应该是随便一个AZ就行(authorization) 
+ * 应该是随便一个 huyitool.jidiandian.cn 域名的  AZ 就行(authorization) 
  * 
  * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
  */
