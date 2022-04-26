@@ -58,8 +58,7 @@ async function tips(ckArr) {
 		if (debug) {
 			console.log(`\n 【debug】 这是你第 ${num} 账号信息:\n ${ck}\n`)
 		}
-		console.log(ck[0]);
-		console.log(ck[1]);
+
 		await start()
 
 	}
