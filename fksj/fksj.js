@@ -5,6 +5,7 @@
  * 
  * 疯狂水晶 app  
  * 4-26 完成 签到 , 观看视频 , 京喜红包 任务   有bug及时反馈
+ * 4-26 更新随机时间间隔
  * 
  * 感谢所有测试人员
  * ========= 青龙 =========
@@ -186,9 +187,9 @@ function ad_video(timeout = 3 * 1000) {
 					console.log(`\n 观看视频:成功 🎉  您今天已看: ${result.userdata.ad_video_num}/7 次, \n 观看视频 获得 能量 ${result.addpower} ,累计有能量 ${result.power}\n`);
 
 					if (result.userdata.ad_video_num < 7) {
-
-						console.log(`\n 等待40s后,继续观看视频\n`);
-						await $.wait(40 * 1000);
+						let num = randomInt(40, 50);
+						console.log(`\n 等待 ${num} s后,继续观看视频\n`);
+						await $.wait(num * 1000);
 						console.log('开始 观看视频');
 						await ad_video();
 					}
@@ -251,8 +252,9 @@ function gold_ad_video(timeout = 3 * 1000) {
 
 					if (result.userdata.ad_videob_num < 5) {
 
-						console.log(`\n 等待 5 s后,继续京喜红包\n`);
-						await $.wait(5 * 1000);
+						let num = randomInt(40, 50);
+						console.log(`\n 等待 ${num} s后,继续京喜红包\n`);
+						await $.wait(num * 1000);
 						console.log('开始 京喜红包');
 						await gold_ad_video();
 					}
