@@ -26,7 +26,7 @@ let ckStr = process.env.jfjlb_data
 
 
 async function tips(ckArr) {
-	console.log(`\n本地脚本4-25`)
+	console.log(`\n本地脚本4-26`)
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 求助前请打开 19 行左右的 debug 运行一次,再发日志求助 \n`)
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`)
