@@ -98,9 +98,9 @@ async function start() {
 	}
 
 
-	console.log('开始 一键收矿石');
-	await collection();
-	await $.wait(2 * 1000);
+	// console.log('开始 一键收矿石');
+	// await collection();
+	// await $.wait(2 * 1000);
 
 	await SendMsg(msg);
 }
