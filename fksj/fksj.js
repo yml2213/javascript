@@ -3,7 +3,7 @@
  * 下载地址: http://mmwk.mmwl.fun/download/9570691cce3dc93a?user=17803
  * cron 0 * * * *  yml2213_javascript_master/fksj.js
  *
- * 疯狂水晶 app
+ * 疯狂水晶 app(小程序也有)
  * 4-26 完成 签到 , 观看视频 , 京喜红包 任务   有bug及时反馈
  * 4-26 更新随机时间间隔
  * 4-28 感谢大佬的指导.终于解决了md5的sign,变量简化,无需抓包了
@@ -15,21 +15,20 @@
  * ========= 青龙 =========
  * 变量格式: export fksj_data='userid1 @ userid2'  多个账号用 @分割
  *
- * userid 找不到的可以告别羊毛了  在问自杀
+ * userid  小程序(疯狂水晶) app 页面都有 , 找不到的可以告别羊毛了  在问自杀
  *
  * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
  */
 const $ = new Env("疯狂水晶");
 const notify = $.isNode() ? require("./sendNotify") : "";
-const Notify = 1; //0为关闭通知，1为打开通知,默认为1
-const debug = 0; //0为关闭调试，1为打开调试,默认为0
+const Notify = 1; 		//0为关闭通知，1为打开通知,默认为1
+const debug = 0; 		//0为关闭调试，1为打开调试,默认为0
 //////////////////////
 let ckStr = process.env.fksj_data;
 let fksj_dataArr = [];
 let msg = "";
 let ck = "";
 let sign = "";
-
 
 
 /////////////////////////////////////////////////////////
@@ -86,6 +85,7 @@ async function start() {
 	let myDate = new Date();
 	h = myDate.getHours();
 	// console.log(h);
+	console.log(`您现在的时间是 ${h} 点 ,签到,观看视频,京喜红包,升级 等任务每天 8 点开启! `);
 	if (h == 8) {
 
 		console.log("开始 签到");
@@ -107,6 +107,9 @@ async function start() {
 		console.log('开始 升级');
 		await Upgrade();
 		await $.wait(2 * 1000);
+	} else {
+		console.log(`您现在的时间是 ${h} 点 , 跳过其他任务,执行红包雨任务! `);
+
 	}
 
 	// console.log('开始 一键收矿石');
