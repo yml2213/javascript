@@ -52,7 +52,7 @@ async function tips(ckArr) {
 		).toLocaleString()} \n================================================\n`
 	);
 
-	// await wyy();
+	await wyy();
 
 	console.log(
 		`\n=================== 共找到 ${ckArr.length} 个账号 ===================`
