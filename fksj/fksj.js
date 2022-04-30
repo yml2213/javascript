@@ -34,7 +34,7 @@ let sign = "";
 /////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	console.log(`\n版本: 0.2 -- 22/4/30`);
+	console.log(`\n版本: 0.3 -- 22/4/30`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 感谢大佬的解密! \n`);
 	console.log(`\n 感谢大佬的解密! \n`);
@@ -116,9 +116,9 @@ async function start() {
 	// await $.wait(2 * 1000);
 
 
-	// console.log('开始 红包雨');
-	// await rain_open_redbag();
-	// await $.wait(2 * 1000);
+	console.log('开始 红包雨');
+	await rain_open_redbag();
+	await $.wait(2 * 1000);
 
 	await SendMsg(msg);
 }
