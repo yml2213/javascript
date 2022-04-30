@@ -117,9 +117,9 @@ async function start() {
 	// await $.wait(2 * 1000);
 
 
-	console.log('开始 红包雨');
-	await rain_open_redbag();
-	await $.wait(2 * 1000);
+	// console.log('开始 红包雨');
+	// await rain_open_redbag();
+	// await $.wait(2 * 1000);
 
 	await SendMsg(msg);
 }
