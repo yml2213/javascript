@@ -32,7 +32,6 @@ let sign = "";
 
 
 /////////////////////////////////////////////////////////
-console.log(ckStr);
 
 async function tips(ckArr) {
 	console.log(`\n版本: 0.2 -- 22/4/30`);
