@@ -28,7 +28,7 @@ let ad_num = "";
 /////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	console.log(`\n版本: 0.1 -- 22/4/30`);
+	console.log(`\n版本: 0.1 -- 22/5/1`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
@@ -139,7 +139,7 @@ async function ad_video(timeout = 3 * 1000) {
 			`\n 观看视频:${result.message} 🎉  , 下一个视频是第 ${result.data.nextId} 个视频 \n 本次观看视频获得积分 ${result.data.integral} ,累计有积分 ${result.data.surplusIntegral}\n`
 		);
 
-	} else if (esult.code == -1) {
+	} else if (result.code == -1) {
 		console.log(`\n 观看视频:${result.message} \n`);
 	} else {
 		console.log(`\n 观看视频:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
