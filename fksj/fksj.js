@@ -35,7 +35,7 @@ let sign = "";
 console.log(ckStr);
 
 async function tips(ckArr) {
-	console.log(`\n本地脚本4-28`);
+	console.log(`\n版本: 0.2 -- 22/4/30`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 感谢大佬的解密! \n`);
 	console.log(`\n 感谢大佬的解密! \n`);
