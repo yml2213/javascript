@@ -133,7 +133,7 @@ async function signin(timeout = 3 * 1000) {
 	let url = {
 		url: `https://mapi.weimob.com/api3/misc/sign/activity/c/sign`,
 		headers: {
-			'x-wx-token': ck,
+			'x-wx-token': ck[0],
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
