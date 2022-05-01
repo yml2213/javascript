@@ -94,9 +94,7 @@ async function signin_info(timeout = 3 * 1000) {
 	let url = {
 		url: `https://mapi.weimob.com/api3/misc/sign/activity/c/signMainInfo`,
 		headers: {
-			// 'x-wx-token': ck[0],
-			// 'Content-Type': 'application/json'
-			'x-wx-token': 'jsc2skp.f3ccf6fb-4fbd-429a-9d7b-3122715bbc5c',
+			'x-wx-token': ck[0],
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
