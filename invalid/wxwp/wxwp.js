@@ -9,7 +9,7 @@
  * 变量格式：  export wxwpCookies='账号1 user_id的值 @ 账号2 user_id的值'  多个账号用 @分割 
  * bublysmile.com  关键词    user_id在body中   基本每个包都有变量
  * 
- * 还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg
+ * 还是不会的请百度或者群里求助：QQ群：884234287  tg：https://t.me/yml_tg
  */
 
 const $ = new Env("微笑趣泡");

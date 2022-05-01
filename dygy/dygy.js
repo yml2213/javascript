@@ -20,7 +20,7 @@
  * 
  * 抓 minigame.zijieapi.com  的包  浇一次水即可获取ck  
  * 
- * 还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg  通知：https://t.me/yml2213_tg
+ * 还是不会的请百度或者群里求助：QQ群：884234287  tg：https://t.me/yml_tg  通知：https://t.me/yml2213_tg
  */
 const $ = new Env("抖音果园");
 const notify = $.isNode() ? require('./sendNotify') : '';

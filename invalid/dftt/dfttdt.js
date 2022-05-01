@@ -22,7 +22,7 @@ dfttqdbd:变量中的xxxx是你的body包数据,,可以从 关键词 nswer_quest
 
 =============变量获取==========
 懒得写了，自己研究吧
-不会的请百度或者群里求助：QQ群：1001401060  tg：科技玩家@我即可
+不会的请百度或者群里求助：QQ群：884234287  tg：科技玩家@我即可
 
 */
 
@@ -34,7 +34,7 @@ let dfttdtbd = process.env.dfttdtbd;
 
 //开始运行
 !(async () => {
-    console.log(`答题测试中,不可用也别找我;交流群:1001401060  by-yml`);
+    console.log(`答题测试中,不可用也别找我;交流群:884234287  by-yml`);
     await yml()
 
 })()
@@ -49,8 +49,8 @@ async function yml() {
     await dt2();
 
 
-//每日网抑云
-    function wyy(timeout = 3*1000) {
+    //每日网抑云
+    function wyy(timeout = 3 * 1000) {
         return new Promise((resolve) => {
             let url = {
                 url: `https://keai.icu/apiwyy/api`
@@ -70,10 +70,10 @@ async function yml() {
     }
 
 
-// https://answer-question.dftoutiao.com/cheese_superman/answer_question_new/double_bouns
-// https://answer-question.dftoutiao.com/cheese_superman/answer_question_new/add_user_bonus
+    // https://answer-question.dftoutiao.com/cheese_superman/answer_question_new/double_bouns
+    // https://answer-question.dftoutiao.com/cheese_superman/answer_question_new/add_user_bonus
 
-// 答题闯关任务
+    // 答题闯关任务
     function dt1(timeout = 0) {
         return new Promise((resolve) => {
             let url = {

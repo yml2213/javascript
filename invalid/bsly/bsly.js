@@ -31,7 +31,7 @@ mimt= pepcoin.pepsico.com.cn
 ============= 重写 =============
 https://pepcoin.pepsico.com.cn/api/wxapp/  url  script-request-body  https://raw.githubusercontent.com/yml2213/javascript/master/bsly/bsly.js
 
-还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg
+还是不会的请百度或者群里求助：QQ群：884234287  tg：https://t.me/yml_tg
 
 */
 

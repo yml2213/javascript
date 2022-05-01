@@ -27,7 +27,7 @@ mimt= hybrid.ximalaya.com
 ============= 重写 =============
 http://hybrid.ximalaya.com/web-activity  url  script-request-body  https://raw.githubusercontent.com/yml2213/javascript/master/xmly/xmly.js
 
-还是不会的请百度或者群里求助：QQ群：1001401060  tg：https://t.me/yml_tg
+还是不会的请百度或者群里求助：QQ群：884234287  tg：https://t.me/yml_tg
 
 */
 
@@ -117,7 +117,7 @@ let yml_xmlybody = $.getdata('yml_xmlybody')
         }
     }
 
-// 青龙执行部分
+    // 青龙执行部分
     console.log(
         `\n==== 脚本执行 - 北京时间：${new Date(
             new Date().getTime() +
