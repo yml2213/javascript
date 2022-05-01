@@ -1,6 +1,6 @@
 /**
  * 疯狂水晶 app (链接带邀请)  谢谢填写
- * 下载地址: http://mmwk.mmwl.fun/download/9570691cce3dc93a?user=17803
+ * 下载地址: http://mmwk.mmwl.fun/download/9570691cce3dc93a?user=18349
  * cron 0 * * * *  yml2213_javascript_master/fksj.js
  *
  * 疯狂水晶 app(小程序也有)
