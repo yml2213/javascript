@@ -166,7 +166,7 @@ async function ad_video_info(timeout = 3 * 1000) {
 			`\n 检查视频状态:${result.message} 🎉 \n`
 		);
 		ad_video_infoArr = result.data.watchTaskList;
-		console.log(ad_video_infoArr);
+		// console.log(ad_video_infoArr);
 		for (const elem of ad_video_infoArr) {
 			// console.log(elem.completed);
 			if (elem.completed == 0) {
