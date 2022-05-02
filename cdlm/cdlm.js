@@ -148,7 +148,7 @@ async function task_list(timeout = 3 * 1000) {
 
 		console.log(`\n 任务列表:${result.msg} 🎉  \n`);
 		task_Arr = result.data.baseData;
-		console.log(task_Arr);
+		// console.log(task_Arr);
 		if (task_Arr.sign.todayCount == 0) {
 			console.log(`签到:今天还没有签到,去签到了鸭!`);
 			await signin();
