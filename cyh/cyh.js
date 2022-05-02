@@ -7,6 +7,7 @@
  * 
  * 4-30 完成 签到  , 日常视频 任务   
  * 5-1  更新逻辑
+ * 5-3  增加出售100积分 , 增加支付宝提现 1 元
  * 新人任务自己做做吧 很少
  * 
  * 感谢所有测试人员 
@@ -31,7 +32,7 @@ let ad_video_infoArr = '';
 /////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	console.log(`\n版本: 0.3 -- 22/5/1`);
+	console.log(`\n版本: 0.4 -- 22/5/3`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
@@ -144,6 +145,12 @@ async function integral_info(timeout = 3 * 1000) {
 			await Sell_points();
 			await $.wait(2 * 1000);
 		}
+		if (result.data.withdrawAmount > 1) {
+			console.log(`可提现金额:${result.data.convertibleIntegral} 元 , 尝试支付宝提现 1 元 !`);
+			// console.log("开始 签到状态");
+			await cash();
+			await $.wait(2 * 1000);
+		}
 
 	} else {
 		console.log(`\n 积分信息: ${result.message} \n `);
@@ -213,7 +220,7 @@ async function signin(timeout = 3 * 1000) {
 
 
 /**
- * 出售100积分   post
+ * 出售100积分   httpGet
  * https://t-api.chyouhui.com/auth/dailySignIn/completed
  */
 async function Sell_points(timeout = 3 * 1000) {
@@ -286,10 +293,43 @@ async function ad_video_info(timeout = 3 * 1000) {
 
 
 
+/**
+ * 提现   httpPost
+ * https://t-api.chyouhui.com/auth/watchVideo/completed/6
+ */
+async function cash(timeout = 3 * 1000) {
+
+	let url = {
+		url: `https://t-api.chyouhui.com/auth/watchVideo/completed/${ad_num}`,
+		headers: {
+			'androidToken': ck[0],
+			'Host': 't-api.chyouhui.com',
+		},
+		body: {
+			"amountId": 2,
+			"payment": "ALIPAY"
+		},
+	};
+
+	let result = await httpPost(url, `提现`, timeout);
+	if (result.code == 0) {
+		console.log(`\n 提现: ${result.message}  🎉 \n`);
+
+		msg += `\n 提现: ${result.message}  🎉 \n`
+	} else if (result.code == -1) {
+		console.log(`\n 提现:${result.message} \n`);
+
+		msg += `\n 提现: ${result.message} \n`
+	} else {
+		console.log(`\n 提现: ${data} \n `);
+	}
+}
+
+
 
 
 /**
- * 观看视频   post
+ * 观看视频   httpPost
  * https://t-api.chyouhui.com/auth/watchVideo/completed/6
  */
 async function ad_video(timeout = 3 * 1000) {
@@ -300,6 +340,7 @@ async function ad_video(timeout = 3 * 1000) {
 			'androidToken': ck[0],
 			'Host': 't-api.chyouhui.com',
 		},
+		body: '',
 	};
 
 	let result = await httpPost(url, `观看视频`, timeout);
