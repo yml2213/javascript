@@ -63,6 +63,8 @@ async function tips(ckArr) {
 		await start()
 
 	}
+	await SendMsg(msg);
+
 
 })()
 	.catch((e) => $.logErr(e))
@@ -88,7 +90,6 @@ async function start() {
 	await $.wait(2 * 1000)
 
 
-	await SendMsg(msg);
 }
 
 

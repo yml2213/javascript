@@ -68,11 +68,9 @@ let msg = '';
 			await user_info();
 			await $.wait(2 * 1000);
 
-
-			await SendMsg(msg);
-
-
 		}
+		await SendMsg(msg);
+
 
 
 	}

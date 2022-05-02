@@ -119,8 +119,9 @@ let UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_4 like Mac OS X) AppleWebKit/605
                 await $.wait(1 * 1000);
 
 
-                await SendMsg(msg);
             }
+            await SendMsg(msg);
+
         }
     }
 })()

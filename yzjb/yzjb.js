@@ -70,9 +70,9 @@ async function tips(ckArr) {
 
 		await start(ck)
 
-	
-
 	}
+	await SendMsg(msg);
+
 
 })()
 	.catch((e) => $.logErr(e))
@@ -81,33 +81,33 @@ async function tips(ckArr) {
 
 
 
-async function start(ck){
+async function start(ck) {
 	let myDate = new Date()
-		// @ts-ignore
-		h = myDate.getHours()
-		// console.log(h);
-		// @ts-ignore
-		if (h == 6) {
-			console.log('开始 签到')
-			await signin(ck)
-			await $.wait(2 * 1000)
-		}
-
-
-		console.log('开始 开宝箱')
-		await open_box(ck)
+	// @ts-ignore
+	h = myDate.getHours()
+	// console.log(h);
+	// @ts-ignore
+	if (h == 6) {
+		console.log('开始 签到')
+		await signin(ck)
 		await $.wait(2 * 1000)
+	}
 
-		console.log('开始 大转盘')
-		await turntable(ck)
-		await $.wait(2 * 1000)
 
-		console.log('开始 摇红包')
-		await redpackage(ck)
-		await $.wait(2 * 1000)
+	console.log('开始 开宝箱')
+	await open_box(ck)
+	await $.wait(2 * 1000)
 
-		await SendMsg(msg);
+	console.log('开始 大转盘')
+	await turntable(ck)
+	await $.wait(2 * 1000)
+
+	console.log('开始 摇红包')
+	await redpackage(ck)
+	await $.wait(2 * 1000)
+
 }
+
 
 
 
@@ -135,7 +135,7 @@ async function signin(token, timeout = 3 * 1000) {
 	} else {
 		console.log(`\n 签到:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
 	}
-		
+
 }
 
 
@@ -359,7 +359,7 @@ function user_info(timeout = 3 * 1000) {
 async function httpPost(postUrlObject, tip, timeout = 3 * 1000) {
 	return new Promise((resolve) => {
 		let url = postUrlObject
-		if (!tip){
+		if (!tip) {
 			let tmp = arguments.callee.toString()
 			let re = /function\s*(\w*)/i
 			let matches = re.exec(tmp)
@@ -393,7 +393,7 @@ async function httpPost(postUrlObject, tip, timeout = 3 * 1000) {
 
 
 // @ts-ignore
-function debugLog(...args){
+function debugLog(...args) {
 	if (debug) {
 		console.log(...args)
 	}
@@ -423,8 +423,8 @@ async function getCks(ck, str) {
 		} else {
 			console.log(`\n 【${$.name}】：未填写变量 ${str}`)
 		}
-	
-	   }
+
+	}
 	)
 }
 

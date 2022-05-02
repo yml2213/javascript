@@ -77,6 +77,8 @@ async function tips(ckArr) {
 
 		await start();
 	}
+	await SendMsg(msg);
+
 })()
 	.catch((e) => $.logErr(e))
 	.finally(() => $.done());
@@ -93,7 +95,6 @@ async function start() {
 
 
 
-	await SendMsg(msg);
 }
 
 

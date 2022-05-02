@@ -76,8 +76,9 @@ let ts = Math.round(new Date().getTime()).toString();
 			// await $.wait(2 * 1000);
 
 
-			await SendMsg(msg);
 		}
+		await SendMsg(msg);
+
 
 
 	}
