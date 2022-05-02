@@ -138,16 +138,14 @@ async function integral_info(timeout = 3 * 1000) {
 
 	let result = await httpGet(url, `积分信息`, timeout);
 	if (result.code == 0) {
-		console.log(`\n 总积分:${result.data.myIntegral} , 可出售:${result.data.convertibleIntegral} , 可提现金额:${result.data.withdrawAmount} 元 \n`);
+		console.log(`\n 总积分:${result.data.myIntegral} , 可出售:${result.data.convertibleIntegral} , 可提现金额:${result.data.withdrawAmount} 元 \n 当前汇率:1:${result.data.exchangeRate} , 兑换积分比例: ${result.data.buybackRatio} `);
 		if (result.data.convertibleIntegral > 100) {
-			console.log(`可出售积分:${result.data.convertibleIntegral} , 尝试出售 100 积分!`);
-			// console.log("开始 签到状态");
+			console.log(`\n 可出售积分:${result.data.convertibleIntegral} , 尝试出售 100 积分!\n `);
 			await Sell_points();
 			await $.wait(2 * 1000);
 		}
-		if (result.data.withdrawAmount > 1) {
-			console.log(`可提现金额:${result.data.convertibleIntegral} 元 , 尝试支付宝提现 1 元 !`);
-			// console.log("开始 签到状态");
+		if (result.data.withdrawAmount >= 1) {
+			console.log(`\n 可提现金额:${result.data.withdrawAmount} 元 , 尝试支付宝提现 1 元 !\n `);
 			await cash();
 			await $.wait(2 * 1000);
 		}
@@ -231,10 +229,10 @@ async function Sell_points(timeout = 3 * 1000) {
 			'androidToken': ck[0],
 			'Host': 't-api.chyouhui.com',
 		},
-		body: '{}',
+		// body: '{}',
 	};
 
-	let result = await httpPost(url, `出售100积分`, timeout);
+	let result = await httpGet(url, `出售100积分`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 出售100积分: ${result.message} 🎉 \n`);
 
@@ -244,7 +242,7 @@ async function Sell_points(timeout = 3 * 1000) {
 
 		msg += `\n 出售100积分: ${result.message} \n`
 	} else {
-		console.log(`\n 出售100积分: ${JSON.parse(result)} \n `);
+		console.log(`\n 出售100积分: 失败了呢: ${result} \n `);
 	}
 }
 
@@ -305,10 +303,10 @@ async function cash(timeout = 3 * 1000) {
 			'androidToken': ck[0],
 			'Host': 't-api.chyouhui.com',
 		},
-		body: {
+		body: JSON.stringify({
 			"amountId": 2,
 			"payment": "ALIPAY"
-		},
+		}),
 	};
 
 	let result = await httpPost(url, `提现`, timeout);
@@ -319,7 +317,7 @@ async function cash(timeout = 3 * 1000) {
 		console.log(`\n 提现:${result.message} \n`);
 		msg += `\n 提现: ${result.message} \n`
 	} else {
-		console.log(`\n 提现: ${JSON.parse(result)} \n `);
+		console.log(`\n 提现: 提现失败 ❌ ${result} \n `);
 	}
 }
 
