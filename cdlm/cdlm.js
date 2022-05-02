@@ -156,7 +156,7 @@ async function task_list(timeout = 3 * 1000) {
 			await signin();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`签到:今天已经签到过了!`);
+			console.log(`签到:今天已经 签到 过了!`);
 		}
 		if (task_Arr.share.todayCount < 2) {
 			console.log(`转发:${task_Arr.share.todayCount}/2`);
@@ -168,7 +168,7 @@ async function task_list(timeout = 3 * 1000) {
 			await share();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`签到:今天已经 转发 过了!`);
+			console.log(`转发:今天已经 转发 过了!`);
 		}
 		if (task_Arr.comment.todayCount < 2) {
 			console.log(`评论:${task_Arr.comment.todayCount}/2`);
@@ -180,7 +180,7 @@ async function task_list(timeout = 3 * 1000) {
 			await add_comment();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`签到:今天已经 评论 过了!`);
+			console.log(`评论:今天已经 评论 过了!`);
 		}
 		if (task_Arr.video.todayCount < 2) {
 			console.log(`看视频:${task_Arr.video.todayCount}/2`);
@@ -192,7 +192,7 @@ async function task_list(timeout = 3 * 1000) {
 			await Watch_video();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`签到:今天已经 看视频 过了!`);
+			console.log(`看视频:今天已经 看视频 过了!`);
 		}
 
 	} else {
