@@ -1,13 +1,17 @@
 /**
  * 地址: https://raw.githubusercontent.com/yml2213/javascript/master/cdlm/cdlm.js
  * 转载请留信息,谢谢
+ * 
  * 吃对了嘛 小程序  
  * 
  * cron 35 7 * * *  yml2213_javascript_master/cdlm.js
  * 
  * 5-2 完成 签到 ,转发 , 评论 ,看视频 任务   
+ * 5-2 优化失效提示,测试通知功能
+ * 
  * 积分换实物,自己看看决定跑不跑吧
  * 
+ * 感谢 心雨 的投稿
  * 感谢所有测试人员 
  * ========= 青龙 =========
  * 变量格式: export cdlm_data='token1 @ token2'  多个账号用 @分割
@@ -32,9 +36,10 @@ let text = textArr[unm];
 /////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	console.log(`\n版本: 0.1 -- 22/5/2`);
+	console.log(`\n版本: 0.2 -- 22/5/2`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
-	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
+	console.log(`\n 感谢 心雨 的投稿 \n`);
+	console.log(`\n 感谢 心雨 的投稿 \n`);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 
@@ -111,7 +116,13 @@ async function userInfo(timeout = 3 * 1000) {
 	if (result.code == 0) {
 		console.log(`\n 用户信息:${result.msg} 🎉  \n欢迎光临:${result.data.baseData.nick} \n`);
 
-		// msg += `\n 用户信息:${result.msg} 🎉  \n欢迎光临:${result.data.baseData.nick} \n`
+		msg += `\n 用户信息:${result.msg} 🎉  \n欢迎光临:${result.data.baseData.nick} \n`
+	} else if (result.code == 101) {
+		console.log(`\n 吃对了嘛:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`);
+		console.log(`\n 吃对了嘛:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`);
+		msg += `\n 吃对了嘛:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n  喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`
+
+
 	} else {
 		console.log(`\n 用户信息: ${result.message} \n `);
 	}
@@ -144,6 +155,8 @@ async function task_list(timeout = 3 * 1000) {
 			console.log(`签到:今天还没有签到,去签到了鸭!`);
 			await signin();
 			await $.wait(5 * 1000);
+		} else {
+			console.log(`签到:今天已经签到过了!`);
 		}
 		if (task_Arr.share.todayCount < 2) {
 			console.log(`转发:${task_Arr.share.todayCount}/2`);
@@ -154,6 +167,8 @@ async function task_list(timeout = 3 * 1000) {
 			await video_list();
 			await share();
 			await $.wait(5 * 1000);
+		} else {
+			console.log(`签到:今天已经 转发 过了!`);
 		}
 		if (task_Arr.comment.todayCount < 2) {
 			console.log(`评论:${task_Arr.comment.todayCount}/2`);
@@ -164,6 +179,8 @@ async function task_list(timeout = 3 * 1000) {
 			await video_list();
 			await add_comment();
 			await $.wait(5 * 1000);
+		} else {
+			console.log(`签到:今天已经 评论 过了!`);
 		}
 		if (task_Arr.video.todayCount < 2) {
 			console.log(`看视频:${task_Arr.video.todayCount}/2`);
@@ -174,9 +191,10 @@ async function task_list(timeout = 3 * 1000) {
 			await video_list();
 			await Watch_video();
 			await $.wait(5 * 1000);
+		} else {
+			console.log(`签到:今天已经 看视频 过了!`);
 		}
 
-		// msg += `\n 任务列表:${result.msg} 🎉  \n欢迎光临:${result.data.baseData.nick} \n`
 	} else {
 		console.log(`\n 任务列表: ${result.message} \n `);
 	}
