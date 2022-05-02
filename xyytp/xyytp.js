@@ -142,7 +142,7 @@ async function sign_info(timeout = 3 * 1000) {
 		if (result.data.today_count < 10) {
 			console.log(`签到:今天还没有签到,去签到了鸭!`);
 			await signin();
-			let unm = randomInt(60.80);
+			let unm = randomInt(60, 80);
 			console.log(`耐心等待 ${unm} 秒后看下一个视频吧!`);
 			await $.wait(unm * 1000);
 			await sign_info();
