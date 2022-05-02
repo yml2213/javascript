@@ -244,7 +244,7 @@ async function Sell_points(timeout = 3 * 1000) {
 
 		msg += `\n 出售100积分: ${result.message} \n`
 	} else {
-		console.log(`\n 出售100积分: ${data} \n `);
+		console.log(`\n 出售100积分: ${JSON.parse(result)} \n `);
 	}
 }
 
@@ -319,7 +319,7 @@ async function cash(timeout = 3 * 1000) {
 		console.log(`\n 提现:${result.message} \n`);
 		msg += `\n 提现: ${result.message} \n`
 	} else {
-		console.log(`\n 提现: ${data} \n `);
+		console.log(`\n 提现: ${JSON.parse(result)} \n `);
 	}
 }
 
