@@ -138,6 +138,12 @@ async function integral_info(timeout = 3 * 1000) {
 	let result = await httpGet(url, `积分信息`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 总积分:${result.data.myIntegral} , 可出售:${result.data.convertibleIntegral} , 可提现金额:${result.data.withdrawAmount} 元 \n`);
+		if (result.data.convertibleIntegral > 100) {
+			console.log(`可出售积分:${result.data.convertibleIntegral} , 尝试出售 100 积分!`);
+			// console.log("开始 签到状态");
+			await Sell_points();
+			await $.wait(2 * 1000);
+		}
 
 	} else {
 		console.log(`\n 积分信息: ${result.message} \n `);
@@ -196,9 +202,7 @@ async function signin(timeout = 3 * 1000) {
 
 	let result = await httpPost(url, `签到`, timeout);
 	if (result.data !== null) {
-		console.log(
-			`\n 签到:成功 🎉   签到获得 积分 ${result.data} \n`
-		);
+		console.log(`\n 签到:成功 🎉   签到获得 积分 ${result.data} \n`);
 
 		msg += `\n 签到:成功 🎉   签到获得 积分 ${result.data} \n`
 	} else {
@@ -206,6 +210,36 @@ async function signin(timeout = 3 * 1000) {
 	}
 }
 
+
+
+/**
+ * 出售100积分   post
+ * https://t-api.chyouhui.com/auth/dailySignIn/completed
+ */
+async function Sell_points(timeout = 3 * 1000) {
+
+	let url = {
+		url: `https://t-api.chyouhui.com/auth/dailySignIn/completed`,
+		headers: {
+			'androidToken': ck[0],
+			'Host': 't-api.chyouhui.com',
+		},
+		body: '{}',
+	};
+
+	let result = await httpPost(url, `出售100积分`, timeout);
+	if (result.code == 0) {
+		console.log(`\n 出售100积分:成功 🎉   出售 100 积分: ${result.message} \n`);
+
+		msg += `\n 出售100积分:成功 🎉   出售 100 积分: ${result.message} \n`
+	} else if (result.code == -1) {
+		console.log(`\n 出售100积分:${result.message} \n`);
+
+		msg += `\n 出售100积分: ${result.message} \n`
+	} else {
+		console.log(`\n 出售100积分: ${data} \n `);
+	}
+}
 
 
 /**
