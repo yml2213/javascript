@@ -67,6 +67,8 @@ async function tips(ckArr) {
 		debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
 
 		await start();
+		await SendMsg(msg);
+
 	}
 })()
 	.catch((e) => $.logErr(e))
@@ -85,9 +87,7 @@ async function start() {
 	console.log("开始 领取昨日收益");
 	await lingqu();
 	await $.wait(2 * 1000);
-
-
-	await SendMsg(msg);
+	
 }
 
 
