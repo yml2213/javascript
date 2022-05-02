@@ -8,6 +8,7 @@
  * 
  * 5-2 完成 签到 ,转发 , 评论 ,看视频 任务   
  * 5-2 优化失效提示,测试通知功能
+ * 5-2 优化通知功能
  * 
  * 积分换实物,自己看看决定跑不跑吧
  * 
@@ -40,8 +41,10 @@ async function tips(ckArr) {
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 感谢 心雨 的投稿 \n`);
 	console.log(`\n 感谢 心雨 的投稿 \n`);
+	msg += `\n 感谢 心雨 的投稿 \n`
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
+	msg += `\n 脚本测试中,有bug及时反馈! \n`
 
 	console.log(
 		`\n================================================\n脚本执行 - 北京时间(UTC+8): ${new Date(
@@ -69,9 +72,8 @@ async function tips(ckArr) {
 		console.log(`\n========= 开始【第 ${num} 个账号】=========\n`);
 
 		ck = ckArr[index].split("&");
-		if (debug) {
-			console.log(`\n 【debug】 这是你第 ${num} 账号信息:\n ${ck}\n`);
-		}
+
+		debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
 
 		await start();
 	}
@@ -115,14 +117,11 @@ async function userInfo(timeout = 3 * 1000) {
 	let result = await httpGet(url, `用户信息`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 用户信息:${result.msg} 🎉  \n欢迎光临:${result.data.baseData.nick} \n`);
-
 		msg += `\n 用户信息:${result.msg} 🎉  \n欢迎光临:${result.data.baseData.nick} \n`
 	} else if (result.code == 101) {
 		console.log(`\n 吃对了嘛:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`);
 		console.log(`\n 吃对了嘛:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`);
 		msg += `\n 吃对了嘛:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n  喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`
-
-
 	} else {
 		console.log(`\n 用户信息: ${result.message} \n `);
 	}
@@ -148,7 +147,6 @@ async function task_list(timeout = 3 * 1000) {
 	if (result.code == 0) {
 
 		console.log(`\n 任务列表:${result.msg} 🎉  \n`);
-
 		task_Arr = result.data.baseData;
 		console.log(task_Arr);
 		if (task_Arr.sign.todayCount == 0) {
@@ -157,6 +155,7 @@ async function task_list(timeout = 3 * 1000) {
 			await $.wait(5 * 1000);
 		} else {
 			console.log(`签到:今天已经 签到 过了!`);
+			msg += `\n签到:今天已经 签到 过了!\n`
 		}
 		if (task_Arr.share.todayCount < 2) {
 			console.log(`转发:${task_Arr.share.todayCount}/2`);
@@ -169,6 +168,7 @@ async function task_list(timeout = 3 * 1000) {
 			await $.wait(5 * 1000);
 		} else {
 			console.log(`转发:今天已经 转发 过了!`);
+			msg += `\n转发:今天已经 转发 过了!\n`
 		}
 		if (task_Arr.comment.todayCount < 2) {
 			console.log(`评论:${task_Arr.comment.todayCount}/2`);
@@ -181,6 +181,7 @@ async function task_list(timeout = 3 * 1000) {
 			await $.wait(5 * 1000);
 		} else {
 			console.log(`评论:今天已经 评论 过了!`);
+			msg += `\n评论:今天已经 评论 过了!\n`
 		}
 		if (task_Arr.video.todayCount < 2) {
 			console.log(`看视频:${task_Arr.video.todayCount}/2`);
@@ -193,6 +194,7 @@ async function task_list(timeout = 3 * 1000) {
 			await $.wait(5 * 1000);
 		} else {
 			console.log(`看视频:今天已经 看视频 过了!`);
+			msg += `\n看视频:今天已经 看视频 过了!\n`
 		}
 
 	} else {
@@ -223,12 +225,14 @@ async function signin(timeout = 3 * 1000) {
 	let result = await httpGet(url, `签到`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 签到:${result.msg} 🎉 \n`);
+		msg += `\n 签到:${result.msg} 🎉 \n`
 
 	} else if (result.code == -1) {
 		console.log(`\n 签到:${result.msg} \n`);
-
+		msg += `\n 签到:${result.msg} \n`
 	} else {
 		console.log(`\n 签到:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
+		msg += `\n 签到:   失败 ❌ 了呢,原因未知！\n ${result} \n`
 	}
 }
 
@@ -257,7 +261,6 @@ async function video_list(timeout = 3 * 1000) {
 		let unm = randomInt(1, 9);
 		rid = result.data.baseData.list[unm].id;
 		console.log(`\n 转发评论视频id:${rid}\n`);
-		// return (rid)
 
 	} else {
 		console.log(`\n 视频列表:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
@@ -283,9 +286,10 @@ async function share(timeout = 3 * 1000) {
 	let result = await httpGet(url, `转发`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 转发:${result.msg} 🎉 \n`);
-
+		msg += `\n 转发:${result.msg} 🎉 \n`
 	} else {
 		console.log(`\n 转发:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
+		msg += `\n 转发:   失败 ❌ 了呢,原因未知！\n ${result} \n`
 	}
 }
 
@@ -308,9 +312,10 @@ async function add_comment(timeout = 3 * 1000) {
 	let result = await httpGet(url, `评论`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 评论:${result.msg} 🎉 \n`);
-
+		msg += `\n 评论:${result.msg} 🎉 \n`
 	} else {
 		console.log(`\n 评论:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
+		msg += `\n 评论:   失败 ❌ 了呢,原因未知！\n ${result} \n`
 	}
 }
 
@@ -334,9 +339,11 @@ async function Watch_video(timeout = 3 * 1000) {
 	let result = await httpGet(url, `观看视频`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 观看视频:${result.msg} 🎉 \n`);
+		msg += `\n 观看视频:${result.msg} 🎉 \n`
 
 	} else {
 		console.log(`\n 观看视频:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
+		msg += `\n 观看视频:   失败 ❌ 了呢,原因未知！\n ${result} \n`
 	}
 }
 
@@ -442,6 +449,7 @@ function wyy(timeout = 3 * 1000) {
 			try {
 				data = JSON.parse(data)
 				console.log(`\n 【网抑云时间】: ${data.content}  by--${data.music}`);
+				msg += `\n 【网抑云时间】: ${data.content}  by--${data.music}\n`
 
 			} catch (e) {
 				$.logErr(e, resp);
