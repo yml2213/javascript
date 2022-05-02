@@ -221,12 +221,12 @@ async function signin(timeout = 3 * 1000) {
 
 /**
  * 出售100积分   httpGet
- * https://t-api.chyouhui.com/auth/dailySignIn/completed
+ * https://t-api.chyouhui.com/auth/sellIntegral/exchange/1
  */
 async function Sell_points(timeout = 3 * 1000) {
 
 	let url = {
-		url: `https://t-api.chyouhui.com/auth/dailySignIn/completed`,
+		url: `https://t-api.chyouhui.com/auth/sellIntegral/exchange/1`,
 		headers: {
 			'androidToken': ck[0],
 			'Host': 't-api.chyouhui.com',
@@ -236,9 +236,9 @@ async function Sell_points(timeout = 3 * 1000) {
 
 	let result = await httpPost(url, `出售100积分`, timeout);
 	if (result.code == 0) {
-		console.log(`\n 出售100积分:成功 🎉   出售 100 积分: ${result.message} \n`);
+		console.log(`\n 出售100积分: ${result.message} 🎉 \n`);
 
-		msg += `\n 出售100积分:成功 🎉   出售 100 积分: ${result.message} \n`
+		msg += `\n 出售100积分: ${result.message} 🎉 \n`
 	} else if (result.code == -1) {
 		console.log(`\n 出售100积分:${result.message} \n`);
 
@@ -295,12 +295,12 @@ async function ad_video_info(timeout = 3 * 1000) {
 
 /**
  * 提现   httpPost
- * https://t-api.chyouhui.com/auth/watchVideo/completed/6
+ * https://t-api.chyouhui.com/auth/withdraw/apply
  */
 async function cash(timeout = 3 * 1000) {
 
 	let url = {
-		url: `https://t-api.chyouhui.com/auth/watchVideo/completed/${ad_num}`,
+		url: `https://t-api.chyouhui.com/auth/withdraw/apply`,
 		headers: {
 			'androidToken': ck[0],
 			'Host': 't-api.chyouhui.com',
@@ -314,11 +314,9 @@ async function cash(timeout = 3 * 1000) {
 	let result = await httpPost(url, `提现`, timeout);
 	if (result.code == 0) {
 		console.log(`\n 提现: ${result.message}  🎉 \n`);
-
 		msg += `\n 提现: ${result.message}  🎉 \n`
 	} else if (result.code == -1) {
 		console.log(`\n 提现:${result.message} \n`);
-
 		msg += `\n 提现: ${result.message} \n`
 	} else {
 		console.log(`\n 提现: ${data} \n `);
