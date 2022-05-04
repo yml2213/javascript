@@ -1,9 +1,8 @@
 /**
- * 绍兴体彩 app  (链接带邀请) 感谢您走我的邀请链接,谢谢,谢谢,谢谢
- * 下载地址: https://m.chyouhui.com/page/invite/#/?code=I92CCI7
+ * 绍兴体彩  公众号 —活力体彩—个人中心  ; 有个签到
  * 转载请留信息
  * 
- * cron 30 7 * * *  yml2213_javascript_master/sxtc.js
+ * cron 40 7 * * *  yml2213_javascript_master/sxtc.js
  * 
  * 5-4  签到任务  
  * 签到,讲究个日积月累   哈哈哈哈哈
