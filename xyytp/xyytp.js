@@ -4,11 +4,13 @@
  * 
  * 咸鱼要躺平
  * 其实叫 咸鱼吃鱼 小程序  
- * 
- * cron 35 7 * * *  yml2213_javascript_master/xyytp.js
- * 
- * 5-2 完成 签到 任务
  * 收益：一天 1 元，提现到支付宝
+ * 
+ * cron 35 12 * * *  yml2213_javascript_master/xyytp.js
+ * 
+ * 5-2	完成 签到 任务
+ * 5-5	完成提现--测试中,有 bug 请及时反馈
+ * 
  * 
  * 感谢所有测试人员 
  * ========= 青龙 =========
@@ -37,19 +39,15 @@ async function tips(ckArr) {
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 	msg += `\n 脚本测试中,有bug及时反馈! \n`
 
-	console.log(
-		`\n================================================\n脚本执行 - 北京时间(UTC+8): ${new Date(
-			new Date().getTime() +
-			new Date().getTimezoneOffset() * 60 * 1000 +
-			8 * 60 * 60 * 1000
-		).toLocaleString()} \n================================================\n`
-	);
+	console.log(`\n================================================\n脚本执行 - 北京时间(UTC+8): ${new Date(
+		new Date().getTime() +
+		new Date().getTimezoneOffset() * 60 * 1000 +
+		8 * 60 * 60 * 1000
+	).toLocaleString()} \n================================================\n`);
 
 	await wyy();
 
-	console.log(
-		`\n=================== 共找到 ${ckArr.length} 个账号 ===================`
-	);
+	console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
 
@@ -63,7 +61,10 @@ async function tips(ckArr) {
 		console.log(`\n========= 开始【第 ${num} 个账号】=========\n`);
 
 		ck = ckArr[index].split("&");
-
+		xyhd = {
+			'token': ck[0],
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
 		debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
 
 		await start();
@@ -89,6 +90,10 @@ async function start() {
 	await lingqu();
 	await $.wait(2 * 1000);
 
+	console.log("开始 提现资格查询");
+	await Existing_credits();
+	await $.wait(2 * 1000);
+
 }
 
 
@@ -101,10 +106,7 @@ async function userInfo(timeout = 3 * 1000) {
 
 	let url = {
 		url: `https://s76.yyyyy.run/api/user/index`,
-		headers: {
-			'token': ck,
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
+		headers: xyhd,
 		body: '',
 	};
 
@@ -117,7 +119,7 @@ async function userInfo(timeout = 3 * 1000) {
 		console.log(`\n 咸鱼要躺平:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`);
 		msg += `\n 咸鱼要躺平:${result.msg} , 喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n  喂 , 喂  喂 ---  登录过期了,别睡了, 起来更新了喂!\n`
 	} else {
-		console.log(`\n 用户信息: ${result} \n `);
+		console.log(`\n 用户信息: 失败 ❌ 了呢,原因未知！\n ${result} \n`);
 	}
 }
 
@@ -129,19 +131,15 @@ async function sign_info(timeout = 3 * 1000) {
 
 	let url = {
 		url: `https://s76.yyyyy.run/api/sign/userSignData`,
-		headers: {
-			'token': ck,
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
+		headers: xyhd,
 		body: '{}',
 	};
 
 	let result = await httpPost(url, `签到信息`, timeout);
 	if (result.code == 1) {
-
-		console.log(`\n 签到信息: 成功  🎉 \n`);
 		if (result.data.today_count < 10) {
-			console.log(`签到:今天还没有签到,去签到了鸭!`);
+			console.log(`\n 签到:今天还没有签到,去签到了鸭!\n`);
+			msg += `\n 签到:今天还没有签到,去签到了鸭!\n`
 			await signin();
 			let unm = randomInt(60, 80);
 			console.log(`耐心等待 ${unm} 秒后看下一个视频吧!`);
@@ -154,7 +152,7 @@ async function sign_info(timeout = 3 * 1000) {
 
 
 	} else {
-		console.log(`\n 签到信息: ${result.message} \n `);
+		console.log(`\n 签到信息: 失败 ❌ 了呢,原因未知！\n ${result} \n `);
 	}
 }
 
@@ -170,10 +168,7 @@ async function signin(timeout = 3 * 1000) {
 
 	let url = {
 		url: `https://s76.yyyyy.run/api/sign/userSignIn`,
-		headers: {
-			'token': ck,
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
+		headers: xyhd,
 		body: '{}',
 	};
 
@@ -202,10 +197,7 @@ async function lingqu(timeout = 3 * 1000) {
 
 	let url = {
 		url: `https://s76.yyyyy.run/api/user/lingqu`,
-		headers: {
-			'token': ck,
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
+		headers: xyhd,
 		body: '{}',
 	};
 
@@ -213,7 +205,7 @@ async function lingqu(timeout = 3 * 1000) {
 	if (result.code == 1) {
 		console.log(`\n 领取昨日收益:${result.msg} 🎉 \n`);
 		msg += `\n 领取昨日收益:${result.msg} 🎉 \n`
-
+		await sctxsj();
 	} else if (result.code == 0) {
 		console.log(`\n 领取昨日收益:${result.msg} \n`);
 		msg += `\n 领取昨日收益:${result.msg} \n`
@@ -225,10 +217,89 @@ async function lingqu(timeout = 3 * 1000) {
 
 
 
+/**
+ * 现有积分   httpPost
+ * https://s76.yyyyy.run/api/user/getWithData
+ */
+async function Existing_credits(timeout = 3 * 1000) {
+
+	let url = {
+		url: `https://s76.yyyyy.run/api/user/getWithData`,
+		headers: xyhd,
+		body: '{}',
+	};
+
+	let result = await httpPost(url, `上次提现时间`, timeout);
+	if (result.code == 1) {
+		console.log(`\n 现有余额: ${result.data.money} 元 , 上次提现时间: ${result.data.withList[0].time} \n`);
+		xjye = Math.floor(result.data.money)
+		sjsj = result.data.withList[0].time
+		sctxsj = sjsj.substring(0, 5) //05-04
+		// console.log(sctxsj);
+
+		let time = new Date();
+		let y = time.getFullYear();
+		let m = time.getMonth() + 1;
+		let d = time.getDate();
+		m = m.toString();
+		d = d.toString();
+		if (m.length == 1) {
+			m = `0${m}`
+		}
+		if (d.length == 1) {
+			d = `0${d}`
+		}
+		// console.log(m + '-' + d);
+		local_time = m + '-' + d;
+		if (local_time == sctxsj) {
+			console.log(`\n 今日已提现\n`);
+			msg += `\n 今日已提现\n`
+		} else {
+			if (xjye >= 1) {
+				console.log(`\n准备为您申请提现 ${xjye} 元\n`);
+				msg += `\n准备为您申请提现 ${xjye} 元\n`
+				await cash();
+				await $.wait(2 * 1000);
+			} else {
+				console.log(`\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`);
+				msg += `\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`
+			}
+		}
+
+	} else if (result.code.data.withList == ``) {
+		console.log(`\n 上次提现时间:  首次提现必须联系客服核对身份\n`);
+		msg += `\n 上次提现时间: 首次提现必须联系客服核对身份 \n`
+	} else {
+		console.log(`\n 上次提现时间:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
+		msg += `\n 上次提现时间:   失败 ❌ 了呢,原因未知！\n ${result} \n`
+	}
+}
 
 
 
 
+/**
+ * 提现   httpPost  1:到账  0:审核  
+ * https://s76.yyyyy.run/api/user/postWith
+ */
+async function cash(timeout = 3 * 1000) {
+
+	let url = {
+		url: `https://s76.yyyyy.run/api/user/postWith`,
+		headers: xyhd,
+		body: `num=${xjye}`,
+	};
+
+	let result = await httpPost(url, `提现`, timeout);
+	if (result.code == 1) {
+		console.log(`\n 提现: 申请提现${xjye} 元 成功 🎉 \n`);
+		msg += `\n 提现: 申请提现${xjye} 元 成功 🎉 \n`
+
+	} else {
+		console.log(`\n 提现:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
+		msg += `\n 提现:   失败 ❌ 了呢,原因未知！\n ${result} \n`
+	}
+}
 
 
 
