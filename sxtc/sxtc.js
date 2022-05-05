@@ -29,7 +29,7 @@ let ck = "";
 /////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	console.log(`\n版本: 0.1 -- 22/5/4\n`);
+	console.log(`\n版本: 0.2 -- 22/5/5\n`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 感谢 心雨 的投稿 \n`);
 	console.log(`\n 感谢 心雨 的投稿 \n`);
