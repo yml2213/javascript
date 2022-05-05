@@ -1,5 +1,5 @@
 /**
- * 地址: https://raw.githubusercontent.com/yml2213/javascript/master/xyytp/xyytp.js
+ * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/xyytp/xyytp.js
  * 转载请留信息,谢谢
  * 
  * 咸鱼要躺平
@@ -10,6 +10,7 @@
  * 
  * 5-2	完成 签到 任务
  * 5-5	完成提现--测试中,有 bug 请及时反馈
+ * 5-5	修复提现 bug 
  * 
  * 
  * 感谢所有测试人员 
@@ -22,8 +23,8 @@
  */
 const $ = new Env("咸鱼要躺平");
 const notify = $.isNode() ? require("./sendNotify") : "";
-const Notify = 1; 		//0为关闭通知，1为打开通知,默认为1
-const debug = 0; 		//0为关闭调试，1为打开调试,默认为0
+const Notify = 1 		//0为关闭通知，1为打开通知,默认为1
+const debug = 0 		//0为关闭调试，1为打开调试,默认为0
 //////////////////////
 let ckStr = process.env.xyytp_data;
 let msg = "";
@@ -150,7 +151,6 @@ async function sign_info(timeout = 3 * 1000) {
 			msg += `\n签到:今天已经 签到 过了!\n`
 		}
 
-
 	} else {
 		console.log(`\n 签到信息: 失败 ❌ 了呢,原因未知！\n ${result} \n `);
 	}
@@ -237,10 +237,10 @@ async function Existing_credits(timeout = 3 * 1000) {
 		sctxsj = sjsj.substring(0, 5) //05-04
 		// console.log(sctxsj);
 
-		let time = new Date();
-		let y = time.getFullYear();
-		let m = time.getMonth() + 1;
-		let d = time.getDate();
+		let time_ = new Date();
+		let y = time_.getFullYear();
+		let m = time_.getMonth() + 1;
+		let d = time_.getDate();
 		m = m.toString();
 		d = d.toString();
 		if (m.length == 1) {
@@ -256,19 +256,20 @@ async function Existing_credits(timeout = 3 * 1000) {
 			msg += `\n 今日已提现\n`
 		} else {
 			if (xjye >= 1) {
-				console.log(`\n准备为您申请提现 ${xjye} 元\n`);
-				msg += `\n准备为您申请提现 ${xjye} 元\n`
-				await cash();
-				await $.wait(2 * 1000);
+				if (result.data.withList.length > 0) {
+					console.log(`\n准备为您申请提现 ${xjye} 元\n`);
+					msg += `\n准备为您申请提现 ${xjye} 元\n`
+					await cash();
+					await $.wait(2 * 1000);
+				} else {
+					console.log(`\n 您从未提现过: 首次提现必须联系客服核对身份\n`);
+					msg += `\n 您从未提现过: 首次提现必须联系客服核对身份\n`
+				}
 			} else {
 				console.log(`\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`);
 				msg += `\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`
 			}
 		}
-
-	} else if (result.code.data.withList == ``) {
-		console.log(`\n 上次提现时间:  首次提现必须联系客服核对身份\n`);
-		msg += `\n 上次提现时间: 首次提现必须联系客服核对身份 \n`
 	} else {
 		console.log(`\n 上次提现时间:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
 		msg += `\n 上次提现时间:   失败 ❌ 了呢,原因未知！\n ${result} \n`
