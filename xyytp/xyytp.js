@@ -10,7 +10,7 @@
  * 
  * 5-2	完成 签到 任务
  * 5-5	完成提现--测试中,有 bug 请及时反馈
- * 5-5	修复提现 bug 
+ * 5-5	修复提现 bug x 2
  * 
  * 
  * 感谢所有测试人员 
@@ -205,7 +205,6 @@ async function lingqu(timeout = 3 * 1000) {
 	if (result.code == 1) {
 		console.log(`\n 领取昨日收益:${result.msg} 🎉 \n`);
 		msg += `\n 领取昨日收益:${result.msg} 🎉 \n`
-		await sctxsj();
 	} else if (result.code == 0) {
 		console.log(`\n 领取昨日收益:${result.msg} \n`);
 		msg += `\n 领取昨日收益:${result.msg} \n`
