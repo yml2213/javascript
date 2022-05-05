@@ -231,45 +231,47 @@ async function Existing_credits(timeout = 3 * 1000) {
 
 	let result = await httpPost(url, `上次提现时间`, timeout);
 	if (result.code == 1) {
-		console.log(`\n 现有余额: ${result.data.money} 元 , 上次提现时间: ${result.data.withList[0].time} \n`);
-		xjye = Math.floor(result.data.money)
-		sjsj = result.data.withList[0].time
-		sctxsj = sjsj.substring(0, 5) //05-04
-		// console.log(sctxsj);
+		console.log(result.data.withList.length);
+		if (result.data.withList.length > 0) {
+			console.log(`\n 现有余额: ${result.data.money} 元 , 上次提现时间: ${result.data.withList[0].time} \n`); // 
+			xjye = Math.floor(result.data.money)
+			sjsj = result.data.withList[0].time
+			sctxsj = sjsj.substring(0, 5) //05-04
+			// console.log(sctxsj);
 
-		let time_ = new Date();
-		let y = time_.getFullYear();
-		let m = time_.getMonth() + 1;
-		let d = time_.getDate();
-		m = m.toString();
-		d = d.toString();
-		if (m.length == 1) {
-			m = `0${m}`
-		}
-		if (d.length == 1) {
-			d = `0${d}`
-		}
-		// console.log(m + '-' + d);
-		local_time = m + '-' + d;
-		if (local_time == sctxsj) {
-			console.log(`\n 今日已提现\n`);
-			msg += `\n 今日已提现\n`
-		} else {
-			if (xjye >= 1) {
-				if (result.data.withList.length > 0) {
+			let time_ = new Date();
+			let m = time_.getMonth() + 1;
+			let d = time_.getDate();
+			m = m.toString();
+			d = d.toString();
+			if (m.length == 1) {
+				m = `0${m}`
+			}
+			if (d.length == 1) {
+				d = `0${d}`
+			}
+			// console.log(m + '-' + d);
+			local_time = m + '-' + d;
+			if (local_time == sctxsj) {
+				console.log(`\n 今日已提现\n`);
+				msg += `\n 今日已提现\n`
+			} else {
+				if (xjye >= 1) {
 					console.log(`\n准备为您申请提现 ${xjye} 元\n`);
 					msg += `\n准备为您申请提现 ${xjye} 元\n`
 					await cash();
 					await $.wait(2 * 1000);
+
 				} else {
-					console.log(`\n 您从未提现过: 首次提现必须联系客服核对身份\n`);
-					msg += `\n 您从未提现过: 首次提现必须联系客服核对身份\n`
+					console.log(`\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`);
+					msg += `\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`
 				}
-			} else {
-				console.log(`\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`);
-				msg += `\n 您只有 ${xjye} 元 ,小于 1 元最低标准 ,跳过提现!\n`
 			}
+		} else {
+			console.log(`\n 您从未提现过: 首次提现必须联系客服核对身份!\n`);
+			msg += `\n 您从未提现过: 首次提现必须联系客服核对身份!\n`
 		}
+
 	} else {
 		console.log(`\n 上次提现时间:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
 		msg += `\n 上次提现时间:   失败 ❌ 了呢,原因未知！\n ${result} \n`
