@@ -5,6 +5,7 @@
  * cron 40 7 * * *  yml2213_javascript_master/sxtc.js
  * 
  * 5-4  签到任务  
+ * 5-5	修复签到bug,推荐所有人更新
  * 签到,讲究个日积月累   哈哈哈哈哈
  * 
  * 感谢 心雨 的投稿
@@ -18,8 +19,8 @@
  */
 const $ = new Env("绍兴体彩");
 const notify = $.isNode() ? require("./sendNotify") : "";
-const Notify = 1; 		//0为关闭通知，1为打开通知,默认为1
-const debug = 0; 		//0为关闭调试，1为打开调试,默认为0
+const Notify = 1		//0为关闭通知，1为打开通知,默认为1
+const debug = 0 		//0为关闭调试，1为打开调试,默认为0
 //////////////////////
 let ckStr = process.env.sxtc_data;
 let sxtc_dataArr = [];
@@ -93,9 +94,9 @@ async function signin_info(timeout = 3 * 1000) {
 	let url = {
 		url: `https://www.shaoxingticai.com/api/front/user/sign/user`,
 		headers: {
-			'Authori-zation': ck[0],
-			'Host': 'www.shaoxingticai.com',
-			'Content-Type': 'application/json',
+			"Authori-zation": ck[0],
+			"Host": "www.shaoxingticai.com",
+			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
 			"all": 0,
@@ -107,7 +108,7 @@ async function signin_info(timeout = 3 * 1000) {
 	let result = await httpPost(url, `签到状态`, timeout);
 	if (result.code == 200) {
 		console.log(`\n 签到状态: ${result.message} 🎉  \n`);
-		if (result.data.signNum == 0) {
+		if (result.data.isDaySign == false) {
 			console.log(`没有签到,去签到!`);
 			await signin();
 		} else {
