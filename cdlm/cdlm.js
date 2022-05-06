@@ -6,9 +6,10 @@
  * 
  * cron 35 7 * * *  yml2213_javascript_master/cdlm.js
  * 
- * 5-2 完成 签到 ,转发 , 评论 ,看视频 任务   
- * 5-2 优化失效提示,测试通知功能
- * 5-2 优化通知功能
+ * 5-2  完成 签到 ,转发 , 评论 ,看视频 任务   
+ * 5-2  优化失效提示,测试通知功能
+ * 5-2  优化通知功能
+ * 5-6	修复签到 bug
  * 
  * 积分换实物,自己看看决定跑不跑吧
  * 
@@ -24,7 +25,7 @@
 const $ = new Env("吃对了嘛");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1; 		//0为关闭通知，1为打开通知,默认为1
-const debug = 0; 		//0为关闭调试，1为打开调试,默认为0
+const debug = 0 		//0为关闭调试，1为打开调试,默认为0
 //////////////////////
 let ckStr = process.env.cdlm_data;
 let msg = "";
@@ -150,13 +151,13 @@ async function task_list(timeout = 3 * 1000) {
 		console.log(`\n 任务列表:${result.msg} 🎉  \n`);
 		task_Arr = result.data.baseData;
 		// console.log(task_Arr);
-		if (task_Arr.sign.todayCount == 0) {
-			console.log(`签到:今天还没有签到,去签到了鸭!`);
+		if (task_Arr.sign.todayCount < task_Arr.sign.mustCount) {
+			console.log(`签到:这个月还可以签到,去签到了鸭!`);
 			await signin();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`签到:今天已经 签到 过了!`);
-			msg += `\n签到:今天已经 签到 过了!\n`
+			console.log(`签到:这个月不能签到了!`);
+			msg += `\n签到:这个月还不能了!\n`
 		}
 		if (task_Arr.share.todayCount < 2) {
 			console.log(`转发:${task_Arr.share.todayCount}/2`);
@@ -224,6 +225,8 @@ async function signin(timeout = 3 * 1000) {
 	};
 
 	let result = await httpGet(url, `签到`, timeout);
+
+	console.log(result.code);
 	if (result.code == 0) {
 		console.log(`\n 签到:${result.msg} 🎉 \n`);
 		msg += `\n 签到:${result.msg} 🎉 \n`
@@ -232,8 +235,8 @@ async function signin(timeout = 3 * 1000) {
 		console.log(`\n 签到:${result.msg} \n`);
 		msg += `\n 签到:${result.msg} \n`
 	} else {
-		console.log(`\n 签到:   失败 ❌ 了呢,原因未知！\n ${result} \n`);
-		msg += `\n 签到:   失败 ❌ 了呢,原因未知！\n ${result} \n`
+		console.log(`\n 签到:   失败 ❌ 了呢,原因未知！\n ${JSON.stringify(result)} \n`);
+		msg += `\n 签到:   失败 ❌ 了呢,原因未知！\n ${JSON.stringify(result)} \n`
 	}
 }
 
@@ -464,6 +467,7 @@ function wyy(timeout = 3 * 1000) {
 async function httpGet(getUrlObject, tip, timeout = 3 * 1000) {
 	return new Promise((resolve) => {
 		let url = getUrlObject;
+		console.log(url);
 		if (!tip) {
 			let tmp = arguments.callee.toString();
 			let re = /function\s*(\w*)/i;
@@ -479,17 +483,17 @@ async function httpGet(getUrlObject, tip, timeout = 3 * 1000) {
 
 		$.get(
 			url,
-			async (error, response, _data) => {
+			async (error, response, data) => {
 				try {
 					if (debug) {
 						console.log(
 							`\n\n 【debug】===============这是 ${tip} 返回data==============`
 						);
-						console.log(_data);
+						console.log(data);
 						console.log(`======`);
-						console.log(JSON.parse(_data));
+						console.log(JSON.parse(data));
 					}
-					let result = JSON.parse(_data);
+					let result = JSON.parse(data);
 					resolve(result);
 				} catch (e) {
 					console.log(e);
