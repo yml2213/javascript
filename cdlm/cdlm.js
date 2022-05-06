@@ -25,7 +25,7 @@
 const $ = new Env("吃对了嘛");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1; 		//0为关闭通知，1为打开通知,默认为1
-const debug = 0 		//0为关闭调试，1为打开调试,默认为0
+const debug = 0			//0为关闭调试，1为打开调试,默认为0
 //////////////////////
 let ckStr = process.env.cdlm_data;
 let msg = "";
@@ -226,7 +226,6 @@ async function signin(timeout = 3 * 1000) {
 
 	let result = await httpGet(url, `签到`, timeout);
 
-	console.log(result.code);
 	if (result.code == 0) {
 		console.log(`\n 签到:${result.msg} 🎉 \n`);
 		msg += `\n 签到:${result.msg} 🎉 \n`
@@ -467,7 +466,6 @@ function wyy(timeout = 3 * 1000) {
 async function httpGet(getUrlObject, tip, timeout = 3 * 1000) {
 	return new Promise((resolve) => {
 		let url = getUrlObject;
-		console.log(url);
 		if (!tip) {
 			let tmp = arguments.callee.toString();
 			let re = /function\s*(\w*)/i;
