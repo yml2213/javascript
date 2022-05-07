@@ -6,6 +6,7 @@
  * 
  * 太平洋汽车 app  
  * 4-25 完成签到 任务   有bug及时反馈
+ * 5-8	官方活动升级,暂时停用脚本,等以后看情况
  * 回帖容易封号,不打算写了
  * 
  * 感谢所有测试人员
@@ -149,18 +150,13 @@ function login(timeout = 3 * 1000) {
  * https://app-server.pcauto.com.cn/api/info/sign/register
  */
 function signin(timeout = 3 * 1000) {
-	let reqNonc = randomInt(100000, 999999)
-	// console.log(reqNonc);
-	// let reqSign = MD5Encrypt(`signature${reqNonc}${ts}${salt}`)
 
 	return new Promise((resolve) => {
 		let url = {
 			url: 'https://app-server.pcauto.com.cn/api/info/sign/register',
 			headers: {
-
 				'Content-Type': 'text/plain',
 				'Cookie': `common_session_id=${ck}`,
-
 			},
 			body: '{}',
 
