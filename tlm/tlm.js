@@ -226,7 +226,7 @@ async function start_reading() {
 		console.log(`\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`);
 		msg += `\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`;
 
-		await_num = randomInt(17, 25);
+		await_num = randomInt(30, 40);
 		console.log(`\n 等待 ${await_num} 秒后 领取阅读奖励 \n`);
 		await $.wait(await_num * 1000);
 		console.log(`\n 开始 领取阅读奖励 \n`);
