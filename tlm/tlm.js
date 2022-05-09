@@ -27,7 +27,7 @@ let ck = "";
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/9      完成 看文章领金币 任务 (每次执行20次,尽量模拟人工操作了)\n'
+let Version = '\n yml   2022/5/9      完成 看文章领金币 任务 (每次执行25次,尽量模拟人工操作了)\n'
 let thank = `\n 感谢 xx 的投稿\n`
 let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
 ///////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ async function start() {
 	await user_info();
 	await $.wait(2 * 1000);
 
-	for (let index = 1; index < 2; index++) {
+	for (let index = 1; index < 25; index++) {
 		console.log(`开始 第 ${index} 次 阅读文章--领金币`);
 		await start_reading();
 		await $.wait(5 * 1000);
@@ -220,7 +220,7 @@ async function start_reading() {
 		form: { "article_id": article_id },
 	};
 	let result = await httpPost(url, `开始阅读`);
-
+	console.log(result);
 	if (result.code == 1) {
 
 		console.log(`\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`);
@@ -233,10 +233,12 @@ async function start_reading() {
 		await article_coin();
 
 
+	} else if (result.code == 0) {
+		console.log(`\n 这篇文章读过了! 让我们跳过他!\n`);
 	} else {
 		console.log(`\n 开始阅读: 失败 ❌ 了呢,原因未知！ \n`);
 		msg += `\n 开始阅读: 失败 ❌ 了呢,原因未知！\n `;
-		throw new Error(`'喂  喂 ---  开始阅读 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
+		// throw new Error(`'喂  喂 ---  开始阅读 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
 	}
 }
 
@@ -260,21 +262,21 @@ async function article_coin() {
 	};
 	let result = await httpPost(url, `阅读文章--领金币`);
 
-	if (result == null) {
+	// if (result.status == 200) {
 
-		console.log(`\n 阅读文章--领金币: 成功 \n`);
-		msg += `\n 阅读文章--领金币: 成功 \n`;
+	// 	console.log(`\n 阅读文章--领金币: 成功 \n`);
+	// 	msg += `\n 阅读文章--领金币: 成功 \n`;
 
-	} else if (result.code == 1) {
+	// } else if (result.code == 1) {
 
-		console.log(`\n 阅读文章--领金币: ${result.msg} \n`);
-		msg += `\n 阅读文章--领金币: ${result.msg} \n`;
+	// 	console.log(`\n 阅读文章--领金币: ${result.msg} \n`);
+	// 	msg += `\n 阅读文章--领金币: ${result.msg} \n`;
 
-	} else {
-		console.log(`\n 阅读文章--领金币: 失败 ❌ 了呢,原因未知！ \n`);
-		msg += `\n 阅读文章--领金币: 失败 ❌ 了呢,原因未知！\n `;
-		throw new Error(`'喂  喂 ---  阅读文章--领金币 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
-	}
+	// } else {
+	// 	console.log(`\n 阅读文章--领金币: 失败 ❌ 了呢,原因未知！ \n`);
+	// 	msg += `\n 阅读文章--领金币: 失败 ❌ 了呢,原因未知！\n `;
+	// 	throw new Error(`'喂  喂 ---  阅读文章--领金币 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
+	// }
 }
 
 
@@ -447,9 +449,9 @@ async function httpGet(getUrlObject, tip, timeout = 3 * 1000) {
 					let result = JSON.parse(data);
 					resolve(result);
 				} catch (e) {
-					console.log(err, resp);
-					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					msg += `\n ${tip} 失败了!请稍后尝试!!`
+					// console.log(err, resp);
+					// console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+					// msg += `\n ${tip} 失败了!请稍后尝试!!`
 				} finally {
 					resolve();
 				}
@@ -487,9 +489,9 @@ async function httpPost(postUrlObject, tip, timeout = 3 * 1000) {
 					let result = JSON.parse(data);
 					resolve(result);
 				} catch (e) {
-					console.log(err, resp);
-					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					msg += `\n ${tip} 失败了!请稍后尝试!!`
+					// console.log(err, resp);
+					// console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+					// msg += `\n ${tip} 失败了!请稍后尝试!!`
 				} finally {
 					resolve();
 				}
