@@ -83,7 +83,7 @@ async function start() {
 	await user_info();
 	await $.wait(2 * 1000);
 
-	for (let index = 1; index < 21; index++) {
+	for (let index = 1; index < 2; index++) {
 		console.log(`开始 第 ${index} 次 阅读文章--领金币`);
 		await start_reading();
 		await $.wait(5 * 1000);
@@ -243,12 +243,12 @@ async function start_reading() {
 
 /**
  * 阅读文章--领金币    httpPost
- * http://tlm.zhixiang.run/api/coin/articleReadCountDown
+ * http://tlm.zhixiang.run/api/coin/articleReadEnd
  */
 async function article_coin() {
 
 	let url = {
-		url: `http://tlm.zhixiang.run/api/coin/articleReadCountDown`,
+		url: `http://tlm.zhixiang.run/api/coin/articleReadEnd`,
 		headers: {
 
 			"token": token,
@@ -260,7 +260,7 @@ async function article_coin() {
 	};
 	let result = await httpPost(url, `阅读文章--领金币`);
 
-	if (result.code !== null) {
+	if (result == null) {
 
 		console.log(`\n 阅读文章--领金币: 成功 \n`);
 		msg += `\n 阅读文章--领金币: 成功 \n`;
