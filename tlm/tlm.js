@@ -335,7 +335,7 @@ async function receive_honor() {
 		form: { "article_id": article_id },
 	};
 	let result = await httpPost(url, `领取荣誉值`);
-	console.log(result);
+
 	if (result.code == 1) {
 
 		console.log(`\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`);
