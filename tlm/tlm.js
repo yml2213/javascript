@@ -5,10 +5,10 @@
  * 推了吗  链接带邀请  感谢走我的链接
  * 下载地址: http://tlm.zhixiang.run/index/user/wechatLogin?uid=10202     (微信打开)
  * 
- * cron 0-59/15 6-20 * * *  yml2213_javascript_master/tlm.js
+ * cron 0-59/30 6-20 * * *  yml2213_javascript_master/tlm.js
  * 
- * 5-9	完成 看文章领金币 任务 (每次执行 5 次,尽量模拟人工操作了)
- * 
+ * 5-9	完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)
+ * 5-10	完成 荣誉值任务(测试中)
  * 
  * 感谢所有测试人员 
  * ========= 青龙 =========
@@ -27,7 +27,7 @@ let ck = "";
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/9-2      完成 看文章领金币 任务 (每次执行 5 次,尽量模拟人工操作了)\n'
+let Version = '\n yml   2022/5/9-2      完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)\n'
 let thank = `\n 感谢 xx 的投稿\n`
 let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
 ///////////////////////////////////////////////////////////////////
@@ -83,10 +83,18 @@ async function start() {
 	await user_info();
 	await $.wait(2 * 1000);
 
-	for (let index = 1; index < 6; index++) {
+	for (let index = 1; index < 21; index++) {
 		console.log(`开始 第 ${index} 次 阅读文章--领金币`);
 		await start_reading();
 		await $.wait(5 * 1000);
+	}
+
+	let a1 = local_hours() % 2;
+	if (a1 = 1) {
+		console.log(`开始 荣誉广告`);
+		await honor_ad();
+		await $.wait(5 * 1000);
+
 	}
 
 
@@ -226,7 +234,7 @@ async function start_reading() {
 		console.log(`\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`);
 		msg += `\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`;
 
-		await_num = randomInt(30, 40);
+		await_num = randomInt(60, 65);
 		console.log(`\n 等待 ${await_num} 秒后 领取阅读奖励 \n`);
 		await $.wait(await_num * 1000);
 		console.log(`\n 开始 领取阅读奖励 \n`);
@@ -264,36 +272,86 @@ async function article_coin() {
 	};
 	let result = await httpPost(url, `阅读文章--领金币`);
 
-	// if (result.status == 200) {
+}
 
-	// 	console.log(`\n 阅读文章--领金币: 成功 \n`);
-	// 	msg += `\n 阅读文章--领金币: 成功 \n`;
 
-	// } else if (result.code == 1) {
 
-	// 	console.log(`\n 阅读文章--领金币: ${result.msg} \n`);
-	// 	msg += `\n 阅读文章--领金币: ${result.msg} \n`;
+/**
+ * 荣誉广告    httpPost
+ * http://tlm.zhixiang.run/api/newtask/signSubmit
+ */
+async function honor_ad() {
 
-	// } else {
-	// 	console.log(`\n 阅读文章--领金币: 失败 ❌ 了呢,原因未知！ \n`);
-	// 	msg += `\n 阅读文章--领金币: 失败 ❌ 了呢,原因未知！\n `;
-	// 	throw new Error(`'喂  喂 ---  阅读文章--领金币 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
-	// }
+	let url = {
+		url: `http://tlm.zhixiang.run/api/newtask/signSubmit`,
+		headers: {
+			"token": token,
+			"Accept": "application/json",
+			"Host": "tlm.zhixiang.run",
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		form: { "article_id": article_id },
+	};
+	let result = await httpPost(url, `荣誉广告`);
+	console.log(result);
+	if (result.code == 0) {
+
+		console.log(`\n 荣誉广告: 成功 ,开始阅读广告: ${result.data.title} \n`);
+		msg += `\n 荣誉广告: 成功 ,开始阅读广告: ${result.data.title} \n`;
+		honor_id = result.data.id;
+		let num = randomInt(20, 25);
+		console.log(`\n 等待 ${num} 秒后 领取荣誉值 \n`);
+		await $.wait(num * 1000);
+		console.log(`\n 开始 领取荣誉值 \n`);
+		await receive_honor();
+
+	} else if (result.code == 1) {
+		console.log(`\n 荣誉广告: ${result.msg}\n`);
+		msg += `\n 荣誉广告: ${result.msg}\n`;
+
+	} else {
+		console.log(`\n 荣誉广告: 失败 ❌ 了呢,原因未知！ \n`);
+		msg += `\n 荣誉广告: 失败 ❌ 了呢,原因未知！\n `;
+		// throw new Error(`'喂  喂 ---  荣誉广告 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
+	}
 }
 
 
 
 
 
+/**
+ * 领取荣誉值    httpPost
+ * http://tlm.zhixiang.run/api/newtask/signSubmit
+ */
+async function receive_honor() {
 
 
+	let url = {
+		url: `http://tlm.zhixiang.run/api/newtask/signSubmit`,
+		headers: {
+			"token": token,
+			"Accept": "application/json",
+			"Host": "tlm.zhixiang.run",
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		form: { "article_id": article_id },
+	};
+	let result = await httpPost(url, `领取荣誉值`);
+	console.log(result);
+	if (result.code == 1) {
 
-
-
-
-
-
-
+		console.log(`\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`);
+		msg += `\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`;
+	} else if (result.code == 0) {
+		console.log(`\n 领取荣誉值: ${result.msg}\n`);
+		msg += `\n 领取荣誉值: ${result.msg}\n`;
+	} else {
+		console.log(`\n 领取荣誉值: 失败 ❌ 了呢,原因未知！ \n`);
+		msg += `\n 领取荣誉值: 失败 ❌ 了呢,原因未知！\n `;
+		// throw new Error(`'喂  喂 ---  领取荣誉值 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
+	}
+}
 
 
 
@@ -396,6 +454,25 @@ function ts10() {
 	return Math.round(new Date().getTime() / 1000).toString();
 }
 
+/**
+ * 获取当前小时数 
+ */
+
+function local_hours() {
+	let myDate = new Date();
+	h = myDate.getHours();
+	return h;
+}
+
+/**
+ * 获取当前分钟数 
+ */
+
+function local_minutes() {
+	let myDate = new Date();
+	m = myDate.getMinutes();
+	return m;
+}
 
 
 
