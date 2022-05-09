@@ -5,9 +5,9 @@
  * 推了吗  链接带邀请  感谢走我的链接
  * 下载地址: http://tlm.zhixiang.run/index/user/wechatLogin?uid=10202     (微信打开)
  * 
- * cron 45 7,10,13,15,18 * * *  yml2213_javascript_master/tlm.js
+ * cron 0-59/15 6-20 * * *  yml2213_javascript_master/tlm.js
  * 
- * 5-9	完成 看文章领金币 任务 (每次执行20次,尽量模拟人工操作了)
+ * 5-9	完成 看文章领金币 任务 (每次执行 5 次,尽量模拟人工操作了)
  * 
  * 
  * 感谢所有测试人员 
@@ -27,7 +27,7 @@ let ck = "";
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/9      完成 看文章领金币 任务 (每次执行25次,尽量模拟人工操作了)\n'
+let Version = '\n yml   2022/5/9-2      完成 看文章领金币 任务 (每次执行 5 次,尽量模拟人工操作了)\n'
 let thank = `\n 感谢 xx 的投稿\n`
 let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
 ///////////////////////////////////////////////////////////////////
@@ -83,7 +83,7 @@ async function start() {
 	await user_info();
 	await $.wait(2 * 1000);
 
-	for (let index = 1; index < 25; index++) {
+	for (let index = 1; index < 6; index++) {
 		console.log(`开始 第 ${index} 次 阅读文章--领金币`);
 		await start_reading();
 		await $.wait(5 * 1000);
@@ -235,6 +235,8 @@ async function start_reading() {
 
 	} else if (result.code == 0) {
 		console.log(`\n 这篇文章读过了! 让我们跳过他!\n`);
+		await article_coin();
+
 	} else {
 		console.log(`\n 开始阅读: 失败 ❌ 了呢,原因未知！ \n`);
 		msg += `\n 开始阅读: 失败 ❌ 了呢,原因未知！\n `;
