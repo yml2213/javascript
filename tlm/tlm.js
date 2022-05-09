@@ -27,7 +27,7 @@ let ck = "";
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/9-2      完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)\n'
+let Version = '\n yml   2022/5/10      完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)\n'
 let thank = `\n 感谢 xx 的投稿\n`
 let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
 ///////////////////////////////////////////////////////////////////
@@ -89,13 +89,10 @@ async function start() {
 		await $.wait(5 * 1000);
 	}
 
-	let a1 = local_hours() % 2;
-	if (a1 = 1) {
-		console.log(`开始 荣誉广告`);
-		await honor_ad();
-		await $.wait(5 * 1000);
+	console.log(`开始 荣誉广告`);
+	await honor_ad();
+	await $.wait(5 * 1000);
 
-	}
 
 
 }
@@ -228,7 +225,7 @@ async function start_reading() {
 		form: { "article_id": article_id },
 	};
 	let result = await httpPost(url, `开始阅读`);
-
+	console.log(result);
 	if (result.code == 1) {
 
 		console.log(`\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`);
@@ -293,7 +290,7 @@ async function honor_ad() {
 		form: { "article_id": article_id },
 	};
 	let result = await httpPost(url, `荣誉广告`);
-	console.log(result);
+
 	if (result.code == 0) {
 
 		console.log(`\n 荣誉广告: 成功 ,开始阅读广告: ${result.data.title} \n`);
