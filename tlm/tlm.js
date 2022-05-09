@@ -225,7 +225,7 @@ async function start_reading() {
 		form: { "article_id": article_id },
 	};
 	let result = await httpPost(url, `开始阅读`);
-	console.log(result);
+
 	if (result.code == 1) {
 
 		console.log(`\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`);
