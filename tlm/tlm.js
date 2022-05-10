@@ -8,8 +8,10 @@
  * cron 0-59/30 6-20 * * *  yml2213_javascript_master/tlm.js
  * 
  * 5-9	完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)
- * 5-10	完成 荣誉值任务(测试中)
+ * 5-10	完成 荣誉值任务(测试中--失败)
  * 5-10	增加随机文章数量
+ * 5-10	完成 荣誉值任务2(第二版--测试中)
+ * 
  * 
  * 感谢所有测试人员 
  * ========= 青龙 =========
@@ -28,7 +30,7 @@ let ck = "";
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/10      完成 看文章领金币 任务 (每次执行 20 次,尽量模拟人工操作了)\n'
+let Version = '\n yml   2022/5/10      完成 荣誉值任务2(第二版--测试中)\n'
 let thank = `\n 感谢 xx 的投稿\n`
 let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
 ///////////////////////////////////////////////////////////////////
@@ -321,13 +323,13 @@ async function honor_ad() {
 
 /**
  * 领取荣誉值    httpPost
- * http://tlm.zhixiang.run/api/newtask/signSubmit
+ * http://tlm.zhixiang.run/api/newtask/getBannerTimer
  */
 async function receive_honor() {
 
-
-	let url = {
-		url: `http://tlm.zhixiang.run/api/newtask/signSubmit`,
+	// 获取开始荣誉值 做判断
+	let url_start = {
+		url: `http://tlm.zhixiang.run/api/newtask/taskPageData`,
 		headers: {
 			"token": token,
 			"Accept": "application/json",
@@ -336,15 +338,72 @@ async function receive_honor() {
 		},
 		form: { "article_id": article_id },
 	};
-	let result = await httpPost(url, `领取荣誉值`);
+	let result_start = await httpPost(url_start, `获取荣誉值 初始值`);
+	if (result_start.code == 1) {
+		honor_start = result_start.data.user.honor;
+	} else {
+		console.log(`\n 获取荣誉值 初始值: 失败 ❌ 了呢,原因未知！ \n`);
+		msg += `\n 获取荣誉值 初始值: 失败 ❌ 了呢,原因未知！\n `;
+		// throw new Error(`'喂  喂 ---  领取荣誉值 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
+	}
 
-	if (result.code == 1) {
 
+	// 开始阅读文章
+	let url = {
+		url: `http://tlm.zhixiang.run/api/newtask/getBannerTimer`,
+		headers: {
+			"token": token,
+			"Accept": "application/json",
+			"Host": "tlm.zhixiang.run",
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		form: { "article_id": article_id },
+	};
+	let result = await httpPost(url, `领取荣誉值 开始阅读`);
+
+	let num = randomInt(20, 25);
+	console.log(`\n 等待 ${num} 秒后 结束阅读 \n`);
+
+	// 结束阅读文章
+	let url_read_end = {
+		url: `http://tlm.zhixiang.run/api/newtask/getBannerBack`,
+		headers: {
+			"token": token,
+			"Accept": "application/json",
+			"Host": "tlm.zhixiang.run",
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		form: { "article_id": article_id },
+	};
+	let result_read_end = await httpPost(url_read_end, `领取荣誉值 结束阅读`);
+
+
+
+	// 获取结束荣誉值 做判断
+	let url_end = {
+		url: `http://tlm.zhixiang.run/api/newtask/taskPageData`,
+		headers: {
+			"token": token,
+			"Accept": "application/json",
+			"Host": "tlm.zhixiang.run",
+			"Content-Type": "application/x-www-form-urlencoded"
+		},
+		form: { "article_id": article_id },
+	};
+	let result_end = await httpPost(url_end, `获取荣誉值 结束值`);
+	if (result_end.code == 1) {
+		honor_end = result_end.data.user.honor;
+	} else {
+		console.log(`\n 获取荣誉值 结束值: 失败 ❌ 了呢,原因未知！ \n`);
+		msg += `\n 获取荣誉值 结束值: 失败 ❌ 了呢,原因未知！\n `;
+		// throw new Error(`'喂  喂 ---  领取荣誉值 失败 ❌ 了呢 ,别睡了, 起来 找bug 了喂!`);
+	}
+
+
+
+	if (honor_start > honor_end) {
 		console.log(`\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`);
 		msg += `\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`;
-	} else if (result.code == 0) {
-		console.log(`\n 领取荣誉值: ${result.msg}\n`);
-		msg += `\n 领取荣誉值: ${result.msg}\n`;
 	} else {
 		console.log(`\n 领取荣誉值: 失败 ❌ 了呢,原因未知！ \n`);
 		msg += `\n 领取荣誉值: 失败 ❌ 了呢,原因未知！\n `;
