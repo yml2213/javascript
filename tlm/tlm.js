@@ -401,7 +401,7 @@ async function receive_honor() {
 
 
 
-	if (honor_start > honor_end) {
+	if (honor_start < honor_end) {
 		console.log(`\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`);
 		msg += `\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`;
 	} else {
