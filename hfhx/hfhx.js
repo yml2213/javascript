@@ -13,7 +13,7 @@
  * 
  * 抓包： 先打开 app - 发现 - 右上角 '领积分' , 然后再打开抓包软件  , 抓签到包  , 找到有 X-HSBC-E2E-Trust-Token 的包就行了
  * 
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 
 const $ = new Env("汇丰汇选");

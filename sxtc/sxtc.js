@@ -15,7 +15,7 @@
  *
  * Authori-zation :  关键词  www.shaoxingticai.com/api/front/user  ,headers中的一个参数
  *
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 const $ = new Env("绍兴体彩");
 const notify = $.isNode() ? require("./sendNotify") : "";

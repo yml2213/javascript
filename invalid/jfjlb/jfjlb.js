@@ -10,7 +10,7 @@
  * 变量格式: export jfjlb_data=' jscode & token @ jscode & token '  多个账号用 @分割 
  * 签到包的  member-api/memberApplet/signLog  url链接中的 "jscode" 跟 hd 中的 token  
  * 
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 
 

@@ -15,7 +15,7 @@
  * 变量格式: export yzjb_data=' AZ 1 @ AZ 2 '  多个账号用 @分割 
  * 应该是随便一个 huyitool.jidiandian.cn 域名的  AZ 就行(authorization) 
  * 
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 
 

@@ -19,7 +19,7 @@
  *
  * token :  关键词  s76.yyyyy.run/api  找到 token 就行了
  *
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 const $ = new Env("咸鱼要躺平");
 const notify = $.isNode() ? require("./sendNotify") : "";

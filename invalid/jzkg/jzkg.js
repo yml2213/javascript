@@ -18,7 +18,7 @@
  *
  * userid   app 页面兑换界面--左上角 有 id , 找不到的可以告别羊毛了  在问自杀
  *
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
 const $ = new Env("金砖旷工");
 const notify = $.isNode() ? require("./sendNotify") : "";
