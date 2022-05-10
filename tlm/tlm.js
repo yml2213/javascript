@@ -168,7 +168,7 @@ async function user_info() {
  * http://tlm.zhixiang.run/api/article/articleList
  */
 async function article_list() {
-	page_num = randomInt(1, 4);
+	page_num = randomInt(1, 14);
 	let url = {
 		url: `http://tlm.zhixiang.run/api/article/articleList`,
 		headers: {
