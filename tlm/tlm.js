@@ -240,6 +240,7 @@ async function start_reading() {
 
 	} else if (result.code == 0) {
 		console.log(`\n 这篇文章读过了! 让我们跳过他!\n`);
+		await $.wait(20 * 1000);
 		await article_coin();
 
 	} else {
