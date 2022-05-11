@@ -11,6 +11,7 @@
  * 5-10	完成 荣誉值任务(测试中--失败)
  * 5-10	增加随机文章数量
  * 5-10	完成 荣誉值任务2(第二版--测试中)
+ * 5-11	荣誉值可用了--好像是每天只有一次
  * 
  * 
  * 感谢所有测试人员 
@@ -291,7 +292,7 @@ async function honor_ad() {
 			"Host": "tlm.zhixiang.run",
 			"Content-Type": "application/x-www-form-urlencoded"
 		},
-		form: { "article_id": article_id },
+		form: {},
 	};
 	let result = await httpPost(url, `荣誉广告`);
 
@@ -336,7 +337,7 @@ async function receive_honor() {
 			"Host": "tlm.zhixiang.run",
 			"Content-Type": "application/x-www-form-urlencoded"
 		},
-		form: { "article_id": article_id },
+		form: {},
 	};
 	let result_start = await httpPost(url_start, `获取荣誉值 初始值`);
 	if (result_start.code == 1) {
@@ -357,7 +358,7 @@ async function receive_honor() {
 			"Host": "tlm.zhixiang.run",
 			"Content-Type": "application/x-www-form-urlencoded"
 		},
-		form: { "article_id": article_id },
+		form: { "id": honor_id, "type": "1" },
 	};
 	let result = await httpPost(url, `领取荣誉值 开始阅读`);
 
@@ -373,7 +374,7 @@ async function receive_honor() {
 			"Host": "tlm.zhixiang.run",
 			"Content-Type": "application/x-www-form-urlencoded"
 		},
-		form: { "article_id": article_id },
+		form: { "id": honor_id, "type": "1" },
 	};
 	let result_read_end = await httpPost(url_read_end, `领取荣誉值 结束阅读`);
 
@@ -388,7 +389,7 @@ async function receive_honor() {
 			"Host": "tlm.zhixiang.run",
 			"Content-Type": "application/x-www-form-urlencoded"
 		},
-		form: { "article_id": article_id },
+		form: {},
 	};
 	let result_end = await httpPost(url_end, `获取荣誉值 结束值`);
 	if (result_end.code == 1) {
