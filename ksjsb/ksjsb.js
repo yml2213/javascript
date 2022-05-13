@@ -11,7 +11,7 @@
  * 
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export ksjsb_data='xxxxx'  多个账号用 @分割
+ * 变量格式: export ksjsb_data='xxxxx'  多个账号用 @分割 或者 换行分割
  *
  * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
@@ -281,6 +281,11 @@ async function getCks(ck, str) {
 			if (ck.indexOf("@") != -1) {
 
 				ck.split("@").forEach((item) => {
+					ckArr.push(item);
+				});
+			} else if (ck.indexOf("\n") != -1) {
+
+				ck.split("\n").forEach((item) => {
 					ckArr.push(item);
 				});
 			} else {
