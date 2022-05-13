@@ -91,7 +91,7 @@ async function start() {
 
 	if (local_hours() == 14) {
 		console.log("开始 分享");
-		await Share();
+		await do_Share();
 		await $.wait(2 * 1000);
 	}
 	local_hours()
@@ -271,9 +271,34 @@ async function open_box() {
 /**
  * 分享获得 3000金币   httpGet
  */
-async function Share() {
+async function do_Share() {
+
+
 	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/daily/report?taskId=122`,
+		url: `https://nebula.kuaishou.com/rest/n/nebula/account/withdraw/setShare`,
+		headers: {
+			'Cookie': ck[0],
+		},
+		body: '',
+	};
+	let result = await httpPost(url, `分享`);
+
+	if (result.result == 1) {
+		await $.wait(200);
+		await Share(122);
+	}
+}
+
+
+
+/**
+ * 分享获得 3000金币   httpGet
+ */
+async function Share(id) {
+
+
+	let url = {
+		url: `https://nebula.kuaishou.com/rest/n/nebula/daily/report?taskId=${id}`,
 		headers: {
 			'Cookie': ck[0],
 		},
@@ -291,8 +316,6 @@ async function Share() {
 		msg += `\n 分享: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
 	}
 }
-
-
 
 
 
