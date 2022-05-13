@@ -80,20 +80,23 @@ async function start() {
 	await user_info();
 	await $.wait(2 * 1000);
 
-	console.log("开始 签到信息");
-	await sign_info();
-	await $.wait(2 * 1000);
+
 
 	console.log("开始 宝箱信息");
 	await box_info();
 	await $.wait(2 * 1000);
 
-	console.log("开始 分享");
+	console.log("开始 每天一次任务");
 	if (local_hours() == 8) {
+		console.log("开始 签到信息");
+		await sign_info();
+		await $.wait(5 * 1000);
+
+		console.log("开始 分享");
 		await do_Share();
 		await $.wait(2 * 1000);
 	} else {
-		console.log("每天 8 点做分享任务,!跳过分享");
+		console.log("每天 8 点做 签到,分享 任务,时间不对跳过执行!");
 	}
 
 
