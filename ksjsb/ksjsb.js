@@ -88,13 +88,13 @@ async function start() {
 	await box_info();
 	await $.wait(2 * 1000);
 
-
-	if (local_hours() == 14) {
-		console.log("开始 分享");
+	console.log("开始 分享");
+	if (local_hours() == 8) {
 		await do_Share();
 		await $.wait(2 * 1000);
+	} else {
+		console.log("每天 8 点做分享任务,!跳过分享");
 	}
-	local_hours()
 
 
 
