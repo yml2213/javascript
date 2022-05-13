@@ -2,7 +2,7 @@
  * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/ksjsb/ksjsb.js
  * 转载请留信息,谢谢
  * 
- * 快手极速版  
+ * 快手极速版  请使用完整版ck
  * 
  * cron 0-59/30 6-20 * * *  yml2213_javascript_master/ksjsb.js
  * 
