@@ -243,7 +243,7 @@ async function box_info() {
 
 
 /**
- * 宝箱信息    httpGet
+ * 开宝箱    httpGet
  * https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=true&isReadyOfAdPlay=true
  */
 async function open_box() {
@@ -253,15 +253,15 @@ async function open_box() {
 			'Cookie': ck[0],
 		},
 	};
-	let result = await httpGet(url, `宝箱信息`);
+	let result = await httpGet(url, `开宝箱`);
 
 	if (result.result == 1) {
-		console.log(`\n 宝箱信息: 获得 金币 ${result.data.commonAwardPopup.awardAmount} 枚!\n`);
-		msg += `\n 宝箱信息: 获得 金币 ${result.data.commonAwardPopup.awardAmount} 枚!\n`;
+		console.log(`\n 开宝箱: 获得 金币 ${result.data.commonAwardPopup.awardAmount} 枚!\n`);
+		msg += `\n 开宝箱: 获得 金币 ${result.data.commonAwardPopup.awardAmount} 枚!\n`;
 
 	} else {
-		console.log(`\n 宝箱信息: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 宝箱信息: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
+		console.log(`\n 开宝箱: 失败 ❌ 了呢,原因未知！  ${result} \n`);
+		msg += `\n 开宝箱: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
 	}
 }
 
