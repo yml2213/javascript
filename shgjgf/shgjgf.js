@@ -9,7 +9,7 @@
  *
  * 
  * 感谢所有测试人员 
- * ========= 青龙 =========
+ * ========= 青龙--配置文件 =========
  * 变量格式: export shgjgf_data='x-wx-token1 @ ax-wx-token2'  多个账号用 @分割
  *
  * ax-wx-token :  关键词  misc/sign/activity  ,headers中的一个参数

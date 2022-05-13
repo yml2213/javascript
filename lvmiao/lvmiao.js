@@ -10,7 +10,7 @@
  * 
  * 
  * 感谢所有测试人员 
- * ========= 青龙 =========
+ * ========= 青龙--配置文件 =========
  * 变量格式: export lvmiao_data='cookie1 @ cookie2 '  多个账号用 @分割
  *
  * 抓包 :  关键词  miniprogram.api.miotech.com  抓个自己的 cookie 就行了 

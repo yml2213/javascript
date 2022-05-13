@@ -12,7 +12,7 @@
  * 新人任务自己做做吧 很少
  * 
  * 感谢所有测试人员 
- * ========= 青龙 =========
+ * ========= 青龙--配置文件 =========
  * 变量格式: export cyh_data='androidToken1 @ androidToken2'  多个账号用 @分割
  *
  * androidToken :  关键词  t-api.chyouhui.com/auth  ,headers中的一个参数

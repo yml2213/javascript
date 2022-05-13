@@ -10,7 +10,7 @@
  * 
  * 感谢 心雨 的投稿
  * 感谢所有测试人员 
- * ========= 青龙 =========
+ * ========= 青龙--配置文件 =========
  * 变量格式: export sxtc_data='AZ1 @ AZ2'  多个账号用 @分割
  *
  * Authori-zation :  关键词  www.shaoxingticai.com/api/front/user  ,headers中的一个参数
