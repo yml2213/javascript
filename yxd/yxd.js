@@ -1,14 +1,14 @@
 /**
  * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/yxd/yxd.js
  * 转载请留信息,谢谢
- * 
+ *
  * 易小单
- * 
+ *
  * cron 30 6 * * *  yml2213_javascript_master/yxd.js
- * 
+ *
  * 5-18	完成签到，自行抓包
  *
- * 
+ *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
  * 变量格式: export yxd_data=' az & body @ az & body '  多个账号用 @ 或者 换行分割
@@ -97,6 +97,7 @@ async function signIn() {
 			"Authorization": ck[0],
 			"Content-Type": "application/json; charset=utf-8"
 		},
+		body:`${ck[1]}`,
 	};
 	let result = await httpPost(url, `签到`);
 
@@ -131,27 +132,27 @@ async function getCks(ck, str) {
 
 	return new Promise((resolve, reject) => {
 
-		let ckArr = []
-		if (ck) {
-			if (ck.indexOf("@") != -1) {
+			let ckArr = []
+			if (ck) {
+				if (ck.indexOf("@") != -1) {
 
-				ck.split("@").forEach((item) => {
-					ckArr.push(item);
-				});
-			} else if (ck.indexOf("\n") != -1) {
+					ck.split("@").forEach((item) => {
+						ckArr.push(item);
+					});
+				} else if (ck.indexOf("\n") != -1) {
 
-				ck.split("\n").forEach((item) => {
-					ckArr.push(item);
-				});
+					ck.split("\n").forEach((item) => {
+						ckArr.push(item);
+					});
+				} else {
+					ckArr.push(ck);
+				}
+				resolve(ckArr)
 			} else {
-				ckArr.push(ck);
+				console.log(`\n 【${$.name}】：未填写变量 ${str}`)
 			}
-			resolve(ckArr)
-		} else {
-			console.log(`\n 【${$.name}】：未填写变量 ${str}`)
-		}
 
-	}
+		}
 	)
 }
 
@@ -212,7 +213,7 @@ function ts10() {
 }
 
 /**
- * 获取当前小时数 
+ * 获取当前小时数
  */
 
 function local_hours() {
@@ -222,7 +223,7 @@ function local_hours() {
 }
 
 /**
- * 获取当前分钟数 
+ * 获取当前分钟数
  */
 
 function local_minutes() {
@@ -358,25 +359,25 @@ async function task111(method, url, type_name) {
 				}
 
 				$.get(url, async (err, resp, data) => {
-					try {
-						if (err) {
-							console.log(`${$.name}: API查询请求失败 ‼️‼️`);
-							console.log(JSON.stringify(err));
-							$.logErr(err);
-						} else if (debug) {
-							console.log(`\n\n 【debug】===============这是 ${type_name} 返回data==============`);
-							console.log(data);
-							console.log(`======`);
-							console.log(JSON.parse(data));
+						try {
+							if (err) {
+								console.log(`${$.name}: API查询请求失败 ‼️‼️`);
+								console.log(JSON.stringify(err));
+								$.logErr(err);
+							} else if (debug) {
+								console.log(`\n\n 【debug】===============这是 ${type_name} 返回data==============`);
+								console.log(data);
+								console.log(`======`);
+								console.log(JSON.parse(data));
+							}
+							let result = JSON.parse(data);
+							resolve(result);
+						} catch (e) {
+							console.log(e, resp);
+						} finally {
+							resolve();
 						}
-						let result = JSON.parse(data);
-						resolve(result);
-					} catch (e) {
-						console.log(e, resp);
-					} finally {
-						resolve();
-					}
-				},
+					},
 				);
 			});
 		} else if (method = httppost) {
@@ -386,25 +387,25 @@ async function task111(method, url, type_name) {
 					console.log(url);
 				}
 				$.post(url, async (err, resp, data) => {
-					try {
-						if (err) {
-							console.log("$.name: API查询请求失败 ‼️‼️");
-							console.log(JSON.stringify(err));
-							$.logErr(err);
-						} else if (debug) {
-							console.log(`\n\n 【debug】===============这是 ${type_name} 返回data==============`);
-							console.log(data);
-							console.log(`======`);
-							console.log(JSON.parse(data));
+						try {
+							if (err) {
+								console.log("$.name: API查询请求失败 ‼️‼️");
+								console.log(JSON.stringify(err));
+								$.logErr(err);
+							} else if (debug) {
+								console.log(`\n\n 【debug】===============这是 ${type_name} 返回data==============`);
+								console.log(data);
+								console.log(`======`);
+								console.log(JSON.parse(data));
+							}
+							let result = JSON.parse(data);
+							resolve(result);
+						} catch (e) {
+							console.log(e, resp);
+						} finally {
+							resolve();
 						}
-						let result = JSON.parse(data);
-						resolve(result);
-					} catch (e) {
-						console.log(e, resp);
-					} finally {
-						resolve();
-					}
-				},
+					},
 					// timeout(3000)
 				);
 			});
