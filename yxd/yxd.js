@@ -1,34 +1,34 @@
 /**
- * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/ksjsb/ksjsb.js
+ * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/yxd/yxd.js
  * 转载请留信息,谢谢
  * 
- * 快手极速版  请使用完整版ck
+ * 易小单
  * 
- * cron 0-59/30 6-20 * * *  yml2213_javascript_master/yxd.js
+ * cron 30 6 * * *  yml2213_javascript_master/yxd.js
  * 
- * 5-13	完成签到,宝箱信息功能 --脚本开源,欢迎 pr
- * 5-13	增加箱提示,增加分享任务
- * 
+ * 5-18	完成签到，自行抓包
+ *
  * 
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export ksjsb_data='xxxxx'  多个账号用 @分割 或者 换行分割
+ * 变量格式: export yxd_data=' az & body @ az & body '  多个账号用 @ 或者 换行分割
  *
  * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
-const $ = new Env("快手极速版");
+
+const $ = new Env("易小单");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知，1为打开通知,默认为1
 const debug = 0 		//0为关闭调试，1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
-let ckStr = process.env.ksjsb_data;
+let ckStr = process.env.yxd_data;
 let msg = "";
 let ck = "";
-let usre_name;
+let user_name;
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/13-2      完成签到,宝箱,分享 功能,请使用完整版ck\n'
-let thank = `\n 感谢 xx 的投稿\n`
+let Version = '\n yml   2022/5/18      完成签到 \n'
+let thank = `\n 感谢 群友 的投稿\n`
 let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
 ///////////////////////////////////////////////////////////////////
 
@@ -37,8 +37,8 @@ async function tips(ckArr) {
 	console.log(`${Version}`);
 	msg += `${Version}`
 
-	// console.log(thank);
-	// msg += `${thank}`
+	console.log(thank);
+	msg += `${thank}`
 
 	console.log(test);
 	msg += `${test}`
@@ -56,7 +56,7 @@ async function tips(ckArr) {
 }
 
 !(async () => {
-	let ckArr = await getCks(ckStr, "ksjsb_data");
+	let ckArr = await getCks(ckStr, "yxd_data");
 	await tips(ckArr);
 	for (let index = 0; index < ckArr.length; index++) {
 		let num = index + 1;
@@ -76,31 +76,9 @@ async function tips(ckArr) {
 async function start() {
 
 
-	console.log("开始 用户信息");
-	await user_info();
-	await $.wait(2 * 1000);
-
-
-
-	console.log("开始 宝箱信息");
-	await box_info();
-	await $.wait(2 * 1000);
-
-	console.log("开始 每天一次任务");
-	if (local_hours() == 8) {
-		console.log("开始 签到信息");
-		await sign_info();
-		await $.wait(5 * 1000);
-
-		console.log("开始 分享");
-		await do_Share();
-		await $.wait(2 * 1000);
-	} else {
-		console.log("每天 8 点做 签到,分享 任务,时间不对跳过执行!");
-	}
-
-
-
+	console.log("开始 签到");
+	await signIn();
+	await $.wait(3 * 1000);
 
 
 }
@@ -109,218 +87,30 @@ async function start() {
 
 
 /**
- * 用户信息    httpGet
- * https://nebula.kuaishou.com/rest/n/nebula/activity/earn/overview/basicInfo
+ * 签到    httpPost
+ * http://gameforum.adspools.cn/gateway/mutual/api/v1/coins/signin
  */
-async function user_info() {
+async function signIn() {
 	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/activity/earn/overview/basicInfo`,
+		url: `http://gameforum.adspools.cn/gateway/mutual/api/v1/coins/signin`,
 		headers: {
-			// "Host": "nebula.kuaishou.com",
-			'Cookie': ck[0],
+			"Authorization": ck[0],
+			"Content-Type": "application/json; charset=utf-8"
 		},
 	};
-	let result = await httpGet(url, `用户信息`);
+	let result = await httpPost(url, `签到`);
 
-	if (result.result == 1) {
-
-		console.log(`\n 用户信息: 欢迎光临 ${result.data.userData.nickname} 🎉  , 账户余额: ${result.data.totalCash} 元 ,金币: ${result.data.totalCoin}  枚 \n`);
-		usre_name = result.data.userData.nickname;
-
-		msg += `\n 用户信息: 欢迎光临 ${result.data.userData.nickname} 🎉  , 账户余额: ${result.data.totalCash} 元 ,金币: ${result.data.totalCoin}  枚 \n`;
-
-
-	} else {
-		console.log(`\n 用户信息: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 用户信息: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
-		throw new Error(`'喂  喂 ---  用户信息 失败 ❌ 了呢 ,别睡了, 起来更新了喂!`);
-	}
-}
-
-
-
-
-
-/**
- * 签到信息    httpGet
- * https://nebula.kuaishou.com/rest/n/nebula/activity/earn/overview/basicInfo
- */
-async function sign_info() {
-	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/sign/queryPopup`,
-		headers: {
-			'Cookie': ck[0],
-		},
-	};
-	let result = await httpGet(url, `签到信息`);
-
-	if (result.data.nebulaSignInPopup.todaySigned == false) {
-		console.log(`\n 签到信息: ${usre_name} 今天未签到,去签到喽!\n`);
-		msg += `\n 签到信息: ${usre_name} 今天未签到,去签到喽!\n`;
-		await $.wait(3 * 1000);
-		await signin();
-	} else if (result.data.nebulaSignInPopup.todaySigned == true) {
-		console.log(`\n 签到信息: ${usre_name} 今天已签到,明天再来吧!\n`);
-		msg += `\n 签到信息: ${usre_name} 今天已签到,明天再来吧!\n`;
-	} else {
-		console.log(`\n 签到信息: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 签到信息: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
-	}
-}
-
-
-
-
-
-
-
-
-
-
-/**
- * 签到    httpGet
- * https://nebula.kuaishou.com/rest/n/nebula/sign/sign?source=activity
- */
-async function signin() {
-	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/sign/sign?source=activity`,
-		headers: {
-			'Cookie': ck[0],
-		},
-	};
-	let result = await httpGet(url, `签到`);
-
-	if (result.result == 1) {
-		console.log(`\n 签到: ${result.data.toast} ,获得金币: ${result.data.totalCoin} 枚 \n`);
-		msg += `\n 签到: ${result.data.toast} ,获得金币: ${result.data.totalCoin} 枚 \n`;
-	} else if (result.result == 10901) {
-		console.log(`\n 签到: ${result.error_msg} \n`);
-		msg += `\n 签到: ${result.error_msg} \n`;
+	if (result.code === 200) {
+		console.log(`\n 签到: ${result.message}  \n`);
+		msg += `\n 签到: ${result.message}  \n`;
+	} else if (result.code === 4204) {
+		console.log(`\n 签到: ${result.message}  \n`);
+		msg += `\n 签到: ${result.message}  \n`;
 	} else {
 		console.log(`\n 签到: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 签到: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
+		msg += `\n 签到: 失败 ❌ 了呢,原因未知！  \n `;
 	}
 }
-
-
-
-/**
- * 宝箱信息    httpGet
- * 
- * https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=false&isReadyOfAdPlay=true
- */
-async function box_info() {
-	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=false&isReadyOfAdPlay=true`,
-		headers: {
-			'Cookie': ck[0],
-		},
-	};
-	let result = await httpGet(url, `宝箱信息`);
-
-	if (result.result == 1) {
-		if (result.data.openTime == -1) {
-			console.log(`\n 宝箱信息: 今天的宝箱开完了,明天再来吧! \n`);
-			msg += `\n 宝箱信息: 今天的宝箱开完了,明天再来吧! \n`;
-		} else if (result.data.openTime != 0) {
-			console.log(`\n 宝箱信息: 宝箱冷却中, ${result.data.openTime / 1000 / 60} 分钟 后重试吧! \n`);
-			msg += `\n 宝箱信息: 宝箱冷却中, ${result.data.openTime / 1000 / 60} 分钟 后重试吧! \n`;
-		} else {
-			console.log(`\n 宝箱信息:  ${usre_name} 可以宝箱信息,去 宝箱信息 喽! \n`);
-			msg += `\n 宝箱信息:  ${usre_name} 可以宝箱信息,去 宝箱信息 喽! \n`;
-			await $.wait(3 * 1000);
-			await open_box();
-		}
-
-	} else if (result.result == 10901) {
-		console.log(`\n 宝箱信息: ${result.error_msg} \n`);
-		msg += `\n 宝箱信息: ${result.error_msg} \n`;
-	} else {
-		console.log(`\n 宝箱信息: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 宝箱信息: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
-	}
-}
-
-
-
-
-
-/**
- * 开宝箱    httpGet
- * https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=true&isReadyOfAdPlay=true
- */
-async function open_box() {
-	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/box/explore?isOpen=true&isReadyOfAdPlay=true`,
-		headers: {
-			'Cookie': ck[0],
-		},
-	};
-	let result = await httpGet(url, `开宝箱`);
-
-	if (result.result == 1) {
-		console.log(`\n 开宝箱: 获得 金币 ${result.data.commonAwardPopup.awardAmount} 枚!\n`);
-		msg += `\n 开宝箱: 获得 金币 ${result.data.commonAwardPopup.awardAmount} 枚!\n`;
-
-	} else {
-		console.log(`\n 开宝箱: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 开宝箱: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
-	}
-}
-
-
-
-
-/**
- * 分享获得 3000金币   httpGet
- */
-async function do_Share() {
-
-
-	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/account/withdraw/setShare`,
-		headers: {
-			'Cookie': ck[0],
-		},
-		body: '',
-	};
-	let result = await httpPost(url, `分享`);
-
-	if (result.result == 1) {
-		await $.wait(200);
-		await Share(122);
-	}
-}
-
-
-
-/**
- * 分享获得 3000金币   httpGet
- */
-async function Share(id) {
-
-
-	let url = {
-		url: `https://nebula.kuaishou.com/rest/n/nebula/daily/report?taskId=${id}`,
-		headers: {
-			'Cookie': ck[0],
-		},
-	};
-	let result = await httpGet(url, `分享`);
-
-	if (result.result == 1) {
-		console.log(`\n 分享: 获得 金币 ${result.data.amount} 枚!\n`);
-		msg += `\n 分享: 获得 金币 ${result.data.amount} 枚!\n`;
-	} else if (result.result == 14004) {
-		console.log(`\n 分享: 今天已经分享过了,明天再来吧!\n`);
-		msg += `\n 分享: 今天已经分享过了,明天再来吧!\n\n`;
-	} else {
-		console.log(`\n 分享: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 分享: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
-	}
-}
-
-
 
 
 
