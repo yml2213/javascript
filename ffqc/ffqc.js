@@ -128,6 +128,9 @@ function signin(timeout = 3 * 1000) {
                     console.log(`\n 签到: ${result.errMsg}`)
                     console.log('请自行查看是否签到成功!')
 
+                } else if (result.resultCode === 40303) {
+                    console.log(`\n 签到: ${result.errMsg}`)
+
                 } else {
                     console.log(`\n 签到:  失败 ❌ 了呢,原因未知！\n ${result} \n `)
                 }
