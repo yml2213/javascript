@@ -8,7 +8,7 @@
  * 4-25     完成签到 任务   有bug及时反馈
  * 5-8	    官方活动升级,暂时停用脚本,等以后看情况  回帖容易封号,不打算写了
  * 5-22     优化太平洋汽车
- * 
+ * 5-23     优化日志输出
  * 
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -28,8 +28,8 @@ let ck = "";
 
 ///////////////////////////////////////////////////////////////////
 let Version = '\nyml   2022/5/22     优化太平洋汽车'
-let thank = `感谢 群友 的投稿`
-let test = `脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
+let thank = `\n感谢 群友 的投稿`
+let test = `\n脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
 
 ///////////////////////////////////////////////////////////////////
 
@@ -44,8 +44,8 @@ async function tips(ckArr) {
 	// console.log(test);
 	// msg += `${test}`
 
-	console.log(`\n 脚本已恢复正常状态,请及时更新! `);
-	msg += `脚本已恢复正常状态,请及时更新`
+	console.log(`\n脚本已恢复正常状态,请及时更新! `);
+	msg += `\n脚本已恢复正常状态,请及时更新`
 
 	console.log(`==================================================\n 脚本执行 - 北京时间(UTC+8): ${new Date(
 		new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
@@ -109,15 +109,15 @@ async function login() {
 	let result = await httpPost(url, `登录`);
 
 	if (result.status == 0) {
-		console.log(`   登录:${result.message} 🎉`);
-		msg += `   登录:${result.message} 🎉`;
+		console.log(`\n   登录:${result.message} 🎉`);
+		msg += `\n   登录:${result.message} 🎉`;
 		ck = result.common_session_id;
 	} else if (result.status == 1) {
-		console.log(`   登录:${result.message}`);
-		msg += `   登录:${result.message}`;
+		console.log(`\n   登录:${result.message}`);
+		msg += `\n   登录:${result.message}`;
 	} else {
-		console.log(`   登录: 失败 ❌ 了呢,原因未知！\n ${result}`)
-		msg += `   登录: 失败 ❌ 了呢,原因未知`
+		console.log(`\n   登录: 失败 ❌ 了呢,原因未知！\n ${result}`)
+		msg += `\n   登录: 失败 ❌ 了呢,原因未知`
 		throw new Error(`${$.name}:喂  喂 ---  登录过期了,别睡了, 起来更新了喂!`);
 	}
 
@@ -140,14 +140,14 @@ async function signin() {
 	let result = await httpPost(url, `签到`);
 
 	if (result.code == 200) {
-		console.log(`   签到:${result.message} 🎉`);
-		msg += `   签到:${result.message} 🎉`;
+		console.log(`\n   签到:${result.message} 🎉`);
+		msg += `\n   签到:${result.message} 🎉`;
 	} else if (result.code == 500) {
-		console.log(`   签到:${result.message}`);
-		msg += `   签到:${result.message}`;
+		console.log(`\n   签到:${result.message}`);
+		msg += `\n   签到:${result.message}`;
 	} else {
 		console.log(`   签到: 失败 ❌ 了呢,原因未知！\n ${result}`)
-		msg += `   签到: 失败 ❌ 了呢,原因未知`
+		msg += `\n   签到: 失败 ❌ 了呢,原因未知`
 		// throw new Error(`${$.name}:喂  喂 ---  签到过期了,别睡了, 起来更新了喂!`);
 	}
 }
@@ -169,11 +169,11 @@ async function user_info() {
 	let result = await httpPost(url, `查询金币`);
 
 	if (result.status == 0) {
-		console.log(`   查询金币:${result.userName} id:${result.userId} , 现在有金币 ${result.goldCount} 枚`);
-		msg += `   查询金币:${result.userName} id:${result.userId} , 现在有金币 ${result.goldCount} 枚`;
+		console.log(`\n   查询金币:${result.userName} id:${result.userId} , 现在有金币 ${result.goldCount} 枚`);
+		msg += `\n   查询金币:${result.userName} id:${result.userId} , 现在有金币 ${result.goldCount} 枚`;
 	} else {
-		console.log(`   查询金币: 失败 ❌ 了呢,原因未知！\n ${result}`)
-		msg += `   查询金币: 失败 ❌ 了呢,原因未知`
+		console.log(`\n   查询金币: 失败 ❌ 了呢,原因未知！\n ${result}`)
+		msg += `\n   查询金币: 失败 ❌ 了呢,原因未知`
 		// throw new Error(`${$.name}:喂  喂 ---  查询金币过期了,别睡了, 起来更新了喂!`);
 	}
 }
