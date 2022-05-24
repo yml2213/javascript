@@ -102,14 +102,14 @@ async function signIn() {
     let result = await httpGet(url, `领红包`);
 
     if (result.status === "SUCCEED") {
-        console.log(`   领红包: 本次获得 ${result.data.allPrize} 元, 累计获得${result.data.todayPrize} 元`);
-        msg += `   领红包: 本次获得 ${result.data.allPrize} 元, 累计获得${result.data.todayPrize} 元`;
+        console.log(`\n   领红包: 本次获得 ${result.data.allPrize} 元, 累计获得${result.data.todayPrize} 元`);
+        msg += `\n   领红包: 本次获得 ${result.data.allPrize} 元, 累计获得${result.data.todayPrize} 元`;
     } else if (result.status === "FAILED") {
-        console.log(`   领红包: ${result.errorMessage}`);
-        msg += `   领红包: ${result.errorMessage}`;
+        console.log(`\n   领红包: ${result.errorMessage}`);
+        msg += `\n   领红包: ${result.errorMessage}`;
     } else {
-        console.log(`   领红包: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-        msg += `    领红包: 失败 ❌ 了呢,原因未知！  \n `;
+        console.log(`\n   领红包: 失败 ❌ 了呢,原因未知！  ${result} \n`);
+        msg += `\n    领红包: 失败 ❌ 了呢,原因未知！  \n `;
     }
 }
 
