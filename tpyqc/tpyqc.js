@@ -57,7 +57,7 @@ async function tips(ckArr) {
 }
 
 !(async () => {
-	let ckArr = await getCks(ckStr, "jieda_data");
+	let ckArr = await getCks(ckStr, "tpyqc_data");
 	await tips(ckArr);
 	for (let index = 0; index < ckArr.length; index++) {
 		let num = index + 1;
