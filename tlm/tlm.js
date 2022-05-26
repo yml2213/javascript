@@ -98,14 +98,14 @@ async function start() {
 		await user_info();
 		await $.wait(2 * 1000);
 
-		console.log(`开始 荣誉广告`);
+		console.log(`\n开始 荣誉广告`);
 		for (let index = 1; index < 11; index++) {
 			console.log(`开始 第 ${index} 次 荣誉广告`);
 			await honor_ad();
 			await $.wait(5 * 1000);
 		}
 
-		console.log(`开始 阅读文章--领金币`);
+		console.log(`\n开始 阅读文章--领金币`);
 		for (let index = 1; index < 11; index++) {
 			console.log(`开始 第 ${index} 次 阅读文章--领金币`);
 			await start_reading();
