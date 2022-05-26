@@ -37,9 +37,9 @@ let ck_status = '';
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\n yml   2022/5/26      5-26		更新领取分红\n'
-let thank = `\n 感谢 xx 的投稿\n`
-let test = `\n 脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!\n`
+let Version = '\nyml   2022/5/26      5-26		更新领取分红'
+let thank = `\n 感谢 xx 的投稿`
+let test = `\n脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
 ///////////////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
@@ -53,16 +53,16 @@ async function tips(ckArr) {
 	// console.log(test);
 	// msg += `${test}`
 
-	console.log(`\n 脚本已恢复正常状态,请及时更新! `);
+	console.log(`\n脚本已恢复正常状态,请及时更新! `);
 	msg += `脚本已恢复正常状态,请及时更新`
 
-	console.log(`\n===============================================\n 脚本执行 - 北京时间(UTC+8): ${new Date(
+	console.log(`\n===============================================\n  脚本执行 - 北京时间(UTC+8): ${new Date(
 		new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
 	).toLocaleString()} \n===============================================\n`);
 	await wyy();
 
-	console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-	msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
+	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
+	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
 
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
@@ -94,12 +94,12 @@ async function start() {
 
 	if (ck_status == 0) {
 
-		console.log("开始 用户信息");
+		console.log("\n开始 用户信息");
 		await user_info();
 		await $.wait(2 * 1000);
 
 		for (let index = 1; index < 11; index++) {
-			console.log(`开始 荣誉广告`);
+			console.log(`开始 第 ${index} 次 荣誉广告`);
 			await honor_ad();
 			await $.wait(5 * 1000);
 		}
@@ -111,19 +111,19 @@ async function start() {
 		}
 
 		if (local_hours == 18) {
-			console.log(`开始 领取金币分红`);
+			console.log(`\n开始 领取金币分红`);
 			await coin_Dividends();
 			await $.wait(5 * 1000);
 
-			console.log(`开始 领取现金分红`);
+			console.log(`\n开始 领取现金分红`);
 			await cash_Dividends();
 			await $.wait(5 * 1000);
 
-			console.log(`开始 领取荣誉值分红`);
+			console.log(`\n开始 领取荣誉值分红`);
 			await honor_Dividends();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`    领取分红默认每天18点领取 ,时间不对,跳过领取分红!`);
+			console.log(`\n    领取分红默认每天18点领取 ,时间不对,跳过领取分红!`);
 		}
 	}
 }
@@ -150,13 +150,13 @@ async function login() {
 
 	if (result.code == 1) {
 
-		console.log(`\n 登录: 欢迎光临 ${result.data.userinfo.nickname} 🎉  , 手机号: ${result.data.userinfo.username} \n`);
-		msg += `\n 登录: 欢迎光临 ${result.data.userinfo.nickname} 🎉  , 手机号: ${result.data.userinfo.username} \n`;
+		console.log(`    登录: 欢迎光临 ${result.data.userinfo.nickname} 🎉  , 手机号: ${result.data.userinfo.username}`);
+		msg += `\n    登录: 欢迎光临 ${result.data.userinfo.nickname} 🎉  , 手机号: ${result.data.userinfo.username}`;
 		token = result.data.userinfo.token;
 
 	} else {
-		console.log(`\n 登录: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 登录: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
+		console.log(`    登录: 失败 ❌ 了呢,原因未知！  ${result}`);
+		msg += `\n    登录: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)}`;
 		return ck_status = 1;
 	}
 }
@@ -181,11 +181,11 @@ async function user_info() {
 	let result = await httpPost(url, `用户信息`);
 
 	if (result.code == 1) {
-		console.log(`\n 用户信息: 成功 , 等级: ${result.data.levelName}, 金币: ${result.data.coin} , 荣誉值: ${result.data.honor} \n`);
-		msg += `\n 用户信息: 成功 , 等级: ${result.data.levelName}, 金币: ${result.data.coin} , 荣誉值: ${result.data.honor} \n`
+		console.log(`    用户信息: 成功 , 等级: ${result.data.levelName}, 金币: ${result.data.coin} , 荣誉值: ${result.data.honor}`);
+		msg += `\n    用户信息: 成功 , 等级: ${result.data.levelName}, 金币: ${result.data.coin} , 荣誉值: ${result.data.honor}`
 	} else {
-		console.log(`\n 用户信息:  失败 ❌ 了呢,原因未知！  ${result}\n `);
-		msg += `\n 用户信息: 失败 ❌ 了呢,原因未知！   \n `
+		console.log(`    用户信息:  失败 ❌ 了呢,原因未知！  ${result}`);
+		msg += `\n    用户信息: 失败 ❌ 了呢,原因未知！ `
 	}
 }
 
@@ -210,17 +210,15 @@ async function article_list() {
 	let result = await httpPost(url, `文章列表`);
 
 	if (result.code == 1) {
-
-		console.log(`\n 文章列表: 获取成功  🎉  \n`);
-		msg += `\n 文章列表: 获取成功  🎉  \n`;
+		console.log(`    文章列表: 获取成功  🎉`);
+		msg += `\n    文章列表: 获取成功  🎉`;
 		article_num = randomInt(1, 9);
-
 		article_id = result.data[article_num].id;
-		console.log(`阅读文章id ${article_id}`);
+		console.log(`    阅读文章id ${article_id}`);
 
 	} else {
-		console.log(`\n 文章列表: 失败 ❌ 了呢,原因未知！  ${result} \n`);
-		msg += `\n 文章列表: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)} \n `;
+		console.log(`    文章列表: 失败 ❌ 了呢,原因未知！  ${result}`);
+		msg += `\n    文章列表: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)}`;
 	}
 }
 
@@ -246,24 +244,24 @@ async function start_reading() {
 
 	if (result.code === 1) {
 
-		console.log(`\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`);
-		msg += `\n 开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum} \n`;
+		console.log(`    开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum}`);
+		msg += `\n    开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum}`;
 
 		await_num = randomInt(60, 65);
-		console.log(`\n 等待 ${await_num} 秒后 领取阅读奖励 \n`);
+		console.log(`    等待 ${await_num} 秒后 领取阅读奖励`);
 		await $.wait(await_num * 1000);
-		console.log(`\n 开始 领取阅读奖励 \n`);
+		console.log(`     开始 领取阅读奖励 \n`);
 		await article_coin();
 
 
 	} else if (result.code === 0) {
-		console.log(`\n 这篇文章读过了! 让我们跳过他!\n`);
+		console.log(`\n 这篇文章读过了! 让我们跳过他!`);
 		await $.wait(20 * 1000);
 		await article_coin();
 
 	} else {
-		console.log(`\n 开始阅读: 失败 ❌ 了呢,原因未知！ \n`);
-		msg += `\n 开始阅读: 失败 ❌ 了呢,原因未知！\n `;
+		console.log(`\n 开始阅读: 失败 ❌ 了呢,原因未知!`);
+		msg += `\n 开始阅读: 失败 ❌ 了呢,原因未知! `;
 	}
 }
 
@@ -310,22 +308,22 @@ async function honor_ad() {
 
 	if (result.code == 0) {
 
-		console.log(`\n 荣誉广告: 成功 ,开始阅读广告: ${result.data.title} \n`);
-		msg += `\n 荣誉广告: 成功 ,开始阅读广告: ${result.data.title} \n`;
+		console.log(`    荣誉广告: 成功 ,开始阅读广告: ${result.data.title}`);
+		msg += `\n    荣誉广告: 成功 ,开始阅读广告: ${result.data.title}`;
 		honor_id = result.data.id;
 		let num = randomInt(20, 25);
-		console.log(`\n 等待 ${num} 秒后 领取荣誉值 \n`);
+		console.log(`    等待 ${num} 秒后 领取荣誉值`);
 		await $.wait(num * 1000);
-		console.log(`\n 开始 领取荣誉值 \n`);
+		console.log(`    开始 领取荣誉值`);
 		await receive_honor();
 
 	} else if (result.code == 1) {
-		console.log(`\n 荣誉广告: ${result.msg}\n`);
-		msg += `\n 荣誉广告: ${result.msg}\n`;
+		console.log(`    荣誉广告: ${result.msg}`);
+		msg += `\n    荣誉广告: ${result.msg}`;
 
 	} else {
-		console.log(`\n 荣誉广告: 失败 ❌ 了呢,原因未知！ \n`);
-		msg += `\n 荣誉广告: 失败 ❌ 了呢,原因未知！\n `;
+		console.log(`\n 荣誉广告: 失败 ❌ 了呢,原因未知！`);
+		msg += `\n 荣誉广告: 失败 ❌ 了呢,原因未知! `;
 	}
 }
 
@@ -354,8 +352,8 @@ async function receive_honor() {
 	if (result_start.code == 1) {
 		honor_start = result_start.data.user.honor;
 	} else {
-		console.log(`\n 获取荣誉值 初始值: 失败 ❌ 了呢,原因未知！ \n`);
-		msg += `\n 获取荣誉值 初始值: 失败 ❌ 了呢,原因未知！\n `;
+		console.log(`    获取荣誉值 初始值: 失败 ❌ 了呢,原因未知！`);
+		msg += `\n    获取荣誉值 初始值: 失败 ❌ 了呢,原因未知! `;
 	}
 
 
@@ -373,7 +371,7 @@ async function receive_honor() {
 	let result = await httpPost(url, `领取荣誉值 开始阅读`);
 
 	let num = randomInt(20, 25);
-	console.log(`\n 等待 ${num} 秒后 结束阅读 \n`);
+	console.log(`    等待 ${num} 秒后 结束阅读`);
 
 	// 结束阅读文章
 	let url_read_end = {
@@ -405,18 +403,18 @@ async function receive_honor() {
 	if (result_end.code == 1) {
 		honor_end = result_end.data.user.honor;
 	} else {
-		console.log(`\n 获取荣誉值 结束值: 失败 ❌ 了呢,原因未知！ \n`);
-		msg += `\n 获取荣誉值 结束值: 失败 ❌ 了呢,原因未知！\n `;
+		console.log(`    获取荣誉值 结束值: 失败 ❌ 了呢,原因未知！`);
+		msg += `\n    获取荣誉值 结束值: 失败 ❌ 了呢,原因未知! `;
 	}
 
 
 
 	if (honor_start < honor_end) {
-		console.log(`\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`);
-		msg += `\n 领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum} \n`;
+		console.log(`    领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum}`);
+		msg += `\n    领取荣誉值: 成功 ,本次获得荣誉值: ${result.data.drawNum}`;
 	} else {
-		console.log(`\n 领取荣誉值: 失败 ❌ 了呢,原因未知！ \n`);
-		msg += `\n 领取荣誉值: 失败 ❌ 了呢,原因未知！\n `;
+		console.log(`    领取荣誉值: 失败 ❌ 了呢,原因未知！`);
+		msg += `\n    领取荣誉值: 失败 ❌ 了呢,原因未知! `;
 	}
 }
 
