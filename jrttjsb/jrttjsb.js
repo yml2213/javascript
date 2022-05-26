@@ -63,7 +63,8 @@ async function tips(ckArr) {
     await wyy();
 
     console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-    debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
+    msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
+    debugLog(`【debug】 这是你的账号数组: \n ${ckArr} `);
 }
 
 !(async () => {
@@ -71,11 +72,12 @@ async function tips(ckArr) {
     await tips(ckArr);
     for (let index = 0; index < ckArr.length; index++) {
         jrttjsb_num = index + 1;
-        console.log(`------------- 开始【第 ${jrttjsb_num} 个账号】-------------`);
+        console.log(`------------- 开始【第 ${jrttjsb_num} 个账号】------------- `);
+        msg += `\n------------- 开始【第 ${jrttjsb_num} 个账号】------------- `
 
         ck = ckArr[index].split("&");
 
-        debugLog(`【debug】 这是你第 ${jrttjsb_num} 账号信息:\n ${ck}`);
+        debugLog(`【debug】 这是你第 ${jrttjsb_num} 账号信息: \n ${ck} `);
         await start();
     }
     await SendMsg(msg);
