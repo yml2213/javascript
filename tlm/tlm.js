@@ -18,9 +18,12 @@
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export tlm_data=' 手机号&密码 @ 手机号&密码 '  多个账号用 @分割
+ * 变量格式: export tlm_data=' 手机号&密码 @ 手机号&密码 '  多个账号用 换行 或 @分割
  *
- * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
+ * tg频道: https://t.me/yml2213_tg  
+ * tg群组: https://t.me/yml_tg    
+ * qq频道: https://qun.qq.com/qqweb/qunpro/share?_wv=3&_wwv=128&appChannel=share&inviteCode=1W4InjV&appChannel=share&businessType=9&from=181074&biz=ka&shareSource=5
+ * 
  */
 const $ = new Env("推了吗");
 const notify = $.isNode() ? require("./sendNotify") : "";
@@ -548,15 +551,17 @@ async function honor_Dividends() {
 // ============================================变量检查============================================ \\
 
 async function getCks(ck, str) {
-
-
-	return new Promise((resolve, reject) => {
-
+	return new Promise((resolve) => {
 		let ckArr = []
 		if (ck) {
-			if (ck.indexOf("@") != -1) {
+			if (ck.indexOf("@") !== -1) {
 
 				ck.split("@").forEach((item) => {
+					ckArr.push(item);
+				});
+			} else if (ck.indexOf("\n") !== -1) {
+
+				ck.split("\n").forEach((item) => {
 					ckArr.push(item);
 				});
 			} else {
@@ -564,12 +569,12 @@ async function getCks(ck, str) {
 			}
 			resolve(ckArr)
 		} else {
-			console.log(`\n 【${$.name}】：未填写变量 ${str}`)
+			console.log(` :未填写变量 ${str}`)
 		}
-
 	}
 	)
 }
+
 
 // ============================================发送消息============================================ \\
 
