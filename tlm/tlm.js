@@ -100,34 +100,34 @@ async function start() {
 
 		console.log(`\n开始 荣誉广告`);
 		for (let index = 1; index < 11; index++) {
-			console.log(`开始 第 ${index} 次 荣誉广告`);
+			console.log(`    开始 第 ${index} 次 荣誉广告`);
 			await honor_ad();
 			await $.wait(5 * 1000);
 		}
 
 		console.log(`\n开始 阅读文章--领金币`);
 		for (let index = 1; index < 11; index++) {
-			console.log(`开始 第 ${index} 次 阅读文章--领金币`);
+			console.log(`    开始 第 ${index} 次 阅读文章--领金币`);
 			await start_reading();
 			await $.wait(5 * 1000);
 		}
 
 		console.log(`\n开始 领取分红`);
 		if (local_hours == 18) {
-			console.log(`开始 领取金币分红`);
+			console.log(`    开始 领取金币分红`);
 			await coin_Dividends();
 			await $.wait(5 * 1000);
 
-			console.log(`开始 领取现金分红`);
+			console.log(`    开始 领取现金分红`);
 			await cash_Dividends();
 			await $.wait(5 * 1000);
 
-			console.log(`开始 领取荣誉值分红`);
+			console.log(`    开始 领取荣誉值分红`);
 			await honor_Dividends();
 			await $.wait(5 * 1000);
 		} else {
-			console.log(`\n领取分红默认每天18点领取 ,时间不对,跳过领取分红!`);
-			msg += `领取分红默认每天18点领取 ,时间不对,跳过领取分红!`
+			console.log(`    领取分红默认每天18点领取 ,时间不对,跳过领取分红!`);
+			msg += `\n    领取分红默认每天18点领取 ,时间不对,跳过领取分红!`
 		}
 	}
 }
@@ -254,18 +254,18 @@ async function start_reading() {
 		await_num = randomInt(60, 65);
 		console.log(`    等待 ${await_num} 秒后 领取阅读奖励`);
 		await $.wait(await_num * 1000);
-		console.log(`     开始 领取阅读奖励 \n`);
+		console.log(`    开始 领取阅读奖励 \n`);
 		await article_coin();
 
 
 	} else if (result.code === 0) {
-		console.log(`\n 这篇文章读过了! 让我们跳过他!`);
+		console.log(`    这篇文章读过了! 让我们跳过他!`);
 		await $.wait(20 * 1000);
 		await article_coin();
 
 	} else {
-		console.log(`\n 开始阅读: 失败 ❌ 了呢,原因未知!`);
-		msg += `\n 开始阅读: 失败 ❌ 了呢,原因未知! `;
+		console.log(`    开始阅读: 失败 ❌ 了呢,原因未知!`);
+		msg += `\n    开始阅读: 失败 ❌ 了呢,原因未知! `;
 	}
 }
 
@@ -326,8 +326,8 @@ async function honor_ad() {
 		msg += `\n    荣誉广告: ${result.msg}`;
 
 	} else {
-		console.log(`\n 荣誉广告: 失败 ❌ 了呢,原因未知！`);
-		msg += `\n 荣誉广告: 失败 ❌ 了呢,原因未知! `;
+		console.log(`    荣誉广告: 失败 ❌ 了呢,原因未知！`);
+		msg += `\n    荣誉广告: 失败 ❌ 了呢,原因未知! `;
 	}
 }
 
