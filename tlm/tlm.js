@@ -226,7 +226,7 @@ async function article_list() {
 		// msg += `\n    文章列表: 获取成功  🎉`;
 		let article_num = randomInt(1, 9);
 		article_id = result.data[article_num].id;
-		console.log(`    阅读文章id ${article_id}`);
+		// console.log(`    阅读文章id ${article_id}`);
 
 	} else {
 		console.log(`    文章列表: 失败 ❌ 了呢,原因未知！  ${result}`);
@@ -255,22 +255,17 @@ async function start_reading() {
 	let result = await httpPost(url, `开始阅读`);
 
 	if (result.code === 1) {
-
-		console.log(`    开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum}`);
-		msg += `\n    开始阅读: 成功 ,阅读预计获得金币:${result.data.drawNum}`;
-
+		console.log(`    开始阅读: ${article_id} 成功 ,阅读预计获得金币:${result.data.drawNum}`);
+		msg += `\n    开始阅读: ${article_id} 成功 ,阅读预计获得金币:${result.data.drawNum}`;
 		await_num = randomInt(60, 65);
 		console.log(`    等待 ${await_num} 秒后 领取阅读奖励`);
 		await $.wait(await_num * 1000);
 		console.log(`    开始 领取阅读奖励`);
 		await article_coin();
-
-
 	} else if (result.code === 0) {
 		console.log(`    这篇文章读过了! 让我们跳过他!`);
 		await $.wait(20 * 1000);
 		await article_coin();
-
 	} else {
 		console.log(`    开始阅读: 失败 ❌ 了呢,原因未知!`);
 		msg += `\n    开始阅读: 失败 ❌ 了呢,原因未知! `;
