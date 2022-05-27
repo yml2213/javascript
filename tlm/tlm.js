@@ -200,7 +200,7 @@ async function user_info() {
  * http://tlm.zhixiang.run/api/article/articleList
  */
 async function article_list() {
-	page_num = randomInt(1, 230);
+	let page_num = randomInt(1, 230);
 	let url = {
 		url: `http://tlm.zhixiang.run/api/article/articleList`,
 		headers: {
@@ -212,17 +212,18 @@ async function article_list() {
 		form: { "type": "9000", "page": page_num },
 	};
 	let result = await httpPost(url, `文章列表`);
+	if (!result) return;
 
 	if (result.code == 1) {
-		console.log(`    文章列表: 获取成功  🎉`);
-		msg += `\n    文章列表: 获取成功  🎉`;
-		article_num = randomInt(1, 9);
+		// console.log(`    文章列表: 获取成功  🎉`);
+		// msg += `\n    文章列表: 获取成功  🎉`;
+		let article_num = randomInt(1, 9);
 		article_id = result.data[article_num].id;
 		console.log(`    阅读文章id ${article_id}`);
 
 	} else {
 		console.log(`    文章列表: 失败 ❌ 了呢,原因未知！  ${result}`);
-		msg += `\n    文章列表: 失败 ❌ 了呢,原因未知！  ${JSON.parse(result)}`;
+		msg += `\n    文章列表: 失败 ❌ 了呢,原因未知!`;
 	}
 }
 
@@ -254,7 +255,7 @@ async function start_reading() {
 		await_num = randomInt(60, 65);
 		console.log(`    等待 ${await_num} 秒后 领取阅读奖励`);
 		await $.wait(await_num * 1000);
-		console.log(`    开始 领取阅读奖励 \n`);
+		console.log(`    开始 领取阅读奖励`);
 		await article_coin();
 
 
@@ -708,9 +709,9 @@ async function httpGet(getUrlObject, tip, timeout = 3 * 1000) {
 					let result = JSON.parse(data);
 					resolve(result);
 				} catch (e) {
-					// console.log(err, resp);
-					// console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					// msg += `\n ${tip} 失败了!请稍后尝试!!`
+					console.log(err, resp);
+					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+					msg += `\n ${tip} 失败了!请稍后尝试!!`
 				} finally {
 					resolve();
 				}
@@ -748,9 +749,9 @@ async function httpPost(postUrlObject, tip, timeout = 3 * 1000) {
 					let result = JSON.parse(data);
 					resolve(result);
 				} catch (e) {
-					// console.log(err, resp);
-					// console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					// msg += `\n ${tip} 失败了!请稍后尝试!!`
+					console.log(err, resp);
+					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+					msg += `\n ${tip} 失败了!请稍后尝试!!`
 				} finally {
 					resolve();
 				}
