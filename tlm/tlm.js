@@ -62,7 +62,6 @@ async function tips(ckArr) {
 		new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
 	).toLocaleString()} \n===============================================\n`);
 	await wyy();
-
 	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
 	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
 
@@ -74,7 +73,7 @@ async function tips(ckArr) {
 	await tips(ckArr);
 	for (let index = 0; index < ckArr.length; index++) {
 		let num = index + 1;
-		console.log(`------------- 开始【第 ${num} 个账号】------------- `);
+		console.log(`\n------------- 开始【第 ${num} 个账号】------------- `);
 		msg += `\n------------- 开始【第 ${num} 个账号】------------- `
 
 		ck = ckArr[index].split("&");
@@ -108,6 +107,7 @@ async function start() {
 				await $.wait(5 * 1000);
 			} else {
 				console.log(`    暂无 荣誉广告,等会再来吧`);
+				return;
 			}
 
 		}
@@ -677,7 +677,7 @@ function wyy() {
 		$.get(url, async (err, resp, data) => {
 			try {
 				data = JSON.parse(data)
-				console.log(`\n 【网抑云时间】: ${data.content}  by--${data.music}`);
+				console.log(`网抑云时间】: ${data.content}  by--${data.music}`);
 
 			} catch (e) {
 				$.logErr(e, resp);
@@ -772,81 +772,6 @@ async function httpPost(postUrlObject, tip, timeout = 3 * 1000) {
 
 
 
-async function task111(method, url, type_name) {
-
-	return new Promise(async resolve => {
-		if (!type_name) {
-			let tmp = arguments.callee.toString();
-			let re = /function\s*(\w*)/i;
-			let matches = re.exec(tmp);
-			type_name = matches[1];
-		}
-		// let timeout = '';
-		if (method = `get`) {
-			return new Promise((resolve) => {
-				if (debug) {
-					console.log(`\n 【debug】=============== 这是 ${type_name} 请求 url ===============`);
-					console.log(url);
-				}
-
-				$.get(url, async (err, resp, data) => {
-					try {
-						if (err) {
-							console.log(`${$.name}: API查询请求失败 ‼️‼️`);
-							console.log(JSON.stringify(err));
-							$.logErr(err);
-						} else if (debug) {
-							console.log(`\n\n 【debug】===============这是 ${type_name} 返回data==============`);
-							console.log(data);
-							console.log(`======`);
-							console.log(JSON.parse(data));
-						}
-						let result = JSON.parse(data);
-						resolve(result);
-					} catch (e) {
-						console.log(e, resp);
-					} finally {
-						resolve();
-					}
-				},
-				);
-			});
-		} else if (method = httppost) {
-			return new Promise((resolve) => {
-				if (debug) {
-					console.log(`\n 【debug】=============== 这是 ${type_name} 请求 url ===============`);
-					console.log(url);
-				}
-				$.post(url, async (err, resp, data) => {
-					try {
-						if (err) {
-							console.log("$.name: API查询请求失败 ‼️‼️");
-							console.log(JSON.stringify(err));
-							$.logErr(err);
-						} else if (debug) {
-							console.log(`\n\n 【debug】===============这是 ${type_name} 返回data==============`);
-							console.log(data);
-							console.log(`======`);
-							console.log(JSON.parse(data));
-						}
-						let result = JSON.parse(data);
-						resolve(result);
-					} catch (e) {
-						console.log(e, resp);
-					} finally {
-						resolve();
-					}
-				},
-					// timeout(3000)
-				);
-			});
-
-		} else {
-			console.log(`参数错误 ❌ ,请仔细检查修改后再试试吧!!`);
-		}
-
-	})
-}
 
 
 
