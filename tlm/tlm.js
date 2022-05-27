@@ -14,6 +14,7 @@
  * 5-11		荣誉值可用了--好像是每天只有一次
  * 5-17		修改运行次数
  * 5-26		更新领取分红,更改荣誉值次数  每次执行10次
+ * 5-27		修复退出问题(测试中)
  *
  *
  * 感谢所有测试人员
@@ -34,10 +35,11 @@ let ckStr = process.env.tlm_data;
 let msg = "";
 let ck = "";
 let ck_status = '';
+let ad_status = 0;
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let Version = '\nyml   2022/5/26      5-26		更新领取分红'
+let Version = '\nyml   2022/5/26      5-26	修复退出问题(测试中)'
 let thank = `\n 感谢 xx 的投稿`
 let test = `\n脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
 ///////////////////////////////////////////////////////////////////
@@ -100,9 +102,14 @@ async function start() {
 
 		console.log(`\n开始 荣誉广告`);
 		for (let index = 1; index < 11; index++) {
-			console.log(`    开始 第 ${index} 次 荣誉广告`);
-			await honor_ad();
-			await $.wait(5 * 1000);
+			if (ad_status < 3) {
+				console.log(`    开始 第 ${index} 次 荣誉广告`);
+				await honor_ad();
+				await $.wait(5 * 1000);
+			} else {
+				console.log(`    暂无 荣誉广告,等会再来吧`);
+			}
+
 		}
 
 		console.log(`\n开始 阅读文章--领金币`);
@@ -325,6 +332,7 @@ async function honor_ad() {
 	} else if (result.code == 1) {
 		console.log(`    荣誉广告: ${result.msg}`);
 		msg += `\n    荣誉广告: ${result.msg}`;
+		ad_status++;
 
 	} else {
 		console.log(`    荣誉广告: 失败 ❌ 了呢,原因未知！`);
