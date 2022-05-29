@@ -91,23 +91,19 @@ async function start() {
 
 	console.log("开始 登录");
 	await login();
-	await $.wait(2 * 1000);
 
 	if (ck_status == 0) {
 
 		console.log("\n开始 用户信息");
 		await user_info();
-		await $.wait(2 * 1000);
 
 		console.log(`\n开始 荣誉广告`);
 		for (let index = 1; index < 11; index++) {
 			if (ad_status < 3) {
 				console.log(`    开始 第 ${index} 次 荣誉广告`);
 				await honor_ad();
-				await $.wait(5 * 1000);
 			} else {
 				console.log(`    暂无 荣誉广告,等会再来吧`);
-				return;
 			}
 
 		}
@@ -116,22 +112,18 @@ async function start() {
 		for (let index = 1; index < 11; index++) {
 			console.log(`    开始 第 ${index} 次 阅读文章--领金币`);
 			await start_reading();
-			await $.wait(5 * 1000);
 		}
 
 		console.log(`\n开始 领取分红`);
 		if (local_hours == 18) {
 			console.log(`    开始 领取金币分红`);
 			await coin_Dividends();
-			await $.wait(5 * 1000);
 
 			console.log(`    开始 领取现金分红`);
 			await cash_Dividends();
-			await $.wait(5 * 1000);
 
 			console.log(`    开始 领取荣誉值分红`);
 			await honor_Dividends();
-			await $.wait(5 * 1000);
 		} else {
 			console.log(`    领取分红默认每天18点领取 ,时间不对,跳过领取分红!`);
 			msg += `\n    领取分红默认每天18点领取 ,时间不对,跳过领取分红!`
