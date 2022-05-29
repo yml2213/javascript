@@ -58,7 +58,7 @@ async function tips(ckArr) {
     ).toLocaleString()} \n==================================================`);
     await wyy();
     console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-    msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
+    msg += `\n ================ 共找到 ${ckArr.length} 个账号 ================`
     debugLog(`【debug】 这是你的账号数组: \n ${ckArr} `);
 }
 
