@@ -63,7 +63,7 @@ async function tips(ckArr) {
     await wyy();
 
     console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-    msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
+    msg += `\n=================== 共找到 ${ckArr.length} 个账号 ===================`
     debugLog(`【debug】 这是你的账号数组: \n ${ckArr} `);
 }
 
@@ -526,11 +526,11 @@ async function ExcitationAd(task_id) {
         msg += `\n    领取宝箱视频奖励获得 ${result.data.score_amount} 金币`;
     } else if (result.err_no == 1071) {
         console.log(`    领取宝箱视频奖励 ${result.err_tips}`);
-        msg += `\n    领取宝箱视频奖励获得 ${result.err_tips}`;
+        // msg += `\n    领取宝箱视频奖励获得 ${result.err_tips}`;
     } else {
         console.log(`    宝箱视频奖励: 失败 ❌ 了呢,原因未知!`);
         console.log(result);
-        msg += `\n    宝箱视频奖励: 失败 ❌ 了呢,原因未知!`;
+        // msg += `\n    宝箱视频奖励: 失败 ❌ 了呢,原因未知!`;
     }
 }
 
