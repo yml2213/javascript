@@ -7,7 +7,7 @@
  * cron 30 6 * * *  yml2213_javascript_master/qckf.js
  * 自己更改定时
  *
- * 5-29     完成 签到 自己培育 给好友培育
+ * 5-29     完成 签到 自己培育 给好友培育 分享 等任务
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -34,7 +34,7 @@ let ck_status = 0;
 let host = "coffeefarm.shheywow.com";
 let hostname = "https://" + host;
 ///////////////////////////////////////////////////////////////////
-let Version = '\nyml   2022/5/29   完成 签到 自己培育 给好友培育  '
+let Version = '\nyml   2022/5/29-2   完成 签到 自己培育 给好友培育  '
 let thank = `感谢 心雨 的投稿`
 let test = `脚本测试中,有bug及时反馈! 脚本测试中,有bug及时反馈!`
 ///////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ async function tips(ckArr) {
     ).toLocaleString()} \n==================================================`);
     await wyy();
     console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-    msg += `\n ================ 共找到 ${ckArr.length} 个账号 ================`
+    msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
     debugLog(`【debug】 这是你的账号数组: \n ${ckArr} `);
 }
 
@@ -92,6 +92,7 @@ async function start() {
         console.log("\n开始 用户信息");
         await user_info()
         await $.wait(3 * 1000);
+
 
     }
 }
@@ -224,8 +225,9 @@ async function share() {
     let result = await httpRequest(options, `分享`);
 
     if (result.error_code === 0) {
-        console.log(`    分享: 成功 ,获得 ${result.data.credit} 爱豆`);
-        msg += `\n    分享: 成功 ,获得 ${result.data.credit} 爱豆`;
+        console.log(`    分享: 成功 ,预计获得 ${result.data.credit} 爱豆`);
+        msg += `\n    分享: 成功 ,预计获得 ${result.data.credit} 爱豆`;
+        await share_Reward();
     } else {
         console.log(`    分享: 失败 ❌ 了呢,原因未知!`);
         console.log(result);
@@ -338,7 +340,7 @@ async function friend_breed_info() {
         if (result.data.friends.length > 3) {
             console.log(`    好友培育:您当前有 ${result.data.friends.length - 1} 个好友 ,将会进行好友培育任务!`);
             msg += `\n    好友培育:您当前有 ${result.data.friends.length - 1} 个好友 ,将会进行好友培育任务!`;
-            for (let index = 1; index < result.data.friends.length; index++) {
+            for (let index = 1; index < 4; index++) {
                 let friend_id = result.data.friends[index].manor.user_id;
                 let friend_name = result.data.friends[index].manor.name;
                 let landId = result.data.friends[index].land.id;
@@ -347,6 +349,11 @@ async function friend_breed_info() {
                 await friend_breed(friend_id, landId);
                 await $.wait(3 * 1000);
             }
+            await friend_breed_Reward();
+            await $.wait(3 * 1000);
+
+            await invitation_Reward();
+            await $.wait(3 * 1000);
         } else {
             console.log(`    好友培育:您当前有 ${result.data.friends.length - 1} 个好友 ,跳过 好友培育任务!`);
             msg += `\n    好友培育:您当前有 ${result.data.friends.length - 1} 个好友 ,将会进行 好友培育任务!`;
@@ -398,10 +405,94 @@ async function friend_breed(friend_id, landId) {
 
 
 
+/**
+ * 领取好友培育奖励   POST
+ */
+async function friend_breed_Reward() {
+    let options = {
+        method: 'POST',
+        url: `${hostname}/user/taskv2/foster/friend/get/credit`,
+        headers: {
+            'Host': host,
+            'Authorization': `Bearer ${_tokne}`,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `领取好友培育奖励`);
+
+    if (result.error_code === 0) {
+        console.log(`    领取好友培育奖励:成功了`);
+        msg += `\n    领取好友培育奖励:成功了`;
+    } else if (result.error_code === 1) {
+        console.log(`    领取好友培育奖励: ${result.error_message}`);
+        msg += `\n    领取好友培育奖励: ${result.error_message}`;
+    } else {
+        console.log(`    领取好友培育奖励: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+        msg += `\n    领取好友培育奖励: 失败 ❌ 了呢,原因未知!`;
+    }
+}
 
 
 
+/**
+ * 领取邀请奖励   POST
+ */
+async function invitation_Reward() {
+    let options = {
+        method: 'POST',
+        url: `${hostname}/api/user/taskv2/invitation/get/credit`,
+        headers: {
+            'Host': host,
+            'Authorization': `Bearer ${_tokne}`,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `领取邀请奖励`);
 
+    if (result.error_code === 0) {
+        console.log(`    领取邀请奖励:成功了 ,获得 ${result.userInfo.credit} 爱豆`);
+        msg += `\n    领取邀请奖励:成功了 ,获得 ${result.userInfo.credit} 爱豆`;
+    } else if (result.error_code === 1) {
+        console.log(`    领取邀请奖励: ${result.error_message}`);
+        msg += `\n    领取邀请奖励: ${result.error_message}`;
+    } else {
+        console.log(`    领取邀请奖励: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+        msg += `\n    领取邀请奖励: 失败 ❌ 了呢,原因未知!`;
+    }
+}
+
+/**
+ * 领取领取每日分享奖励   POST
+ */
+async function share_Reward() {
+    let options = {
+        method: 'POST',
+        url: `${hostname}/api/user/taskv2/share/get/creditt`,
+        headers: {
+            'Host': host,
+            'Authorization': `Bearer ${_tokne}`,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({})
+    };
+    let result = await httpRequest(options, `领取每日分享奖励`);
+
+    if (result.error_code === 0) {
+        console.log(`    领取每日分享奖励:领取成功了! `);
+        msg += `\n    领取每日分享奖励:领取成功了! `;
+    } else if (result.error_code === 1) {
+        console.log(`    领取每日分享奖励: ${result.error_message}`);
+        msg += `\n    领取每日分享奖励: ${result.error_message}`;
+    } else {
+        console.log(`    领取每日分享奖励: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+        msg += `\n    领取每日分享奖励: 失败 ❌ 了呢,原因未知!`;
+    }
+}
 
 
 
