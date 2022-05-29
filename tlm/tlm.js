@@ -64,7 +64,7 @@ async function tips(ckArr) {
 	console.log(`\n===============================================\n  脚本执行 - 北京时间(UTC+8): ${new Date(
 		new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
 	).toLocaleString()} \n===============================================\n`);
-	// await wyy();
+	await wyy();
 	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
 	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
@@ -97,13 +97,13 @@ async function start() {
 	if (ck_status == 0) {
 
 		console.log(`\n开始 领取分红`);
-		console.log(`\n    开始 领取金币分红`);
+		console.log(`    开始 领取 金币 分红`);
 		await coin_Dividends();
 
-		console.log(`\n    开始 领取现金分红`);
+		console.log(`    开始 领取 现金 分红`);
 		await cash_Dividends();
 
-		console.log(`\n    开始 领取荣誉值分红`);
+		console.log(`    开始 领取 荣誉值 分红`);
 		await honor_Dividends();
 
 
@@ -121,7 +121,7 @@ async function start() {
 
 		}
 
-
+		console.log(`\n开始 阅读文章--领金币`);
 		for (let index = 1; index < 11; index++) {
 			if (coin_status == 1) {
 				console.log(`    开始 第 ${index} 次 阅读文章--领金币`);
@@ -663,12 +663,13 @@ function local_minutes() {
 function wyy() {
 	return new Promise((resolve) => {
 		let url = {
-			url: `https://keai.icu/apiwyy/api`
+			url: `http://ovooa.com/API/wyrp/api.php`,
 		}
 		$.get(url, async (err, resp, data) => {
 			try {
 				data = JSON.parse(data)
-				console.log(`网抑云时间】: ${data.content}  by--${data.music}`);
+				// console.log(data);
+				console.log(`【网抑云时间】 ${data.data.Content}  by--${data.data.Music}`);
 
 			} catch (e) {
 				$.logErr(e, resp);
