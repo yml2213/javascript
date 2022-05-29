@@ -90,9 +90,12 @@ async function start() {
         await $.wait(3 * 1000);
 
         console.log("\n开始 用户信息");
-        await user_info()
+        await user_info();
         await $.wait(3 * 1000);
 
+
+        await invitation_Reward();
+        await $.wait(3 * 1000);
 
     }
 }
@@ -453,8 +456,8 @@ async function invitation_Reward() {
     let result = await httpRequest(options, `领取邀请奖励`);
 
     if (result.error_code === 0) {
-        console.log(`    领取邀请奖励:成功了 ,获得 ${result.userInfo.credit} 爱豆`);
-        msg += `\n    领取邀请奖励:成功了 ,获得 ${result.userInfo.credit} 爱豆`;
+        console.log(`    领取邀请奖励:成功了`);
+        msg += `\n    领取邀请奖励:成功了`;
     } else if (result.error_code === 1) {
         console.log(`    领取邀请奖励: ${result.error_message}`);
         msg += `\n    领取邀请奖励: ${result.error_message}`;
