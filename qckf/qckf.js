@@ -25,7 +25,7 @@
 const $ = new Env("雀巢咖啡");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
-const debug = 1 		//0为关闭调试,1为打开调试,默认为0
+const debug = 0 		//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.qckf_data;
 let msg = "";
@@ -54,9 +54,6 @@ async function tips(ckArr) {
     // console.log(` 脚本已恢复正常状态,请及时更新!`);
     // msg += `脚本已恢复正常状态,请及时更新`
 
-    console.log(`==================================================\n  脚本执行 - 北京时间(UTC+8): ${new Date(
-        new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
-    ).toLocaleString()} \n==================================================`);
     await wyy();
     console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
     msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
@@ -68,10 +65,10 @@ async function tips(ckArr) {
     await tips(ckArr);
     for (let index = 0; index < ckArr.length; index++) {
         qckf_num = index + 1;
-        console.log(`------------- 开始【第 ${qckf_num} 个账号】------------- `);
+        console.log(`\n------------- 开始【第 ${qckf_num} 个账号】------------- `);
         msg += `\n------------- 开始【第 ${qckf_num} 个账号】------------- `
         ck = ckArr[index].split("&");
-        debugLog(`【debug】 这是你第 ${qckf_num} 账号信息: \n ${ck} `);
+        debugLog(`【debug】 这是你第 ${qckf_num} 账号信息: ${ck} `);
         await start();
     }
     await SendMsg(msg);
