@@ -43,6 +43,7 @@ let coin_status = 0;
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
+let Version1test = '1.0.1'
 let Version = '\nyml   2022/5/29	修复分红bug ,优化运行逻辑'
 let thank = `\n 感谢 xx 的投稿`
 let test = `\n脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
