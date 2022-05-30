@@ -43,7 +43,7 @@ let coin_status = 0;
 let token = "";
 
 ///////////////////////////////////////////////////////////////////
-let VersionCheck = "仓库最新版本:1.0.1"
+let VersionCheck = "1.0.1"
 let Version = '\nyml   	修复分红bug ,优化运行逻辑'
 let thank = `\n 感谢 xx 的投稿`
 let test = `\n脚本测试中,有bug及时反馈!     脚本测试中,有bug及时反馈!`
