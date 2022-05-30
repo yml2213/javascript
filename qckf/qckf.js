@@ -55,8 +55,8 @@ async function tips(ckArr) {
     // msg += `脚本已恢复正常状态,请及时更新`
 
     await wyy();
-    console.log(`\n=================== 共找到 ${ckArr.length} 个账号 ===================`);
-    msg += `\n =================== 共找到 ${ckArr.length} 个账号 ===================`
+    console.log(`\n=============== 共找到 ${ckArr.length} 个账号 ===============`);
+    msg += `\n =============== 共找到 ${ckArr.length} 个账号 ===============`
     debugLog(`【debug】 这是你的账号数组: \n ${ckArr} `);
 }
 
