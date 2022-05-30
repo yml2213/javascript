@@ -48,7 +48,7 @@ let thank = `\n 感谢 xx 的投稿`
 
 async function tips(ckArr) {
 	let Version_latest = await Version_Check('tlm');
-	let Version = `\n本地脚本:1.0.1  远程仓库脚本:${Version_latest}\n`
+	let Version = `\n本地脚本:V1.0.1  远程仓库脚本:V${Version_latest}\n`
 	console.log(`${Version}`);
 	msg += `${Version}`
 
