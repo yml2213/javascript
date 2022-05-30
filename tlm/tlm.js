@@ -477,7 +477,7 @@ async function cash_Dividends() {
 		},
 	};
 	let result = await httpPost(url, `领取现金分红`);
-	console.log(result);
+	// console.log(result);
 
 	if (result.code === 0) {
 		console.log(`    领取现金分红成功 🎉`);
