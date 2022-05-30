@@ -8,6 +8,7 @@
  * 自己更改定时
  *
  * 5-29     完成 签到 自己培育 给好友培育 分享 等任务
+ * 5-30     修复分享 邀请爱豆 领取失败bug
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -24,7 +25,7 @@
 const $ = new Env("雀巢咖啡");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
-const debug = 0 		//0为关闭调试,1为打开调试,默认为0
+const debug = 1 		//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.qckf_data;
 let msg = "";
@@ -94,8 +95,8 @@ async function start() {
         await $.wait(3 * 1000);
 
 
-        await invitation_Reward();
-        await $.wait(3 * 1000);
+        // await invitation_Reward();
+        // await $.wait(3 * 1000);
 
     }
 }
@@ -157,14 +158,31 @@ async function Task_List() {
             msg += `\n    签到状态: 今日还没签到 ,去签到喽 ,顺便分享下!🏃🏃🏃`;
             await SignIn();
             await $.wait(3 * 1000);
-
-            await share();
-            await $.wait(3 * 1000);
         } else {
             console.log(`    签到状态: 今日签到过了 ,明天再来吧!`);
             msg += `\n    签到状态: 今日签到过了 ,明天再来吧!`;
         }
-        if (result.data.foster.status === 0) {
+        if (result.data.share.status === 0) {
+            console.log(`    每日分享状态: 每日分享未完成 ,去分享喽 !🏃🏃🏃`);
+            msg += `\n    每日分享状态: 每日分享未完成 ,去分享喽 !🏃🏃🏃`;
+            await share();
+            await $.wait(3 * 1000);
+            await share_Reward();
+        } else {
+            console.log(`    每日分享状态: 今日每日分享过了 ,明天再来吧!`);
+            msg += `\n    每日分享状态: 今日每日分享过了 ,明天再来吧!`;
+        }
+        if (result.data.invitation.status != 0 && result.data.invitation.credit != 0) {
+            console.log(`    邀请好友: 可以领取爱豆 ${result.data.invitation.credit}`);
+            msg += `\n    邀请好友: 可以领取爱豆 ${result.data.invitation.credit}`;
+            await invitation_Reward();
+            await $.wait(3 * 1000);
+        } else {
+            console.log(`    邀请好友: 暂无可领取爱豆!`);
+            msg += `\n    邀请好友: 暂无可领取爱豆!`;
+        }
+
+        if (result.data.foster.num < 3) {
             console.log(`    好友培育: ${result.data.foster.num}/3`);
             msg += `\n    好友培育: ${result.data.foster.num}/3`
             if (result.data.foster.num < 3) {
@@ -230,7 +248,6 @@ async function share() {
     if (result.error_code === 0) {
         console.log(`    分享: 成功 ,预计获得 ${result.data.credit} 爱豆`);
         msg += `\n    分享: 成功 ,预计获得 ${result.data.credit} 爱豆`;
-        await share_Reward();
     } else {
         console.log(`    分享: 失败 ❌ 了呢,原因未知!`);
         console.log(result);
@@ -355,8 +372,7 @@ async function friend_breed_info() {
             await friend_breed_Reward();
             await $.wait(3 * 1000);
 
-            await invitation_Reward();
-            await $.wait(3 * 1000);
+
         } else {
             console.log(`    好友培育:您当前有 ${result.data.friends.length - 1} 个好友 ,跳过 好友培育任务!`);
             msg += `\n    好友培育:您当前有 ${result.data.friends.length - 1} 个好友 ,将会进行 好友培育任务!`;
@@ -474,7 +490,7 @@ async function invitation_Reward() {
 async function share_Reward() {
     let options = {
         method: 'POST',
-        url: `${hostname}/api/user/taskv2/share/get/creditt`,
+        url: `${hostname}/api/user/taskv2/share/get/credit`,
         headers: {
             'Host': host,
             'Authorization': `Bearer ${_tokne}`,
