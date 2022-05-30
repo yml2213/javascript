@@ -16,6 +16,7 @@
  * 5-26		更新领取分红,更改荣誉值次数  每次执行10次
  * 5-27		修复退出问题(测试中)
  * 5-29		修复分红bug ,优化运行逻辑
+ * 5-30		修复bug
  *
  *
  * 感谢所有测试人员
@@ -30,7 +31,7 @@
 const $ = new Env("推了吗");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
-const debug = 0 		//0为关闭调试,1为打开调试,默认为0
+const debug = 1 		//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.tlm_data;
 let msg = "";
@@ -60,10 +61,6 @@ async function tips(ckArr) {
 
 	console.log(`\n脚本已恢复正常状态,请及时更新! `);
 	msg += `脚本已恢复正常状态,请及时更新`
-
-	console.log(`\n===============================================\n  脚本执行 - 北京时间(UTC+8): ${new Date(
-		new Date().getTime() + new Date().getTimezoneOffset() * 60 * 1000 + 8 * 60 * 60 * 1000
-	).toLocaleString()} \n===============================================\n`);
 	await wyy();
 	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
 	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
@@ -123,7 +120,7 @@ async function start() {
 
 		console.log(`\n开始 阅读文章--领金币`);
 		for (let index = 1; index < 11; index++) {
-			if (coin_status == 1) {
+			if (coin_status == 0) {
 				console.log(`    开始 第 ${index} 次 阅读文章--领金币`);
 				await start_reading();
 			} else {
