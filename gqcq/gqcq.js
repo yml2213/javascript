@@ -491,12 +491,11 @@ async function getCks(ck, str) {
 
 /**
  * 获取远程版本
- * http://yml-gitea.ml:2233/yml/JavaScript-yml/raw/branch/master/gqcq.js
  */
 function Version_Check(name) {
     return new Promise((resolve) => {
         let url = {
-            url: `https://raw.githubusercontent.com/yml2213/javascript/master/${name}/${name}.js`,
+            url: `https://raw.gh.fakev.cn/yml2213/javascript/master/${name}/${name}.js`,
         }
         $.get(url, async (err, resp, data) => {
             try {
