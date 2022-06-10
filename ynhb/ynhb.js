@@ -4,7 +4,7 @@
  *
  * 养牛换宝  小程序 
  *
- * cron 30 6 * * *  yml2213_javascript_master/ynhb.js
+ * cron 0-59/5 * * * *  yml2213_javascript_master/ynhb.js
  *
  * 6-10		基本完成任务 ,无提现功能 ,等后面加吧
  *
@@ -739,4 +739,3 @@ function Env(t, e) { "undefined" != typeof process && JSON.stringify(process.env
 
       //#endregion
 
-      
