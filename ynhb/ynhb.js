@@ -35,7 +35,7 @@ async function tips(ckArr) {
 	let Version_latest = await Version_Check('ynhb');
 	let Version = `\n📌 本地脚本: V 0.0.2  远程仓库脚本: V ${Version_latest}`
 	// DoubleLog(`${Version}`);
-	console.log(`${Version}`);
+	console.log(Version);
 	msg += `${Version}`
 	console.log(`📌 🆙 更新内容: ${Change}\n`);
 	msg += `📌 🆙 更新内容: ${Change}`
