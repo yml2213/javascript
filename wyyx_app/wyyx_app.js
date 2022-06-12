@@ -6,7 +6,8 @@
  *
  * cron 20 7,12  * * *  yml2213_javascript_master/wyyx_app.js
  *
- * 6-12		完成 签到 任务 (重写应该是不行 ,折腾了好久  自己抓包 boxjs添加数据吧)
+ * 6-12		完成 签到 浏览 前进 任务 
+ * 6-12		重写应该行了 ,抓到数据后自己关闭重写
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -105,11 +106,11 @@ async function GetRewrite() {
 				ckStr = ckStr + "@@" + ck;
 				$.setdata(ckStr, "wyyx_app_data");
 				ckList = ckStr.split("@@");
-				$.msg($.name + ` 获取第${ckList.length}个 ck 成功: ${ck}`);
+				$.msg($.name + ` 获取第${ckList.length}个 ck 成功: ${ck} ,请不用的 自己关闭重写!`);
 			}
 		} else {
 			$.setdata(ck, "wyyx_app_data");
-			$.msg($.name + ` 获取第1个 ck 成功: ${ck}`);
+			$.msg($.name + ` 获取第1个 ck 成功: ${ck}  ,请不用的 自己关闭重写!`);
 		}
 	}
 }
@@ -224,6 +225,7 @@ async function task_list() {
 				DoubleLog(`没有可执行的任务了 ,明天再来吧~!`);
 			}
 		}
+		await walk();
 
 	} else {
 		DoubleLog(`任务列表: 失败 ❌ 了呢,原因未知!`);
@@ -234,7 +236,6 @@ async function task_list() {
 
 
 /**
- *
  * 签到    httpGet
  * https://act.you.163.com/act-attendance/att/v3/sign
  */
@@ -260,6 +261,30 @@ async function signIn() {
 
 
 
+/**
+ * 前进    httpGet
+ */
+async function walk() {
+	let Options = {
+		url: `${hostname}/act-attendance//game/walk`,
+		headers: {
+			'Host': host,
+			'Cookie': ck[0]
+		},
+	};
+	let result = await httpGet(Options, `前进`);
+
+	if (result.code == 200) {
+		DoubleLog(`前进: 成功 🎉`);
+		await wait(5);
+		await walk();
+	} else if (result.code == 1007) {
+		DoubleLog(`前进信息: ${result.msg}`);
+	} else {
+		DoubleLog(`前进: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
 
 
 
