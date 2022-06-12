@@ -202,11 +202,11 @@ async function signIn() {
 	};
 	let result = await httpRequest(Option, `签到`);
 
-	if (result.code == 200) {
+	if (result.status == 200) {
 		DoubleLog(`签到: 成功 🎉`);
 		await wait(3);
 		await user_info(2);
-	} else if (result.code == 400) {
+	} else if (result.status == 400) {
 		DoubleLog(`签到信息: ${result.message}`);
 	} else {
 		DoubleLog(`签到: 失败 ❌ 了呢,原因未知!`);
