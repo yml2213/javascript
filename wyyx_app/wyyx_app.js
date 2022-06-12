@@ -1,21 +1,21 @@
 /**
- * 脚本地址:  https://raw.githubusercontent.com/yml2213/javascript/master/wyxx_app/wyxx_app.js
+ * 脚本地址:  https://raw.githubusercontent.com/yml2213/javascript/master/wyyx_app/wyyx_app.js
  * 转载请留信息,谢谢
  *
  * 网易严选  app
  *
- * cron 20 7,12  * * *  yml2213_javascript_master/wyxx_app.js
+ * cron 20 7,12  * * *  yml2213_javascript_master/wyyx_app.js
  *
  * 6-12		完成 签到 任务 (重写应该是不行 ,折腾了好久  自己抓包 boxjs添加数据吧)
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export wyxx_app_data='cookie @ cookie '   ,多账号用 换行 或 @@ 分割
+ * 变量格式: export wyyx_app_data='cookie @ cookie '   ,多账号用 换行 或 @@ 分割
  * 抓包 act.you.163.com 包, 找到 cookie 即可
  * ========= 重写  =========
  * url:   act-attendance/task/list
  * 类型:   script-request-header
- * 路径:   https://raw.githubusercontent.com/yml2213/javascript/master/wyxx_app/wyxx_app.js
+ * 路径:   https://raw.githubusercontent.com/yml2213/javascript/master/wyyx_app/wyyx_app.js
  * 域名:   act.you.163.com
  * 使用:   打开app--个人--任务中心 即可
  * ---------------------------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const debug = 0		        //0为关闭调试,1为打开调试,默认为0
 //---------------------------------------------------------------------------------------------------------
-let ckStr = ($.isNode() ? process.env.wyxx_app_data : $.getdata('wyxx_app_data')) || '';
+let ckStr = ($.isNode() ? process.env.wyyx_app_data : $.getdata('wyyx_app_data')) || '';
 let msg, ck;
 let ck_status = true;
 let host = 'act.you.163.com';
@@ -42,7 +42,7 @@ let thank = `\n感谢 心雨 的投稿\n`
 //---------------------------------------------------------------------------------------------------------
 
 async function tips(ckArr) {
-	let Version_latest = await Version_Check('wyxx_app');
+	let Version_latest = await Version_Check('wyyx_app');
 	let Version = `\n📌 本地脚本: V 0.0.1  远程仓库脚本: V ${Version_latest}`
 	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
 	// DoubleLog(`${thank}`);
@@ -56,7 +56,7 @@ async function tips(ckArr) {
 	if (typeof $request !== "undefined") {  // 严格不相等
 		await GetRewrite();
 	} else {
-		let ckArr = await Variable_Check(ckStr, "wyxx_app_data");
+		let ckArr = await Variable_Check(ckStr, "wyyx_app_data");
 		await tips(ckArr);
 		for (let index = 0; index < ckArr.length; index++) {
 			let num = index + 1;
@@ -102,12 +102,12 @@ async function GetRewrite() {
 		if (ckStr) {
 			if (ckStr.indexOf(ck) == -1) {  // 找不到返回 -1
 				ckStr = ckStr + "@@" + ck;
-				$.setdata(ckStr, "wyxx_app_data");
+				$.setdata(ckStr, "wyyx_app_data");
 				ckList = ckStr.split("@@");
 				$.msg($.name + ` 获取第${ckList.length}个 ck 成功: ${ck}`);
 			}
 		} else {
-			$.setdata(ck, "wyxx_app_data");
+			$.setdata(ck, "wyyx_app_data");
 			$.msg($.name + ` 获取第1个 ck 成功: ${ck}`);
 		}
 	}
