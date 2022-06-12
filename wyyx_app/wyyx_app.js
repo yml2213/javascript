@@ -99,7 +99,7 @@ async function start() {
 // https://act.you.163.com/act-attendance/task/list
 async function GetRewrite() {
 	if ($request.url.indexOf("act-attendance/task/list") > -1) {
-		const ck = $request.headers.Cookie;
+		ck = $request.headers.Cookie;
 		if (ckStr) {
 			if (ckStr.indexOf(ck) == -1) {  // 找不到返回 -1
 				ckStr = ckStr + "@@" + ck;
