@@ -429,7 +429,7 @@ function DoubleLog(data) {
 	if ($.isNode()) {
 		if (data) {
 			console.log(`    ${data}`);
-			msg = `\n    ${data}`;
+			msg += `\n    ${data}`;
 		}
 	} else {
 		console.log(`    ${data}`);
