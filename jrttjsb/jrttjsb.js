@@ -7,6 +7,7 @@
  * cron 1-59/15 6-23 * * *  yml2213_javascript_master/jrttjsb.js
  *
  * 5-26     完成 签到  宝箱  睡觉  走路  吃饭 阅读(基本黑号)等任务 ,农场看情况加不加
+ * 6-12     默认关闭通知,出错才会提示
  * 
  * 不要问跟以前的有啥不同,都是开源脚本,自己看就行了
  *
@@ -25,7 +26,7 @@
 
 const $ = new Env("今日头条极速版");
 const notify = $.isNode() ? require("./sendNotify") : "";
-const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
+const Notify = 0 		//0为关闭通知,1为打开通知,默认为1
 const debug = 0 		//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.jrttjsb_data;
@@ -179,7 +180,10 @@ async function user_info(doTask) {
         }
     } else {
         console.log(`    用户信息: 失败 ❌ 了呢,原因未知！  ${result} `);
-        msg += `\n    用户信息: 失败 ❌ 了呢,原因未知!`;
+        msg = `\n    用户信息: 失败 ❌ 了呢,原因未知!`;
+        message = `\n    用户信息: 失败 ❌ 了呢,原因未知!`;
+        let notify = require("./sendNotify");
+        await notify.sendNotify($.name, message);
     }
 }
 
