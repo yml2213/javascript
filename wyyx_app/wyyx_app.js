@@ -6,7 +6,7 @@
  *
  * cron 20 7,12  * * *  yml2213_javascript_master/wyyx_app.js
  *
- * 6-12		完成 签到 任务 (重写应该是不行 ,折腾了好久  自己抓包 boxjs添加数据吧)
+ * 6-12		完成 签到 任务 (重写应该可以了)
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -36,14 +36,14 @@ let ck_status = true;
 let host = 'act.you.163.com';
 let hostname = 'https://' + host;
 //---------------------------------------------------------------------------------------------------------
-let VersionCheck = "0.0.1"
+let VersionCheck = "0.0.2"
 let Change = '增加圈x v2p兼容,自行测试吧!'
 let thank = `\n感谢 心雨 的投稿\n`
 //---------------------------------------------------------------------------------------------------------
 
 async function tips(ckArr) {
 	let Version_latest = await Version_Check('wyyx_app');
-	let Version = `\n📌 本地脚本: V 0.0.1  远程仓库脚本: V ${Version_latest}`
+	let Version = `\n📌 本地脚本: V 0.0.2  远程仓库脚本: V ${Version_latest}`
 	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
 	// DoubleLog(`${thank}`);
 	await wyy();
@@ -97,8 +97,7 @@ async function start() {
 // https://act.you.163.com/act-attendance/task/list
 async function GetRewrite() {
 	if ($request.url.indexOf("act-attendance/task/list") > -1) {
-		const ck = $request.headers.cookie;
-		console.log(ck);
+		ck = $request.headers.Cookie;
 		if (ckStr) {
 			if (ckStr.indexOf(ck) == -1) {  // 找不到返回 -1
 				ckStr = ckStr + "@@" + ck;
