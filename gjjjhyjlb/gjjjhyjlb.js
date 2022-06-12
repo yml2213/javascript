@@ -33,14 +33,14 @@ let msg, ck, ck_status;
 let host = 'mc.kukahome.com';
 let hostname = 'https://' + host;
 //---------------------------------------------------------------------------------------------------------
-let VersionCheck = "0.0.1"
+let VersionCheck = "0.1.2"
 let Change = '增加圈x v2p兼容,自行测试吧!'
 let thank = `\n感谢 心雨 的投稿\n`
 //---------------------------------------------------------------------------------------------------------
 
 async function tips(ckArr) {
 	let Version_latest = await Version_Check('gjjjhyjlb');
-	let Version = `\n📌 本地脚本: V 0.0.1  远程仓库脚本: V ${Version_latest}`
+	let Version = `\n📌 本地脚本: V 0.1.2  远程仓库脚本: V ${Version_latest}`
 	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
 	DoubleLog(`${thank}`);
 	await wyy();
@@ -79,11 +79,8 @@ async function start() {
 		console.log("\n开始 签到信息");
 		await sign_info();
 
-
-		// console.log("\n开始 抽奖");
-		// await Lottery();
 	}
-
+	// await signIn();
 
 }
 
@@ -138,6 +135,7 @@ async function user_info(task) {
 	if (result.source) {
 		if (task == 1) {
 			DoubleLog(`欢迎: ${result.name} ,目前有积分 ${result.point}`);
+			customerId = result.customerId;
 		} else if (task == 2) {
 			DoubleLog(`积分查询:签到后有积分 ${result.point}`);
 		}
@@ -198,9 +196,10 @@ async function signIn() {
 			'Host': host,
 			'X-Customer': ck[0],
 			'brandCode': 'K001',
-			'Content-Type': 'application/json'
+			'content-type': 'application/json',
+			// 'Authorization': ck[1]
 		},
-		body: JSON.stringify({ "membershipId": ck[0], "authorization": ck[1] })
+		body: JSON.stringify({ "membershipId": ck[0], "customerId": customerId, "authorization": ck[1] })
 	};
 	let result = await httpPost(Option, `签到`);
 
