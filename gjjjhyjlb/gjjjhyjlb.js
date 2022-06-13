@@ -10,8 +10,8 @@
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export gjjjhyjlb_data='X-Customer & X-Token @ X-Customer & X-Token '   ,多账号用 换行 或 @ 分割
- * 抓包 club-server/front/member/home  包, 找到 X - Token ,X - Customer 即可
+ * 变量格式: export gjjjhyjlb_data='X-Customer & Authorization @X-Customer & Authorization '   ,多账号用 换行 或 @ 分割
+ * 抓包 club-server/front/member/home  包, 找到 Authorization ,X - Customer 即可
  * ========= 重写 (测试中,有问题群里 @ 我吧) =========
  * url:   club-server/front/member/home
  * 类型:   script-request-header
