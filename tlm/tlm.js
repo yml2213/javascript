@@ -49,7 +49,7 @@ let change = `\n修复错误 ,太懒了 ,本来一个域名的事`
 
 async function tips(ckArr) {
 	let Version_latest = await Version_Check('tlm');
-	let Version = `\n本地脚本:V1.0.2  远程仓库脚本:V${Version_latest}\n`
+	let Version = `\n本地脚本:V .1.3  远程仓库脚本:V ${Version_latest}\n`
 
 	DoubleLog(Version)
 	DoubleLog(change)
