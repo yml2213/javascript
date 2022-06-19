@@ -30,6 +30,9 @@ let msg, ck;
 let ck_status = true;
 let host = 'ht.chiduilema.com';
 let hostname = 'https://' + host;
+let unm = randomInt(1, 8)
+let textArr = ['6666', '学到了', '感谢分享', '很有帮助', '原来是这样', '懂了,懂了', '学习一下', '知识又增加了'];
+let text = textArr[unm];
 //---------------------------------------------------------------------------------------------------------
 let VersionCheck = "1.1.1"
 let Change = '更新模板 ,增加积分查询 !'
