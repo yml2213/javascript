@@ -196,7 +196,7 @@ function Version_Check(name) {
 		}
 		$.get(url, async (err, resp, data) => {
 			try {
-				let VersionCheck = resp.body.match(/VersionCheck = "([\d\.]+)"/)[1]
+				VersionCheck = resp.body.match(/VersionCheck = "([\d\.]+)"/)[1]
 			} catch (e) {
 				$.logErr(e, resp);
 			} finally {
