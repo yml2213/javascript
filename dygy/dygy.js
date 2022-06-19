@@ -274,21 +274,8 @@ async function touch_Duck() {
 		} else {
 			DoubleLog(`鸭子不能给你水滴了,再去别的地方看看吧!`);
 		}
-
-		// if (result.data.reward_item != null) {
-		// 	DoubleLog(`戳鸭子: 成功了🎉  获得 ${result.data.reward_item.num} 水滴 ,领取后后共有 ${result.data.kettle.water_num} 水滴!`);
-		// 	touch_Duck_status_max = result.data.red_point[0].round_info.total_round;
-		// 	if (touch_Duck_status < touch_Duck_status_max) {
-		// 		await wait(10);
-		// 		await touch_Duck();
-		// 	} else {
-		// 		DoubleLog(`鸭子不能给你水滴了,再去别的地方看看吧!`);
-		// 	}
-		// }
 	} else if (result.status_code == 1001) {
-		DoubleLog(`戳鸭子: 失败 ,可能是: ${result.message}! 可能是次数被限制了,休息 1 分钟再试试吧!`)
-		await wait(60);
-		await touch_Duck();
+		DoubleLog(`戳鸭子: 鸭子不能给你水滴了,再去别的地方看看吧!`)
 	} else {
 		DoubleLog(`戳鸭子: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
