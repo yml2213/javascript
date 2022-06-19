@@ -99,7 +99,7 @@ async function userInfo() {
 	let result = await httpGet(Option, `用户信息`);
 
 	if (result.code == 0) {
-		DoubleLog(`用户信息:${result.msg} 🎉  ,欢迎光临:${result.data.baseData.nick}`)
+		DoubleLog(`用户信息:${result.msg} 🎉  ,欢迎光临: ${result.data.baseData.nick} ,积分 ${result.data.baseData.score}==${result.data.baseData.score / 100} 元`)
 	} else if (result.code == 101) {
 		DoubleLog(`用户信息:${result.msg} `)
 	} else {
