@@ -6,7 +6,7 @@
  *
  * 掌上温岭  app 
  *
- * cron 10 7-22 * * *  yml2213_javascript_master/zhwl.js
+ * cron 10 7 * * *  yml2213_javascript_master/zhwl.js
  *
  * 6-28		基本完成所有任务 ,自己玩把!
  *
