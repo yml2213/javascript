@@ -1,6 +1,8 @@
 /**
  * 脚本地址:  https://raw.githubusercontent.com/yml2213/javascript/master/ldz/ldz.js
  * 转载请留信息,谢谢
+ * 
+ * 下载地址: https://author.gzglcm.com/download/index.html#/?id=1541323330832142336   (带邀请  感谢)
  *
  * 来电转  app 
  *
