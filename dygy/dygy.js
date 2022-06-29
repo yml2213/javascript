@@ -12,6 +12,7 @@
  * 3-31    	修复选择宝箱bug,默认开启debug模式,方便排错,不需要的自觉行关闭
  * 4-1     	修复几个循环bug,关闭默认debug模式
  * 6-19		更新模板
+ * 6-29		优化错误处理(测试下)
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -107,57 +108,63 @@ async function start() {
  * 首页信息    httpGet  
  */
 async function polling_info() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/polling_info`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `首页信息`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/polling_info`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `首页信息`);
 
-	if (result.status_code == 0) {
-		if (result.data.show_info.show_green_gift == true) {
-			DoubleLog(`\n开始 新手彩蛋`);
-			await newcomer_egg();
-		}
-		if (result.data.red_points.sign) {
-			DoubleLog(`开始 七日签到`);
-			await sign_in();
-			DoubleLog(`选择金宝箱【宝箱挑战】`);
-			await choose_gold();
-			DoubleLog('开始 【收集瓶子水滴】');
-			await water_bottle();
+		if (result.status_code == 0) {
+			if (result.data.show_info.show_green_gift == true) {
+				DoubleLog(`\n开始 新手彩蛋`);
+				await newcomer_egg();
+			}
+			if (result.data.red_points.sign) {
+				DoubleLog(`开始 七日签到`);
+				await sign_in();
+				DoubleLog(`选择金宝箱【宝箱挑战】`);
+				await choose_gold();
+				DoubleLog('开始 【收集瓶子水滴】');
+				await water_bottle();
 
-		}
-		if (result.data.red_points.box) {
-			if (result.data.red_points.box.rounds != 0 && result.data.red_points.box.times == 0) {
-				DoubleLog(`开盒子 box `);
-				await open_box();
 			}
-		}
-		if (result.data.show_info.show_challenge == true) {
-			if (result.data.red_points.challenge.times == 0) {
-				DoubleLog(`开宝箱`);
-				await open_challenge();
+			if (result.data.red_points.box) {
+				if (result.data.red_points.box.rounds != 0 && result.data.red_points.box.times == 0) {
+					DoubleLog(`开盒子 box `);
+					await open_box();
+				}
 			}
-		}
-		if (result.data.show_info.show_nutrient) {
-			DoubleLog(`展示 养分 牌子,化肥功能已开启`);
-			if (result.data.red_points.nutrient_sign) {
-				DoubleLog(`开始 化肥签到`);
-				await fertilizer_sign();
+			if (result.data.show_info.show_challenge == true) {
+				if (result.data.red_points.challenge.times == 0) {
+					DoubleLog(`开宝箱`);
+					await open_challenge();
+				}
 			}
-			if (result.data.fertilizer.normal != 0) {
-				DoubleLog(`使用 正常 化肥`);
-				await fertilizer_nomal();
-			} else if (result.data.fertilizer.lite != 0) {
-				DoubleLog(`使用 小袋 化肥`);
-				await fertilizer_lite();
+			if (result.data.show_info.show_nutrient) {
+				DoubleLog(`展示 养分 牌子,化肥功能已开启`);
+				if (result.data.red_points.nutrient_sign) {
+					DoubleLog(`开始 化肥签到`);
+					await fertilizer_sign();
+				}
+				if (result.data.fertilizer.normal != 0) {
+					DoubleLog(`使用 正常 化肥`);
+					await fertilizer_nomal();
+				} else if (result.data.fertilizer.lite != 0) {
+					DoubleLog(`使用 小袋 化肥`);
+					await fertilizer_lite();
+				}
 			}
+		} else {
+			DoubleLog(`首页信息: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+			return ck_status = false;
 		}
-	} else {
-		DoubleLog(`首页信息: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-		return ck_status = false;
+	} catch (error) {
+		console.log(error);
 	}
+
+
 }
 
 
@@ -165,46 +172,51 @@ async function polling_info() {
  * 获取任务列表
  */
 async function tasks_list() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/tasks/list`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `获取任务列表`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/tasks/list`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `获取任务列表`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`获取任务列表: 成功了🎉  开始任务了鸭!`)
-		tasksarr = result.data.tasks
-		for (let value of tasksarr) {
-			if (value.id == 1) {
-				DoubleLog(`${value.name} 任务: 已完成${value.round_info.current_round}/${value.round_info.total_round} 次 `)
-				if (value.round_info.current_round < value.round_info.total_round) {
-					await Daily_free_water();
+		if (result.status_code == 0) {
+			DoubleLog(`获取任务列表: 成功了🎉  开始任务了鸭!`)
+			tasksarr = result.data.tasks
+			for (let value of tasksarr) {
+				if (value.id == 1) {
+					DoubleLog(`${value.name} 任务: 已完成${value.round_info.current_round}/${value.round_info.total_round} 次 `)
+					if (value.round_info.current_round < value.round_info.total_round) {
+						await Daily_free_water();
+					}
+				}
+				if (value.id == 2) {   // 三餐任务
+					// DoubleLog(`任务状态: 现在是 ${value.name} 时间\n `)
+					n = local_hours();
+					DoubleLog(`现在时间 ${n} 时`);
+					if (n >= 8 && n <= 9) {
+						DoubleLog('开始 【早餐礼包】');
+						await eat_package('早餐');
+					} else if (n >= 12 && n <= 14) {
+						DoubleLog('开始 【午餐礼包】')
+						await eat_package('午餐');
+						await $.wait(2 * 1000);
+					} else if (n >= 18 && n <= 21) {
+						DoubleLog('开始 【晚餐礼包】')
+						await eat_package('晚餐');
+						await $.wait(2 * 1000);
+					} else {
+						DoubleLog(`三餐任务: 不在任务时间 ,跳过`);
+					}
 				}
 			}
-			if (value.id == 2) {   // 三餐任务
-				// DoubleLog(`任务状态: 现在是 ${value.name} 时间\n `)
-				n = local_hours();
-				DoubleLog(`现在时间 ${n} 时`);
-				if (n >= 8 && n <= 9) {
-					DoubleLog('开始 【早餐礼包】');
-					await eat_package('早餐');
-				} else if (n >= 12 && n <= 14) {
-					DoubleLog('开始 【午餐礼包】')
-					await eat_package('午餐');
-					await $.wait(2 * 1000);
-				} else if (n >= 18 && n <= 21) {
-					DoubleLog('开始 【晚餐礼包】')
-					await eat_package('晚餐');
-					await $.wait(2 * 1000);
-				} else {
-					DoubleLog(`三餐任务: 不在任务时间 ,跳过`);
-				}
-			}
+		} else {
+			DoubleLog(`获取任务列表: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
 		}
-	} else {
-		DoubleLog(`获取任务列表: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+	} catch (error) {
+		console.log(error);
 	}
+
 
 }
 
@@ -214,35 +226,40 @@ async function tasks_list() {
  * 浇水
  */
 async function watering() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/tree/water?aid=1128`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `浇水`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/tree/water?aid=1128`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `浇水`);
 
-	if (result.status_code == 0) {
+		if (result.status_code == 0) {
 
-		DoubleLog(`第${watering_unm} 次浇水,${result.message} 🎉 `);
-		await $.wait(5 * 1000);
-		DoubleLog('等待判断是否有宝箱、盒子box可以领取');
-		await polling_info();
-		await $.wait(3 * 1000);
-		watering_unm++
+			DoubleLog(`第${watering_unm} 次浇水,${result.message} 🎉 `);
+			await $.wait(5 * 1000);
+			DoubleLog('等待判断是否有宝箱、盒子box可以领取');
+			await polling_info();
+			await $.wait(3 * 1000);
+			watering_unm++
 
-		if (result.data.kettle.water_num > 10) {
+			if (result.data.kettle.water_num > 10) {
+				await watering();
+			} else {  // 浇水完成
+				DoubleLog(`浇水 完成了 🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次,${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
+			}
+		} else if (result.status_code === 1008) {
+			DoubleLog(`浇水: 失败 ,可能是: ${result.message}!`)
+			DoubleLog(`等待3分钟,再次尝试浇水！`);
+			await $.wait(3 * 60 * 1000);
 			await watering();
-		} else {  // 浇水完成
-			DoubleLog(`浇水 完成了 🎉 \n果树等级:${result.data.status}级\n升级进度:已浇水 ${result.data.progress.current} 次,${result.data.status}级共需要浇水 ${result.data.progress.target} ,你还有 ${result.data.kettle.water_num} 水滴:\n储水瓶: 已储存 ${result.data.bottle.water_num} 滴 ,领取时间:明天 ${result.data.bottle.availiable_time} 点 \n`)
+		} else {
+			DoubleLog(`浇水: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
 		}
-	} else if (result.status_code === 1008) {
-		DoubleLog(`浇水: 失败 ,可能是: ${result.message}!`)
-		DoubleLog(`等待3分钟,再次尝试浇水！`);
-		await $.wait(3 * 60 * 1000);
-		await watering();
-	} else {
-		DoubleLog(`浇水: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+	} catch (error) {
+		console.log(error);
 	}
+
 
 }
 
@@ -252,34 +269,39 @@ async function watering() {
  * 戳鸭子
  */
 async function touch_Duck() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/scene/touch?scene_id=1`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `戳鸭子`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/scene/touch?scene_id=1`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `戳鸭子`);
 
-	if (result.status_code == 0) {
-		let touch_Duck_status_max = result.data.red_point[0].round_info.total_round;
-		let touch_Duck_status = result.data.red_point[0].round_info.current_round;
-		if (touch_Duck_status < touch_Duck_status_max) {
-			if (result.data.reward_item) {
-				DoubleLog(`戳鸭子: 成功了🎉  获得 ${result.data.reward_item.num} 水滴 ,领取后后共有 ${result.data.kettle.water_num} 水滴!`);
-				await wait(10);
-				await touch_Duck();
-			} else if (result.data.reward_item == null) {
-				DoubleLog(`戳鸭子: 这次没有 ,等 3 秒下一次!`);
-				await wait(3);
-				await touch_Duck();
+		if (result.status_code == 0) {
+			let touch_Duck_status_max = result.data.red_point[0].round_info.total_round;
+			let touch_Duck_status = result.data.red_point[0].round_info.current_round;
+			if (touch_Duck_status < touch_Duck_status_max) {
+				if (result.data.reward_item) {
+					DoubleLog(`戳鸭子: 成功了🎉  获得 ${result.data.reward_item.num} 水滴 ,领取后后共有 ${result.data.kettle.water_num} 水滴!`);
+					await wait(10);
+					await touch_Duck();
+				} else if (result.data.reward_item == null) {
+					DoubleLog(`戳鸭子: 这次没有 ,等 3 秒下一次!`);
+					await wait(3);
+					await touch_Duck();
+				}
+			} else {
+				DoubleLog(`鸭子不能给你水滴了,再去别的地方看看吧!`);
 			}
+		} else if (result.status_code == 1001) {
+			DoubleLog(`戳鸭子: 鸭子不能给你水滴了,再去别的地方看看吧!`)
 		} else {
-			DoubleLog(`鸭子不能给你水滴了,再去别的地方看看吧!`);
+			DoubleLog(`戳鸭子: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
 		}
-	} else if (result.status_code == 1001) {
-		DoubleLog(`戳鸭子: 鸭子不能给你水滴了,再去别的地方看看吧!`)
-	} else {
-		DoubleLog(`戳鸭子: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+	} catch (error) {
+		console.log(error);
 	}
+
 }
 
 /**
@@ -289,20 +311,25 @@ async function touch_Duck() {
  * https://minigame.zijieapi.com/ttgame/game_orchard_ecom/challenge/choose?task_id=2
  */
 async function choose_gold() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/challenge/choose?task_id=2`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `选择金宝箱`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/challenge/choose?task_id=2`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `选择金宝箱`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`选择金宝箱: ${result.message}了鸭 🎉 `)
-	} else if (result.status_code == 1001) {
-		DoubleLog(`选择金宝箱: 失败 ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`选择金宝箱: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`选择金宝箱: ${result.message}了鸭 🎉 `)
+		} else if (result.status_code == 1001) {
+			DoubleLog(`选择金宝箱: 失败 ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`选择金宝箱: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
+
 }
 
 
@@ -311,21 +338,26 @@ async function choose_gold() {
  * 领取宝箱奖励
  */
 async function open_challenge() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/challenge/reward?aid=1128`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `领取宝箱奖励`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/challenge/reward?aid=1128`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `领取宝箱奖励`);
 
-	// console.log(result);
-	if (result.status_code == 0) {
-		DoubleLog(`领取宝箱奖励: ${result.message}了鸭 🎉 , 获得 ${result.data.reward_item.num} 水滴 , 领取后有 ${result.data.kettle.water_num} 水滴 `)
-	} else if (result.status_code == 1001) {
-		DoubleLog(`领取宝箱奖励: 失败 ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`领取宝箱奖励: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		// console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`领取宝箱奖励: ${result.message}了鸭 🎉 , 获得 ${result.data.reward_item.num} 水滴 , 领取后有 ${result.data.kettle.water_num} 水滴 `)
+		} else if (result.status_code == 1001) {
+			DoubleLog(`领取宝箱奖励: 失败 ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`领取宝箱奖励: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
+
 }
 
 
@@ -333,21 +365,24 @@ async function open_challenge() {
  * 领取盒子奖励
  */
 async function open_box() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/box/open?aid=1128`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `领取盒子奖励`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/box/open?aid=1128`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `领取盒子奖励`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`领取盒子奖励: ${result.message}了鸭 🎉 , 获得 ${result.data.reward_item.num} 水滴 , 领取后有 ${result.data.kettle.water_num} 水滴 `)
-	} else if (result.status_code == 1001) {
-		DoubleLog(`领取盒子奖励: 失败 ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`领取盒子奖励: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`领取盒子奖励: ${result.message}了鸭 🎉 , 获得 ${result.data.reward_item.num} 水滴 , 领取后有 ${result.data.kettle.water_num} 水滴 `)
+		} else if (result.status_code == 1001) {
+			DoubleLog(`领取盒子奖励: 失败 ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`领取盒子奖励: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
-
 }
 
 
@@ -356,19 +391,23 @@ async function open_box() {
  * 使用小袋化肥
  */
 async function fertilizer_lite() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/use/fertilizer?fertilizer_type=4`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `使用小袋化肥`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/use/fertilizer?fertilizer_type=4`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `使用小袋化肥`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`使用小袋化肥: ${result.message}了鸭 🎉 ,当前肥力 ${result.data.nutrient} 养分 ,剩余正常化肥 ${result.data.fertilizer.normal} 袋、小袋化肥 ${result.data.fertilizer.lite} 袋 `)
-	} else if (result.status_code == 1001) {
-		DoubleLog(`使用小袋化肥: 失败 ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`使用小袋化肥: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`使用小袋化肥: ${result.message}了鸭 🎉 ,当前肥力 ${result.data.nutrient} 养分 ,剩余正常化肥 ${result.data.fertilizer.normal} 袋、小袋化肥 ${result.data.fertilizer.lite} 袋 `)
+		} else if (result.status_code == 1001) {
+			DoubleLog(`使用小袋化肥: 失败 ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`使用小袋化肥: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -376,20 +415,24 @@ async function fertilizer_lite() {
  * 收集瓶子水滴
  */
 async function water_bottle() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/water_bottle/reward?aid=1128`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `收集瓶子水滴`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/water_bottle/reward?aid=1128`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `收集瓶子水滴`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`收集瓶子水滴: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 收集瓶子水滴后共有 ${result.data.kettle.water_num} 水滴 `)
-		await wait(3);
-	} else if (result.status_code == 1001) {
-		DoubleLog(`收集瓶子水滴: ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`收集瓶子水滴: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`收集瓶子水滴: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 收集瓶子水滴后共有 ${result.data.kettle.water_num} 水滴 `)
+			await wait(3);
+		} else if (result.status_code == 1001) {
+			DoubleLog(`收集瓶子水滴: ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`收集瓶子水滴: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -398,19 +441,23 @@ async function water_bottle() {
  * 化肥签到
  */
 async function fertilizer_sign() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/nutrient/sign_in`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `化肥签到`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/nutrient/sign_in`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `化肥签到`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`化肥签到: ${result.message}了鸭 🎉 , 获得 ${result.sign.reward_item.name} ${result.sign.reward_item.num} 袋`)
-	} else if (result.status_code == 1001) {
-		DoubleLog(`化肥签到: ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`化肥签到: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`化肥签到: ${result.message}了鸭 🎉 , 获得 ${result.sign.reward_item.name} ${result.sign.reward_item.num} 袋`)
+		} else if (result.status_code == 1001) {
+			DoubleLog(`化肥签到: ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`化肥签到: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -420,19 +467,23 @@ async function fertilizer_sign() {
  * 七天签到
  */
 async function sign_in() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/sign_in/reward`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `七天签到`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/sign_in/reward`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `七天签到`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`七天签到: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 签到后共有 ${result.data.kettle.water_num} 水滴`)
-	} else if (result.status_code == 1001) {
-		DoubleLog(`七天签到: ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`七天签到: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`七天签到: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 签到后共有 ${result.data.kettle.water_num} 水滴`)
+		} else if (result.status_code == 1001) {
+			DoubleLog(`七天签到: ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`七天签到: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -441,21 +492,25 @@ async function sign_in() {
  * 每日免费领水滴
  */
 async function Daily_free_water() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/tasks/reward?task_id=1`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `每日免费领水滴`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/tasks/reward?task_id=1`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `每日免费领水滴`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`每日免费领水滴: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 冷却时间 ${result.data.task.reward_item.time} 秒`);
-		await wait(310);
-		await Daily_free_water();
-	} else if (result.status_code == 1001) {
-		DoubleLog(`每日免费领水滴: ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`每日免费领水滴: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`每日免费领水滴: ${result.message}了鸭 🎉 , 获得 ${result.data.task.reward_item.num} 水滴 , 冷却时间 ${result.data.task.reward_item.time} 秒`);
+			await wait(310);
+			await Daily_free_water();
+		} else if (result.status_code == 1001) {
+			DoubleLog(`每日免费领水滴: ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`每日免费领水滴: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -465,20 +520,24 @@ async function Daily_free_water() {
  * 新手彩蛋
  */
 async function newcomer_egg() {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/green_gift/reward?aid=1128`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `新手彩蛋`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/green_gift/reward?aid=1128`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `新手彩蛋`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`新手彩蛋: 砸蛋成功了鸭🎉 ,获得水滴${result.data.reward_item.num} 个 , 领取后后共有 ${result.data.kettle.water_num} 水滴 ,等待 6 分钟,等下一个彩蛋孵化鸭!`);
-		await wait(310);
-	} else if (result.status_code == 1001) {
-		DoubleLog(`新手彩蛋: ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`新手彩蛋: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`新手彩蛋: 砸蛋成功了鸭🎉 ,获得水滴${result.data.reward_item.num} 个 , 领取后后共有 ${result.data.kettle.water_num} 水滴 ,等待 6 分钟,等下一个彩蛋孵化鸭!`);
+			await wait(310);
+		} else if (result.status_code == 1001) {
+			DoubleLog(`新手彩蛋: ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`新手彩蛋: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
 }
 
@@ -487,21 +546,24 @@ async function newcomer_egg() {
  * 三餐礼包
  */
 async function eat_package(name) {
-	let Option = {
-		url: `${hostname}/ttgame/game_orchard_ecom/tasks/reward?task_id=2`,
-		headers: dy_headers,
-	};
-	let result = await httpGet(Option, `三餐礼包`);
+	try {
+		let Option = {
+			url: `${hostname}/ttgame/game_orchard_ecom/tasks/reward?task_id=2`,
+			headers: dy_headers,
+		};
+		let result = await httpGet(Option, `三餐礼包`);
 
-	if (result.status_code == 0) {
-		DoubleLog(`${name}礼包: 领取成功了🎉 ,获得水滴${result.data.task.reward_item.num} 个 ,领取后后共有 ${result.data.kettle.water_num} 水滴`);
-	} else if (result.status_code == 1001) {
-		DoubleLog(`${name}礼包: ,可能是: ${result.message}!`)
-	} else {
-		DoubleLog(`${name}礼包: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
+		if (result.status_code == 0) {
+			DoubleLog(`${name}礼包: 领取成功了🎉 ,获得水滴${result.data.task.reward_item.num} 个 ,领取后后共有 ${result.data.kettle.water_num} 水滴`);
+		} else if (result.status_code == 1001) {
+			DoubleLog(`${name}礼包: ,可能是: ${result.message}!`)
+		} else {
+			DoubleLog(`${name}礼包: 失败 ❌ 了呢,原因未知!`);
+			console.log(result);
+		}
+	} catch (error) {
+		console.log(error);
 	}
-
 }
 
 
