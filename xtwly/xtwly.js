@@ -155,7 +155,7 @@ async function signIn() {
 				'user-login-token': ck[0],
 				'Host': host,
 			},
-			body: '{}'
+			body: JSON.stringify({})
 
 
 		};
