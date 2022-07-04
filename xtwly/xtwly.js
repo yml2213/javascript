@@ -8,6 +8,7 @@
  * cron 10 7 * * *  yml2213_javascript_master/xtwly.js
  *
  * 7-3		签到 ,群友说实物发货,自己玩把
+ * 7-4		修复签到bug
  *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -121,13 +122,8 @@ async function sign_info() {
 		};
 		let result = await httpPost(Option, `签到信息`);
 
-		if (result.code == 0) {
-			if (result?.data?.signInCount == 0) {
-				DoubleLog(`签到信息: 未签到 ,去执行签到喽!`);
-				await signIn();
-			} else if (result?.data?.signInCount == 1) {
-				DoubleLog(`签到信息: 今天已经签到了 ,明天再来吧!`);
-			}
+		if (result?.code == 0) {
+			await signIn();
 		} else {
 			DoubleLog(`签到信息: 失败 ❌ 了呢,原因未知!`);
 			console.log(result);
