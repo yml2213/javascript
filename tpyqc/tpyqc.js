@@ -10,6 +10,7 @@
  * 5-22         优化太平洋汽车
  * 5-23         优化日志输出
  * 6-19         感谢 蛋炒饭 大佬源码 ,增加抽奖 ,自己修改定时
+ * 7-5          移除抽奖
  * 
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
@@ -26,17 +27,17 @@ const debug = 0			//0为关闭调试,1为打开调试,默认为0
 let ckStr = ($.isNode() ? process.env.tpyqc_data : $.getdata('tpyqc_data')) || '';
 let msg, ck;
 let ck_status = true;
-// let host = 'minigame.zijieapi.com';
-// let hostname = 'https://' + host;
+let host = 'act1.pcauto.com.cn';
+let hostname = 'https://' + host;
 //---------------------------------------------------------------------------------------------------------
-let VersionCheck = "1.1.2"
+let VersionCheck = "1.1.3"
 let Change = '感谢 蛋炒饭 大佬源码 ,增加抽奖 ,自己修改定时 !'
 let thank = `\n感谢 群友 的投稿\n`
 //---------------------------------------------------------------------------------------------------------
 
 async function tips(ckArr) {
 	let Version_latest = await Version_Check('tpyqc');
-	let Version = `\n📌 本地脚本: V 1.1.2  远程仓库脚本: V ${Version_latest}`
+	let Version = `\n📌 本地脚本: V 1.1.3  远程仓库脚本: V ${Version_latest}`
 	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
 	// DoubleLog(`${thank}`);
 	await wyy();
@@ -73,9 +74,7 @@ async function start() {
 		await signin();
 		await $.wait(2 * 1000);
 
-		console.log(`\n开始 抽奖`)
-		await lottery();
-		await $.wait(1000);
+
 
 		console.log('\n开始 查询金币');
 		await user_info();
@@ -106,6 +105,7 @@ async function login() {
 	if (result.status == 0) {
 		DoubleLog(`登录:${result.message} 🎉`);
 		ck = result.common_session_id;
+		console.log(ck);
 		await wait(3);
 	} else if (result.status == 1) {
 		DoubleLog(`登录:${result.message}`);
@@ -168,37 +168,6 @@ async function user_info() {
 }
 
 
-/**
- * 抽奖   get
- * https://mrobot.pcauto.com.cn/xsp/s/auto/info/nocache/task/getLoginUserInfo.xsp
- */
-async function lottery() {
-	let url = {
-		url: `https://act1.pcauto.com.cn/discount/api/activity/lottery`,
-		headers: {
-			'Cookie': ck[0],
-			'Content-Type': `application/json`,
-			'Connection': `keep-alive`,
-			'Referer': `https://www1.pcauto.com.cn/zt/discount-topics/app-wap/index.html`,
-			'Accept-Encoding': `gzip, deflate, br`,
-			'Origin': `https://www1.pcauto.com.cn`,
-			'Host': `act1.pcauto.com.cn`
-		},
-		body: `{"actId": "19","phone": "1043074152"}`,
-
-	};
-	let result = await httpPost(url, `抽奖`);
-
-	if (result.code == 200) {
-		DoubleLog(`抽奖: ${result.data.msg}`);
-		console.log(`=====以下测试使用=====`);
-		console.log(result);
-	} else {
-		console.log(`\n   查询金币: 失败 ❌ 了呢,原因未知！\n ${result}`)
-		msg += `\n   查询金币: 失败 ❌ 了呢,原因未知`
-		// throw new Error(`${$.name}:喂  喂 ---  查询金币过期了,别睡了, 起来更新了喂!`);
-	}
-}
 
 
 
