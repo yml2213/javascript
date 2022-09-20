@@ -42,7 +42,7 @@ ram_num = randomInt(1, 5)
 let text = textarr[ram_num];
 let add_comment_text = add_comment_text_arr[ram_num];
 ///////////////////////////////////////////////////////////////////
-let VersionCheck = "1.0.2"
+let VersionCheck = "1.1.2"
 let Change = '更新模板,修改部分逻辑!'
 let thank = `\n感谢 xx 的投稿`
 ///////////////////////////////////////////////////////////////////
