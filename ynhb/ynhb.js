@@ -1,58 +1,62 @@
 /**
- * 太平洋汽车
- * cron 10 8 * * *  yml2213_javascript_master/tpyqc.js
- * 
- * 七天签到 3 元红包 , 14 天 2 元红包 ; 详细自己看规则 
- * 
- * 太平洋汽车 app  
- * 4-25         完成签到 任务   有bug及时反馈
- * 5-8	        官方活动升级,暂时停用脚本,等以后看情况  回帖容易封号,不打算写了
- * 5-22         优化太平洋汽车
- * 5-23         优化日志输出
- * 6-19         感谢 蛋炒饭 大佬源码 ,增加抽奖 ,自己修改定时
- * 7-5          移除抽奖
- * 
+ * 脚本地址: https://raw.githubusercontent.com/yml2213/javascript/master/ynhb/ynhb.js
+ * 转载请留信息,谢谢
+ *
+ * 养牛换宝  小程序 
+ *
+ * cron 0-59/5 * * * *  yml2213_javascript_master/ynhb.js
+ *
+ * 6-10		基本完成任务 ,无提现功能 ,等后面加吧
+ *
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式: export tpyqc_data=' 手机号 & 密码 @ 手机号 & 密码 '  多个账号用 @分割 
+ * 变量格式: export ynhb_data='token @ token'  多个账号用 换行 或 @分割
+ *
+ * tg频道: https://t.me/yml2213_tg  
+ * tg群组: https://t.me/yml_tg    
  * 
- * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
-
-const $ = new Env("太平洋汽车");
+const $ = new Env("养牛换宝");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
 const debug = 0			//0为关闭调试,1为打开调试,默认为0
-//---------------------------------------------------------------------------------------------------------
-let ckStr = ($.isNode() ? process.env.tpyqc_data : $.getdata('tpyqc_data')) || '';
-let msg, ck;
-let ck_status = true;
-let host = 'act1.pcauto.com.cn';
-let hostname = 'https://' + host;
-//---------------------------------------------------------------------------------------------------------
-let VersionCheck = "1.1.3"
-let Change = '感谢 蛋炒饭 大佬源码 ,增加抽奖 ,自己修改定时 !'
-let thank = `\n感谢 群友 的投稿\n`
-//---------------------------------------------------------------------------------------------------------
+///////////////////////////////////////////////////////////////////
+let ckStr = process.env.ynhb_data;
+let msg, ck, ck_status;
+let host = "xyx.zlzw188.com";
+let hostname = "https://" + host;
+///////////////////////////////////////////////////////////////////
+let VersionCheck = "0.0.2"
+let Change = '基本完成任务 ,无提现功能 ,等后面加吧!'
+let thank = `\n感谢 xx 的投稿`
+///////////////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	let Version_latest = await Version_Check('tpyqc');
-	let Version = `\n📌 本地脚本: V 1.1.3  远程仓库脚本: V ${Version_latest}`
-	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
-	// DoubleLog(`${thank}`);
+	let Version_latest = await Version_Check('ynhb');
+	let Version = `\n📌 本地脚本: V 0.0.2  远程仓库脚本: V ${Version_latest}`
+	// DoubleLog(`${Version}`);
+	console.log(Version);
+	msg += `${Version}`
+	console.log(`📌 🆙 更新内容: ${Change}\n`);
+	msg += `📌 🆙 更新内容: ${Change}`
+
+	// console.log(thank);
+	// msg += `${thank}`
+
 	await wyy();
-	DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
+	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
+	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
 
 
-
 !(async () => {
-	let ckArr = await Variable_Check(ckStr, "jieda_data");
+	let ckArr = await getCks(ckStr, "ynhb_data");
 	await tips(ckArr);
 	for (let index = 0; index < ckArr.length; index++) {
 		let num = index + 1;
-		DoubleLog(`\n-------- 开始【第 ${num} 个账号】--------`);
+		console.log(`\n------------- 开始【第 ${num} 个账号】------------- `);
+		msg += `\n------------- 开始【第 ${num} 个账号】------------- `
 		ck = ckArr[index].split("&");
 		debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
 		await start();
@@ -63,80 +67,201 @@ async function tips(ckArr) {
 	.finally(() => $.done());
 
 
-
 async function start() {
 
-	console.log('\n开始 登录');
-	await login();
+	console.log("\n开始 用户信息");
+	await user_info();
 
-	if (ck_status) {
-		console.log('\n开始 签到');
-		await signin();
-		await $.wait(2 * 1000);
+	if (!ck_status) {
+		console.log("\n开始 任务列表");
+		await task_list();
 
+		console.log("\n开始 气泡牛币");
+		await bubble();
 
-
-		console.log('\n开始 查询金币');
-		await user_info();
-		await $.wait(2 * 1000);
 	}
-
 
 
 }
 
 
 
+
+
+
 /**
- * 登录   post
- * https://mrobot.pcauto.com.cn/auto_passport3_back_intf/passport3/rest/login_new.jsp
+ * 用户信息    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=342a50e93b8189f3310c9b88dd87a8d0&action=upcurrency&contr=my&token=a038f11334a55e361cc34786ca903426&collect=2&version=1.0.43
+ * 
  */
-async function login() {
+async function user_info() {
 	let url = {
-		url: 'https://mrobot.pcauto.com.cn/auto_passport3_back_intf/passport3/rest/login_new.jsp',
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=upcurrency&contr=my&token=${ck[0]}&collect=2&version=1.0.43`,
 		headers: {
-
-			'Content-Type': 'application/x-www-form-urlencoded',
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
 		},
-		body: `password=${ck[1]}&username=${ck[0]}`,
 	};
-	let result = await httpPost(url, `登录`);
+	let result = await httpGet(url, `用户信息`);
 
-	if (result.status == 0) {
-		DoubleLog(`登录:${result.message} 🎉`);
-		ck = result.common_session_id;
-		console.log(ck);
-		await wait(3);
-	} else if (result.status == 1) {
-		DoubleLog(`登录:${result.message}`);
+	if (result.status == 1) {
+		// console.log(result);
+		DoubleLog(`欢迎: ${result.info.member.nickname} ,目前有牛币 ${result.info.member.currency} 枚 ,剩余牛奶 ${result.info.member.foodstuff} 瓶!`);
+		if (Number(result.info.warehouse_currency) == Number(result.info.member.warehouse)) {
+			DoubleLog(`仓库: 等级:${result.info.member.warehouse_level} 级 ,容量 ${result.info.member.warehouse} 枚 , 您当前仓库有牛币 ${result.info.warehouse_currency} 枚 ,仓库牛币满了 ,执行一键收取仓库牛币!`);
+			await Receive_coin();
+		} else if (Number(result.info.warehouse_currency) < Number(result.info.member.warehouse)) {
+			DoubleLog(`仓库: 等级:${result.info.member.warehouse_level} 级 ,容量 ${result.info.member.warehouse} 枚 , 您当前仓库有牛币 ${result.info.warehouse_currency} 枚 ,等满了再收吧!`);
+		}
+		if (result.info.produced.time == 0 && result.info.member.foodstuff > 0) {
+			DoubleLog(`奶牛状态: 没有在生产状态 ,牛奶还有 ${result.info.member.foodstuff} 瓶 ,喂养一瓶 ,将持续 300 秒产牛币!`);
+			await feed();
+		} else if (result.info.produced.time > 0) {
+			DoubleLog(`奶牛状态: 牛牛在努力产牛币中 ,剩余时间 ${result.info.produced.time} 秒!`);
+		} else if (result.info.produced.time == 0 && result.info.member.foodstuff == 0) {
+			DoubleLog(`奶牛状态: 没有在生产状态 ,牛奶还有 ${result.info.member.foodstuff} 瓶 ,无法喂养牛牛了!`);
+		}
+
+
+
+
 	} else {
-		DoubleLog(`登录: 失败 ❌ 了呢,原因未知!`);
+		DoubleLog(`用户信息: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
 		return ck_status = false;
 	}
-
 }
 
 
 /**
- * 签到   post
- * https://app-server.pcauto.com.cn/api/info/sign/register
+ * 一键收取牛币    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=upcurrency&contr=my&token=a038f11334a55e361cc34786ca903426&collect=1&version=1.0.43
+ * 
  */
-async function signin() {
+async function Receive_coin() {
 	let url = {
-		url: 'https://app-server.pcauto.com.cn/api/info/sign/register',
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=upcurrency&contr=my&token=${ck[0]}&collect=1&version=1.0.43`,
 		headers: {
-			'Content-Type': 'text/plain',
-			'Cookie': `common_session_id=${ck}`,
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
 		},
-		body: '{}',
 	};
-	let result = await httpPost(url, `签到`);
+	let result = await httpGet(url, `一键收取牛币`);
 
-	if (result.code == 200) {
-		DoubleLog(`签到:${result.message} 🎉`);
-	} else if (result.code == 500) {
-		DoubleLog(`签到:${result.message}`);
+	if (result.status == 1) {
+		DoubleLog(`一键收取牛币: 成功 ,收取后有牛币 ${result.info.member.currency} 枚!`);
+	} else {
+		DoubleLog(`一键收取牛币: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+		return ck_status = false;
+	}
+}
+
+
+
+
+
+
+
+/**
+ * 任务列表    httpPost
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=b893a0d6fd8d1e82e867cc153116f596&action=home&contr=index&parent_id=0&token=a038f11334a55e361cc34786ca903426&version=1.0.43
+ */
+async function task_list() {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=home&contr=index&parent_id=0&token=${ck[0]}&version=1.0.43`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `任务列表`);
+	// console.log(result);
+	if (result.status == 1) {
+		if (result.info.is_sign == false) {
+			DoubleLog(`签到: 今天未签到,去签到喽!`);
+			await wait(2);
+			await signIn();
+		} else if (result.info.is_sign == true) {
+			DoubleLog(`签到: 今天已经签到了,明天再来吧!`);
+		}
+		if (result.info.look_num == 0) {
+			DoubleLog(`激励视频: 今天剩余 ${3 - result.info.look_num} 次,去看视频喽!`);
+			let num = 3 - result.info.look_num;
+			for (let index = 0; index < num; index++) {
+				await ad_video();
+			}
+		} else if (result.info.look_num == 3) {
+			DoubleLog(`激励视频: 今天已没机会到了,明天再来吧!`);
+		}
+		if (result.info.daily_food.status == false) {
+			DoubleLog(`每日牛奶: 今天未领取 ,去领取喽!`);
+			await receive_milk();
+		} else if (result.info.daily_food.status == true) {
+			DoubleLog(`每日牛奶: 今天已经领取了,明天再来吧!`);
+		}
+
+	} else {
+		DoubleLog(`任务列表: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+/**
+ * 气泡牛币    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=e4dbf30470e2ffee315327e4ad8a245a&action=index&contr=task&token=bf08aab5cb3cf62cf5add3730942e2b8&version=1.0.43
+ */
+async function bubble() {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=index&contr=task&token=${ck[0]}&version=1.0.43`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `气泡牛币`);
+
+	if (result.status == 1) {
+		if (result.info.task.s.length > 0) {
+			let taskArr = result.info.task.s;
+			// console.log(taskArr);
+			for (let index = 0; index < taskArr.length; index++) {
+				let id = taskArr[index].id;
+				let title = taskArr[index].title;
+				await bubble_receive(title, id);
+			}
+		}
+	} else {
+		DoubleLog(`气泡牛币: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+
+
+/**
+ * 签到    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=fea4a769ba79b27a607d322d1a346c84&action=signDouble&contr=my&token=a038f11334a55e361cc34786ca903426&version=1.0.43
+ * 
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=6e61fd34a8391e240f1ebe70af9c340a&action=sign&contr=my&token=a038f11334a55e361cc34786ca903426&version=1.0.43
+ */
+async function signIn() {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=sign&contr=my&token=${ck[0]}&version=1.0.43`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `签到`);
+
+	if (result.status == 1) {
+		DoubleLog(`签到: 成功!`);
+		await wait(3);
+		DoubleLog(`签到: 去执行签到翻倍!`);
+		await signDouble();
 	} else {
 		DoubleLog(`签到: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
@@ -145,28 +270,133 @@ async function signin() {
 
 
 
-
 /**
- * 查询金币   get
- * https://mrobot.pcauto.com.cn/xsp/s/auto/info/nocache/task/getLoginUserInfo.xsp
+ * 签到翻倍    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=fea4a769ba79b27a607d322d1a346c84&action=signDouble&contr=my&token=a038f11334a55e361cc34786ca903426&version=1.0.43
+ * 
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=6e61fd34a8391e240f1ebe70af9c340a&action=sign&contr=my&token=a038f11334a55e361cc34786ca903426&version=1.0.43
  */
-async function user_info() {
+async function signDouble() {
 	let url = {
-		url: 'https://mrobot.pcauto.com.cn/xsp/s/auto/info/nocache/task/getLoginUserInfo.xsp',
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=signDouble&contr=my&token=${ck[0]}&version=1.0.43`,
 		headers: {
-			'Cookie': `common_session_id=${ck}`,
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
 		},
 	};
-	let result = await httpPost(url, `查询金币`);
+	let result = await httpGet(url, `签到翻倍`);
 
-	if (result.status == 0) {
-		DoubleLog(`查询金币:${result.userName} id:${result.userId} , 现在有金币 ${result.goldCount} 枚`);
+	if (result.status == 1) {
+		DoubleLog(`签到翻倍: 成功!`);
+		await wait(3);
 	} else {
-		DoubleLog(`查询金币: 失败 ❌ 了呢,原因未知!`);
+		DoubleLog(`签到翻倍: 失败 ❌ 了呢,原因未知!`);
 		console.log(result);
 	}
 }
 
+
+
+
+/**
+ * 激励视频    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&c=entry&a=wxapp&do=distribute&m=bh_cat&action=video&contr=food&token=a038f11334a55e361cc34786ca903426
+ * 
+ */
+async function ad_video() {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&c=entry&a=wxapp&do=distribute&m=bh_cat&action=video&contr=food&token=${ck[0]}`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `激励视频`);
+
+	if (result.status == 1) {
+		DoubleLog(`激励视频: 成功!`);
+		await wait(35);
+	} else {
+		DoubleLog(`激励视频: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+/**
+ * 气泡领取    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=complete&contr=task&task_id=15&token=a038f11334a55e361cc34786ca903426&version=1.0.43
+ * 
+ */
+async function bubble_receive(name, id) {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=complete&contr=task&task_id=${id}&token=${ck[0]}&version=1.0.43`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `气泡领取`);
+
+	if (result.status == 1) {
+		DoubleLog(`气泡领取: ${name} 成功!`);
+		await wait(35);
+	} else {
+		DoubleLog(`气泡领取: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+
+/**
+ * 领牛奶    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=d2a6596ed052513678b02d8a34a6240a&action=daily&contr=food&token=a038f11334a55e361cc34786ca903426&version=1.0.43
+ * 
+ */
+async function receive_milk() {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=daily&contr=food&token=${ck[0]}&version=1.0.43`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `领牛奶`);
+
+	if (result.status == 1) {
+		DoubleLog(`领牛奶: 成功!`);
+		await wait(35);
+	} else {
+		DoubleLog(`领牛奶: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
+
+
+/**
+ * 喂养    httpGet
+ * https://xyx.zlzw188.com/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&sign=2d8ab9c1a3e47ce92ce6be06d6c5d71a&action=feed&contr=my&token=a038f11334a55e361cc34786ca903426&is_remind=2&version=1.0.43
+ * 
+ */
+async function feed() {
+	let url = {
+		url: `${hostname}/app/index.php?i=16&t=0&v=1.1.7&from=wxapp&c=entry&a=wxapp&do=distribute&m=bh_cat&action=feed&contr=my&token=${ck[0]}&is_remind=2&version=1.0.43`,
+		headers: {
+			'Host': host,
+			'content-type': 'application/x-www-form-urlencoded',
+		},
+	};
+	let result = await httpGet(url, `喂养`);
+
+	if (result.status == 1) {
+		DoubleLog(`喂养: 成功!`);
+		await wait(3);
+	} else {
+		DoubleLog(`喂养: 失败 ❌ 了呢,原因未知!`);
+		console.log(result);
+	}
+}
 
 
 
@@ -186,7 +416,7 @@ async function user_info() {
 /**
  * 变量检查
  */
-async function Variable_Check(ck, Variables) {
+async function getCks(ck, str) {
 	return new Promise((resolve) => {
 		let ckArr = []
 		if (ck) {
@@ -205,7 +435,7 @@ async function Variable_Check(ck, Variables) {
 			}
 			resolve(ckArr)
 		} else {
-			console.log(` ${$.neme}:未填写变量 ${Variables} ,请仔细阅读脚本说明!`)
+			console.log(` :未填写变量 ${str}`)
 		}
 	}
 	)
@@ -214,8 +444,7 @@ async function Variable_Check(ck, Variables) {
 
 /**
  * 获取远程版本
- * http://yml-gitea.ml:2233/yml/JavaScript-yml/raw/branch/master/${name}.js
- * https://raw.gh.fakev.cn/yml2213/javascript/master/${name}/${name}.js
+ * http://yml-gitea.ml:2233/yml/JavaScript-yml/raw/branch/master/ynhb.js
  */
 function Version_Check(name) {
 	return new Promise((resolve) => {
@@ -239,13 +468,13 @@ function Version_Check(name) {
  */
 async function SendMsg(message) {
 	if (!message) return;
+
 	if (Notify > 0) {
 		if ($.isNode()) {
 			var notify = require("./sendNotify");
 			await notify.sendNotify($.name, message);
 		} else {
-			// $.msg(message);
-			$.msg($.name, '', message)
+			$.msg(message);
 		}
 	} else {
 		console.log(message);
@@ -253,18 +482,9 @@ async function SendMsg(message) {
 }
 
 /**
- * 双平台log输出
- */
-function DoubleLog(data) {
-	if (data) {
-		console.log(`    ${data}`);
-		msg += `\n    ${data}`;
-	}
-}
-
-/**
  * 随机 数字 + 大写字母 生成
  */
+
 function randomszdx(e) {
 	e = e || 32;
 	var t = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890",
@@ -279,6 +499,7 @@ function randomszdx(e) {
 /**
  * 随机 数字 + 小写字母 生成
  */
+
 function randomszxx(e) {
 	e = e || 32;
 	var t = "qwertyuioplkjhgfdsazxcvbnm1234567890",
@@ -295,6 +516,7 @@ function randomszxx(e) {
 /**
  * 随机整数生成
  */
+
 function randomInt(min, max) {
 	return Math.round(Math.random() * (max - min) + min);
 }
@@ -319,7 +541,7 @@ function ts10() {
  */
 function local_hours() {
 	let myDate = new Date();
-	let h = myDate.getHours();
+	h = myDate.getHours();
 	return h;
 }
 
@@ -328,64 +550,9 @@ function local_hours() {
  */
 function local_minutes() {
 	let myDate = new Date();
-	let m = myDate.getMinutes();
+	m = myDate.getMinutes();
 	return m;
 }
-
-
-/**
- * 获取当前年份 2022
- */
-function local_year() {
-	let myDate = new Date();
-	y = myDate.getFullYear();
-	return y;
-}
-
-/**
- * 获取当前月份(数字)  5月
- */
-function local_month() {
-	let myDate = new Date();
-	let m = myDate.getMonth();
-	return m;
-}
-
-
-/**
-* 获取当前月份(数字)  05月 补零
-*/
-function local_month_two() {
-	let myDate = new Date();
-	let m = myDate.getMonth();
-	if (m.toString().length == 1) {
-		m = `0${m}`
-	}
-	return m;
-}
-
-/**
-* 获取当前天数(数字)  5日  
-*/
-function local_day() {
-	let myDate = new Date();
-	let d = myDate.getDate();
-	return d;
-}
-
-
-/**
-* 获取当前天数  05日 补零
-*/
-function local_day_two() {
-	let myDate = new Date();
-	let d = myDate.getDate();
-	if (d.toString().length == 1) {
-		d = `0${d}`
-	}
-	return d;
-}
-
 
 
 /**
@@ -408,11 +575,10 @@ function wyy() {
 		}
 		$.get(url, async (err, resp, data) => {
 			try {
-				data = JSON.parse(data);
+				data = JSON.parse(data)
 				// console.log(data);
-				console.log(`网抑云时间: ${data.data.Content}  by--${data.data.Music}`)
-				msg = `[网抑云时间]: ${data.data.Content}  by--${data.data.Music}`
-				// DoubleLog(`[网抑云时间]: ${data.data.Content}  by--${data.data.Music}`);
+				console.log(`【网抑云时间】 ${data.data.Content}  by--${data.data.Music}`);
+
 			} catch (e) {
 				$.logErr(e, resp);
 			} finally {
@@ -446,7 +612,7 @@ async function httpGet(getUrlObject, tip, timeout = 3) {
 					if (debug) {
 						console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
 						console.log(data);
-						console.log(`\n 【debug】=============这是 ${tip} json解析后数据============`);
+						console.log(`======`);
 						console.log(JSON.parse(data));
 					}
 					let result = JSON.parse(data);
@@ -459,7 +625,7 @@ async function httpGet(getUrlObject, tip, timeout = 3) {
 				} catch (e) {
 					console.log(err, resp);
 					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					msg = `\n ${tip} 失败了!请稍后尝试!!`
+					msg += `\n ${tip} 失败了!请稍后尝试!!`
 				} finally {
 					resolve();
 				}
@@ -493,7 +659,7 @@ async function httpPost(postUrlObject, tip, timeout = 3) {
 					if (debug) {
 						console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
 						console.log(data);
-						console.log(`\n 【debug】=============这是 ${tip} json解析后数据============`);
+						console.log(`======`);
 						console.log(JSON.parse(data));
 					}
 					let result = JSON.parse(data);
@@ -506,7 +672,7 @@ async function httpPost(postUrlObject, tip, timeout = 3) {
 				} catch (e) {
 					console.log(err, resp);
 					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					msg = `\n ${tip} 失败了!请稍后尝试!!`
+					msg += `\n ${tip} 失败了!请稍后尝试!!`
 				} finally {
 					resolve();
 				}
@@ -522,7 +688,7 @@ async function httpPost(postUrlObject, tip, timeout = 3) {
 async function httpRequest(postOptionsObject, tip, timeout = 3) {
 	return new Promise((resolve) => {
 
-		let Options = postOptionsObject;
+		let options = postOptionsObject;
 		let request = require('request');
 		if (!tip) {
 			let tmp = arguments.callee.toString();
@@ -532,10 +698,10 @@ async function httpRequest(postOptionsObject, tip, timeout = 3) {
 		}
 		if (debug) {
 			console.log(`\n 【debug】=============== 这是 ${tip} 请求 信息 ===============`);
-			console.log(Options);
+			console.log(options);
 		}
 
-		request(Options, async (err, resp, data) => {
+		request(options, async (err, resp, data) => {
 			try {
 				if (debug) {
 					console.log(`\n\n 【debug】===============这是 ${tip} 返回数据==============`);
@@ -549,7 +715,7 @@ async function httpRequest(postOptionsObject, tip, timeout = 3) {
 			} catch (e) {
 				console.log(err, resp);
 				console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-				msg = `\n ${tip} 失败了!请稍后尝试!!`
+				msg += `\n ${tip} 失败了!请稍后尝试!!`
 			} finally {
 				resolve();
 			}
@@ -568,7 +734,15 @@ function debugLog(...args) {
 	}
 }
 
-
+/**
+ * 双平台log输出
+ */
+function DoubleLog(data) {
+	if (data) {
+		console.log(`    ${data}`);
+		msg += `\n    ${data}`;
+	}
+}
 
 // /**
 //  *  单名字 Env
@@ -590,4 +764,4 @@ function MD5Encrypt(a) { function b(a, b) { return a << b | a >>> 32 - b } funct
 // 完整 Env
 function Env(t, e) { "undefined" != typeof process && JSON.stringify(process.env).indexOf("GITHUB") > -1 && process.exit(0); class s { constructor(t) { this.env = t } send(t, e = "GET") { t = "string" == typeof t ? { url: t } : t; let s = this.get; return "POST" === e && (s = this.post), new Promise((e, i) => { s.call(this, t, (t, s, r) => { t ? i(t) : e(s) }) }) } get(t) { return this.send.call(this.env, t) } post(t) { return this.send.call(this.env, t, "POST") } } return new class { constructor(t, e) { this.name = t, this.http = new s(this), this.data = null, this.dataFile = "box.dat", this.logs = [], this.isMute = !1, this.isNeedRewrite = !1, this.logSeparator = "\n", this.startTime = (new Date).getTime(), Object.assign(this, e), this.log("", `🔔${this.name}, 开始!`) } isNode() { return "undefined" != typeof module && !!module.exports } isQuanX() { return "undefined" != typeof $task } isSurge() { return "undefined" != typeof $httpClient && "undefined" == typeof $loon } isLoon() { return "undefined" != typeof $loon } toObj(t, e = null) { try { return JSON.parse(t) } catch { return e } } toStr(t, e = null) { try { return JSON.stringify(t) } catch { return e } } getjson(t, e) { let s = e; const i = this.getdata(t); if (i) try { s = JSON.parse(this.getdata(t)) } catch { } return s } setjson(t, e) { try { return this.setdata(JSON.stringify(t), e) } catch { return !1 } } getScript(t) { return new Promise(e => { this.get({ url: t }, (t, s, i) => e(i)) }) } runScript(t, e) { return new Promise(s => { let i = this.getdata("@chavy_boxjs_userCfgs.httpapi"); i = i ? i.replace(/\n/g, "").trim() : i; let r = this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout"); r = r ? 1 * r : 20, r = e && e.timeout ? e.timeout : r; const [o, h] = i.split("@"), n = { url: `http://${h}/v1/scripting/evaluate`, body: { script_text: t, mock_type: "cron", timeout: r }, headers: { "X-Key": o, Accept: "*/*" } }; this.post(n, (t, e, i) => s(i)) }).catch(t => this.logErr(t)) } loaddata() { if (!this.isNode()) return {}; { this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path"); const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile), s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e); if (!s && !i) return {}; { const i = s ? t : e; try { return JSON.parse(this.fs.readFileSync(i)) } catch (t) { return {} } } } } writedata() { if (this.isNode()) { this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path"); const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile), s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e), r = JSON.stringify(this.data); s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r) } } lodash_get(t, e, s) { const i = e.replace(/\[(\d+)\]/g, ".$1").split("."); let r = t; for (const t of i) if (r = Object(r)[t], void 0 === r) return s; return r } lodash_set(t, e, s) { return Object(t) !== t ? t : (Array.isArray(e) || (e = e.toString().match(/[^.[\]]+/g) || []), e.slice(0, -1).reduce((t, s, i) => Object(t[s]) === t[s] ? t[s] : t[s] = Math.abs(e[i + 1]) >> 0 == +e[i + 1] ? [] : {}, t)[e[e.length - 1]] = s, t) } getdata(t) { let e = this.getval(t); if (/^@/.test(t)) { const [, s, i] = /^@(.*?)\.(.*?)$/.exec(t), r = s ? this.getval(s) : ""; if (r) try { const t = JSON.parse(r); e = t ? this.lodash_get(t, i, "") : e } catch (t) { e = "" } } return e } setdata(t, e) { let s = !1; if (/^@/.test(e)) { const [, i, r] = /^@(.*?)\.(.*?)$/.exec(e), o = this.getval(i), h = i ? "null" === o ? null : o || "{}" : "{}"; try { const e = JSON.parse(h); this.lodash_set(e, r, t), s = this.setval(JSON.stringify(e), i) } catch (e) { const o = {}; this.lodash_set(o, r, t), s = this.setval(JSON.stringify(o), i) } } else s = this.setval(t, e); return s } getval(t) { return this.isSurge() || this.isLoon() ? $persistentStore.read(t) : this.isQuanX() ? $prefs.valueForKey(t) : this.isNode() ? (this.data = this.loaddata(), this.data[t]) : this.data && this.data[t] || null } setval(t, e) { return this.isSurge() || this.isLoon() ? $persistentStore.write(t, e) : this.isQuanX() ? $prefs.setValueForKey(t, e) : this.isNode() ? (this.data = this.loaddata(), this.data[e] = t, this.writedata(), !0) : this.data && this.data[e] || null } initGotEnv(t) { this.got = this.got ? this.got : require("got"), this.cktough = this.cktough ? this.cktough : require("tough-cookie"), this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar, t && (t.headers = t.headers ? t.headers : {}, void 0 === t.headers.Cookie && void 0 === t.cookieJar && (t.cookieJar = this.ckjar)) } get(t, e = (() => { })) { t.headers && (delete t.headers["Content-Type"], delete t.headers["Content-Length"]), this.isSurge() || this.isLoon() ? (this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })), $httpClient.get(t, (t, s, i) => { !t && s && (s.body = i, s.statusCode = s.status), e(t, s, i) })) : this.isQuanX() ? (this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, { hints: !1 })), $task.fetch(t).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => e(t))) : this.isNode() && (this.initGotEnv(t), this.got(t).on("redirect", (t, e) => { try { if (t.headers["set-cookie"]) { const s = t.headers["set-cookie"].map(this.cktough.Cookie.parse).toString(); s && this.ckjar.setCookieSync(s, null), e.cookieJar = this.ckjar } } catch (t) { this.logErr(t) } }).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => { const { message: s, response: i } = t; e(s, i, i && i.body) })) } post(t, e = (() => { })) { if (t.body && t.headers && !t.headers["Content-Type"] && (t.headers["Content-Type"] = "application/x-www-form-urlencoded"), t.headers && delete t.headers["Content-Length"], this.isSurge() || this.isLoon()) this.isSurge() && this.isNeedRewrite && (t.headers = t.headers || {}, Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })), $httpClient.post(t, (t, s, i) => { !t && s && (s.body = i, s.statusCode = s.status), e(t, s, i) }); else if (this.isQuanX()) t.method = "POST", this.isNeedRewrite && (t.opts = t.opts || {}, Object.assign(t.opts, { hints: !1 })), $task.fetch(t).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => e(t)); else if (this.isNode()) { this.initGotEnv(t); const { url: s, ...i } = t; this.got.post(s, i).then(t => { const { statusCode: s, statusCode: i, headers: r, body: o } = t; e(null, { status: s, statusCode: i, headers: r, body: o }, o) }, t => { const { message: s, response: i } = t; e(s, i, i && i.body) }) } } time(t, e = null) { const s = e ? new Date(e) : new Date; let i = { "M+": s.getMonth() + 1, "d+": s.getDate(), "H+": s.getHours(), "m+": s.getMinutes(), "s+": s.getSeconds(), "q+": Math.floor((s.getMonth() + 3) / 3), S: s.getMilliseconds() }; /(y+)/.test(t) && (t = t.replace(RegExp.$1, (s.getFullYear() + "").substr(4 - RegExp.$1.length))); for (let e in i) new RegExp("(" + e + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? i[e] : ("00" + i[e]).substr(("" + i[e]).length))); return t } msg(e = t, s = "", i = "", r) { const o = t => { if (!t) return t; if ("string" == typeof t) return this.isLoon() ? t : this.isQuanX() ? { "open-url": t } : this.isSurge() ? { url: t } : void 0; if ("object" == typeof t) { if (this.isLoon()) { let e = t.openUrl || t.url || t["open-url"], s = t.mediaUrl || t["media-url"]; return { openUrl: e, mediaUrl: s } } if (this.isQuanX()) { let e = t["open-url"] || t.url || t.openUrl, s = t["media-url"] || t.mediaUrl; return { "open-url": e, "media-url": s } } if (this.isSurge()) { let e = t.url || t.openUrl || t["open-url"]; return { url: e } } } }; if (this.isMute || (this.isSurge() || this.isLoon() ? $notification.post(e, s, i, o(r)) : this.isQuanX() && $notify(e, s, i, o(r))), !this.isMuteLog) { let t = ["", "==============📣系统通知📣=============="]; t.push(e), s && t.push(s), i && t.push(i), console.log(t.join("\n")), this.logs = this.logs.concat(t) } } log(...t) { t.length > 0 && (this.logs = [...this.logs, ...t]), console.log(t.join(this.logSeparator)) } logErr(t, e) { const s = !this.isSurge() && !this.isQuanX() && !this.isLoon(); s ? this.log("", `❗️${this.name}, 错误!`, t.stack) : this.log("", `❗️${this.name}, 错误!`, t) } wait(t) { return new Promise(e => setTimeout(e, t)) } done(t = {}) { const e = (new Date).getTime(), s = (e - this.startTime) / 1e3; this.log("", `🔔${this.name}, 结束! 🕛 ${s} 秒`), this.log(), (this.isSurge() || this.isQuanX() || this.isLoon()) && $done(t) } }(t, e) }
 
-  //#endregion
+      //#endregion

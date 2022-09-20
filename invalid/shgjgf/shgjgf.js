@@ -1,42 +1,34 @@
 /**
- * 金砖旷工 app (链接带邀请)  谢谢填写
- * 下载地址: http://jzkg.jmsfx.top/download/1dc7c27b64c47fad?user=68738
+ * 上海贵酒股份 小程序  
  * 
- * cron 0 * * * *  yml2213_javascript_master/jzkg.js
- *
- * 金砖旷工 app (这个没有小程序,ios无缘了呀,自己虚拟机玩下吧)
+ * cron 30 7 * * *  yml2213_javascript_master/shgjgf.js
+ * 有效期测试中
+ * 需要自行开卡 , 然后就有签到了 , 自行决定跑不跑吧
  * 
- * 4-30 更已完成的任务 签到 , 观看视频 , 京喜红包 , 红包雨 , 一键收矿石(需要开启条件))  自己玩吧 
- * 5-1  默认打开 一键收矿石 不需要的自己禁用
- * 薅了可能有,不薅一定没有,别问收益!!
+ * 5-1 完成 签到 任务     
  *
- *一键收矿石:这个比较特殊,可能需要邀请超过30人才能开启(当然 不满足 你也可以直接试试.说不定能行),然后有两个地方,一个是跟随任务每天 8 点一次,另一个跟随 红包雨 每小时一次,请自行选择(连个默认都没开启的)
  * 
- * 感谢所有测试人员   感谢大佬的解密  感谢大佬的解密	感谢大佬的解密
- * ========= 青龙 =========
- * 变量格式: export jzkg_data='userid1 @ userid2'  多个账号用 @分割
+ * 感谢所有测试人员 
+ * ========= 青龙--配置文件 =========
+ * 变量格式: export shgjgf_data='x-wx-token1 @ ax-wx-token2'  多个账号用 @分割
  *
- * userid   app 页面兑换界面--左上角 有 id , 找不到的可以告别羊毛了  在问自杀
+ * ax-wx-token :  关键词  misc/sign/activity  ,headers中的一个参数
  *
- * 还是不会的请百度或者群里求助: tg: https://t.me/yml_tg  通知: https://t.me/yml2213_tg
+ * 神秘代码: aHR0cHM6Ly90Lm1lL3ltbF90Zw==
  */
-const $ = new Env("金砖旷工");
+const $ = new Env("上海贵酒股份");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1; 		//0为关闭通知，1为打开通知,默认为1
 const debug = 0; 		//0为关闭调试，1为打开调试,默认为0
 //////////////////////
-let ckStr = process.env.jzkg_data;
-let jzkg_dataArr = [];
+let ckStr = process.env.shgjgf_data;
+let shgjgf_dataArr = [];
 let msg = "";
 let ck = "";
-let sign = "";
-
-
 /////////////////////////////////////////////////////////
-console.log(ckStr);
 
 async function tips(ckArr) {
-	console.log(`\n本地脚本4-28`);
+	console.log(`\n版本: 0.1 -- 22/5/1`);
 	// console.log(`\n 脚本已恢复正常状态,请及时更新! `);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
 	console.log(`\n 脚本测试中,有bug及时反馈! \n`);
@@ -59,7 +51,7 @@ async function tips(ckArr) {
 }
 
 !(async () => {
-	let ckArr = await getCks(ckStr, "jzkg_data");
+	let ckArr = await getCks(ckStr, "shgjgf_data");
 
 	await tips(ckArr);
 
@@ -82,241 +74,94 @@ async function tips(ckArr) {
 
 async function start() {
 
-	let myDate = new Date();
-	h = myDate.getHours();
-	// console.log(h);
-	console.log(`现在的时间 ${h} 点 ,签到,观看视频,京喜红包,升级 等任务每天 8 点开启! `);
-	if (h == 8) {
 
-		console.log("开始 签到");
-		await signin();
-		await $.wait(2 * 1000);
-
-		console.log('开始 观看视频');
-		await ad_video();
-		await $.wait(2 * 1000);
-
-		console.log('开始 京喜红包');
-		await gold_ad_video();
-		await $.wait(2 * 1000);
-
-		// console.log('开始 一键收矿石');
-		// await collection();
-		// await $.wait(2 * 1000);
-
-		console.log('开始 升级');
-		await Upgrade();
-		await $.wait(2 * 1000);
-	} else {
-		console.log(`现在的时间 ${h} 点 , 跳过其他任务,执行红包雨任务! `);
-
-	}
-
-	console.log('开始 一键收矿石');
-	await collection();
+	console.log("开始 签到状态");
+	await signin_info();
 	await $.wait(2 * 1000);
 
-
-	console.log('开始 红包雨');
-	await rain_open_redbag();
-	await $.wait(2 * 1000);
 
 }
 
 
+
+
+
 /**
- * 签到   get
- * https://kg.jmsfx.top/app/index.php??i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=ee0709fabd462f2fcc1ba9606e3329c0&m=skai_tooln_c&dopost=make_sign&userid=68738
- * 
- * https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=ee0709fabd462f2fcc1ba9606e3329c0&m=skai_tooln_c&dopost=make_sign&userid=68738
- * 
+ * 签到状态   post
+ * https://mapi.weimob.com/api3/misc/sign/activity/c/signMainInfo
+ */
+async function signin_info(timeout = 3 * 1000) {
+
+	let url = {
+		url: `https://mapi.weimob.com/api3/misc/sign/activity/c/signMainInfo`,
+		headers: {
+			'x-wx-token': ck[0],
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			"appid": "wxc8a4966e81ed5d22",
+			"pid": "4002654669566",
+			"source": 1
+		}),
+	};
+	let result = await httpPost(url, `签到状态`, timeout);
+	if (result.data.hasSign == false) {
+		console.log(`\n当前时间:${result.data.year}年${result.data.month}月${result.data.date}日\n`);
+		console.log(`\n当前积分:${result.data.signForwardMsg} , 连续签到${result.data.keepSignDate}天 , 额外送 ${result.data.keepSignForwardMsg}积分\n`);
+		console.log(`\n 签到状态: 未签到 ,去执行签到!\n`
+		);
+		await signin();
+
+	} else if (result.data.hasSign == true) {
+
+		console.log(`\n 签到状态: 已签到,明天再来吧!\n`
+		);
+
+	} else {
+		console.log(`\n 签到状态: 错误 ❌  ${result.message} \n `);
+	}
+}
+
+
+
+
+/**
+ * 签到   post
+ * https://mapi.weimob.com/api3/misc/sign/activity/c/sign
  */
 async function signin(timeout = 3 * 1000) {
 
-	let sign = MD5Encrypt(`a=wxapp&c=entry&do=user&dopost=make_sign&from=wxapp&i=2&m=skai_tooln_c&t=0&userid=${ck}&v=1.0undefined`);
-	//  console.log(sign);
-
 	let url = {
-		url: `https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=${sign}&m=skai_tooln_c&dopost=make_sign&userid=${ck}`,
+		url: `https://mapi.weimob.com/api3/misc/sign/activity/c/sign`,
 		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Host: "kg.jmsfx.top",
+			'x-wx-token': ck[0],
+			'Content-Type': 'application/json'
 		},
+		body: JSON.stringify({
+			"appid": "wxc8a4966e81ed5d22",
+			"pid": "4002654669566",
+			"source": 1
+		}),
 	};
 
-	let result = await httpGet(url, `签到`, timeout);
-	if (result.result == "success") {
-		console.log(
-			`\n 签到:成功 🎉  您已经连续签到 ${result.sign_total} 天\n签到获得 能量 ${result.addpower} ,累计能量 ${result.power}\n`
+	let result = await httpPost(url, `签到`, timeout);
+	if (result.errcode == 0) {
+		console.log(`\n 签到:${result.errmsg} 🎉 , 签到获得 ${result.data.forwardMsg} \n`
 		);
 
-		// msg += `\n 签到:成功 🎉  您已经连续签到 ${result.sign_total} 天\n签到获得 能量 ${result.addpower} ,累计能量 ${result.power}\n`
-	} else if (result.result == "fail") {
-		console.log(`\n 签到:${result.msg}\n`);
+		msg += `\n 签到:${result.errmsg} 🎉 , 签到获得 ${result.data.forwardMsg} \n`
 	} else {
-		console.log(`\n 签到:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
+		console.log(`\n 签到:  失败 ❌ 了呢,原因 ${result.errmsg} \n `);
 	}
-}
 
-/**
- * 观看视频   get
- * https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=4ca5032b2f0f16e2423880292792e5fa&m=skai_tooln_c&dopost=get_some_power_ad_video&userid=17803
- */
-async function ad_video(timeout = 3 * 1000) {
-	let sign = MD5Encrypt(`a=wxapp&c=entry&do=user&dopost=get_some_power_ad_video&from=wxapp&i=2&m=skai_tooln_c&t=0&userid=${ck}&v=1.0undefined`);
-	//  console.log(sign); 
 
-	let url = {
-		url: `https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=${sign}&m=skai_tooln_c&dopost=get_some_power_ad_video&userid=${ck}`,
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Host: "kg.jmsfx.top",
-		},
-	};
 
-	let result = await httpGet(url, `观看视频`, timeout);
-	if (result.result == "success") {
-		console.log(
-			`\n 观看视频:成功 🎉  您今天已看: ${result.userdata.ad_video_num}/7 次, \n 观看视频 获得 能量 ${result.addpower} ,累计有能量 ${result.power}\n`
-		);
-
-		if (result.userdata.ad_video_num < 7) {
-			let num = randomInt(40, 60);
-			console.log(`\n 等待 ${num} s后,继续观看视频\n`);
-			await $.wait(num * 1000);
-			console.log("开始 观看视频");
-			await ad_video();
-		}
-	} else if (result.result == "fail") {
-		console.log(`\n 观看视频:${result.msg}\n`);
-	} else {
-		console.log(`\n 观看视频:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
-	}
-}
-
-/**
- * 京喜红包   get
- * https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=13a6d7f8418c39085c261a91e9da665a&m=skai_tooln_c&dopost=get_some_gold_ad_video_full&userid=17803
- */
-async function gold_ad_video(timeout = 3 * 1000) {
-
-	let sign = MD5Encrypt(`a=wxapp&c=entry&do=user&dopost=get_some_gold_ad_video_full&from=wxapp&i=2&m=skai_tooln_c&t=0&userid=${ck}&v=1.0undefined`);
-
-	let url = {
-		url: `https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=${sign}&m=skai_tooln_c&dopost=get_some_gold_ad_video_full&userid=${ck}`,
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Host: "kg.jmsfx.top",
-		},
-	};
-
-	let result = await httpGet(url, `京喜红包`, timeout);
-	if (result.result == "success") {
-		console.log(
-			`\n 京喜红包:成功 🎉  您今天已看: ${result.userdata.ad_videob_num}/5 次 \n 京喜红包 获得 金币 ${result.addgold} \n`
-		);
-
-		if (result.userdata.ad_videob_num < 5) {
-			let num = randomInt(40, 50);
-			console.log(`\n 等待 ${num} s后,继续京喜红包\n`);
-			await $.wait(num * 1000);
-			console.log("开始 京喜红包");
-			await gold_ad_video();
-		}
-	} else if (result.result == "fail") {
-		console.log(`\n 京喜红包:${result.msg}\n`);
-	} else {
-		console.log(`\n 京喜红包:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
-	}
-}
-
-/**
- * 升级   get
- * https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=d1a53fca503869437cd14a2f0e9ab794&m=skai_tooln_c&dopost=update_grade&userid=17803
- */
-async function Upgrade(timeout = 3 * 1000) {
-
-	let sign = MD5Encrypt(`a=wxapp&c=entry&do=user&dopost=update_grade&from=wxapp&i=2&m=skai_tooln_c&t=0&userid=${ck}&v=1.0undefined`);
-	let url = {
-		url: `https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=user&sign=${sign}&m=skai_tooln_c&dopost=update_grade&userid=${ck}`,
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Host: "kg.jmsfx.top",
-		},
-	};
-
-	let result = await httpGet(url, `升级`, timeout);
-	if (result.result == "success") {
-		console.log(`\n 升级:成功 🎉  您已经 ${result.grade} 级了呢! 好厉害\n`);
-	} else if (result.result == "fail") {
-		console.log(`\n 升级:${result.msg} ,不灰心,攒攒下次一定行!\n`);
-	} else {
-		console.log(`\n 升级:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
-	}
-}
-
-/**
- * 一键收矿石   get
- * https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=friend&sign=5d1015991229a24dbb4f513a35db571b&m=skai_tooln_c&dopost=all_take_up&userid=17803
- */
-async function collection(timeout = 3 * 1000) {
-	let sign = MD5Encrypt(`a=wxapp&c=entry&do=friend&dopost=all_take_up&from=wxapp&i=2&m=skai_tooln_c&t=0&userid=${ck}&v=1.0undefined`);
-	let url = {
-		url: `https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=friend&sign=${sign}&m=skai_tooln_c&dopost=all_take_up&userid=${ck}`,
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Host: "kg.jmsfx.top",
-		},
-	};
-
-	let result = await httpGet(url, `一键收矿石`, timeout);
-	if (result.result == "success") {
-		console.log(
-			`\n 一键收矿石:${result.result} 🎉   恭喜您获得 ${result.take_up_all_stone} 矿石呢!\n`
-		);
-	} else if (result.result == "fail") {
-		console.log(`\n 一键收矿石:${result.msg}!\n`);
-	} else {
-		console.log(`\n 一键收矿石:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
-	}
 }
 
 
 
 
 
-
-/**
- * 红包雨   get
- * https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=index&sign=f85cf8026a9b813635995a143f9d3039&m=skai_tooln_c&dopost=rain_open_redbag&userid=17803&time=11
- */
-async function rain_open_redbag(timeout = 3 * 1000) {
-	let myDate = new Date();
-	time = myDate.getHours();
-	// // console.log(h);
-	let sign = MD5Encrypt(`a=wxapp&c=entry&do=index&dopost=rain_open_redbag&from=wxapp&i=2&m=skai_tooln_c&t=0&time=${time}&userid=${ck}&v=1.0undefined`);
-
-	let url = {
-		url: `https://kg.jmsfx.top/app/index.php?i=2&t=0&v=1.0&from=wxapp&c=entry&a=wxapp&do=index&sign=${sign}&m=skai_tooln_c&dopost=rain_open_redbag&userid=${ck}&time=${time}`,
-		headers: {
-			"Content-Type": "application/x-www-form-urlencoded",
-			Host: "kg.jmsfx.top",
-		},
-	};
-
-	let result = await httpGet(url, `红包雨`, timeout);
-	if (result.result == "success") {
-		console.log(
-			`\n 红包雨: ${result.result} 🎉   您在 ${time} 点红包雨 获得 金币 ${result.addmoney} \n`
-		);
-
-
-	} else if (result.result == "fail") {
-		console.log(`\n 红包雨:${result.msg}\n`);
-	} else {
-		console.log(`\n 京喜红包:  失败 ❌ 了呢,原因未知！\n ${result} \n `);
-	}
-}
 
 
 
@@ -368,7 +213,7 @@ async function SendMsg(message) {
 
 	if (Notify > 0) {
 		if ($.isNode()) {
-			var notify = require("../金砖旷工/sendNotify");
+			var notify = require("./sendNotify");
 			await notify.sendNotify($.name, message);
 		} else {
 			$.msg(message);
