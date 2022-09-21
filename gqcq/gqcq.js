@@ -3,7 +3,7 @@
  *
  * 广汽传祺  app 
  *
- * cron 30 6 * * *  https://raw.githubusercontent.com/yml2213/javascript/master/gqcq/gqcq.js
+ * cron 30 6 * * *  gqcq.js
  *
  * 广汽传祺 app
  * 4-13     	完成签到 抽奖 分享 发帖 评论 任务   有bug及时反馈
@@ -25,7 +25,7 @@
 const $ = new Env("广汽传祺");
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1 		//0为关闭通知,1为打开通知,默认为1
-const debug = 0			//0为关闭调试,1为打开调试,默认为0
+const debug = 1			//0为关闭调试,1为打开调试,默认为0
 ///////////////////////////////////////////////////////////////////
 let ckStr = process.env.gqcq_data;
 let msg = "";
