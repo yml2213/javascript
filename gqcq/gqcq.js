@@ -50,10 +50,11 @@ async function tips(ckArr) {
 
 async function start() {
 	await init('初始化');
-	await Points_Enquiry('积分查询');
+	await user_info('用户信息');
 	if (ck_status) {
 		await task_list('任务列表');
 		await unopenlist('宝箱查询');
+		await Points_Enquiry('积分查询');
 	}
 
 }
@@ -103,7 +104,31 @@ async function init(name) {
 
 }
 
-// 积分查询
+
+// 用户信息 	httpGet
+async function user_info(name) {
+	DoubleLog(`\n开始 ${name}`);
+	try {
+		let Options = {
+			url: `${hostname}/gateway/webapi/account/getUserInfoV2`,
+			headers: cq_headers
+		};
+		let result = await httpGet(Options, name);
+
+		if (result.errorCode == 200) {
+			DoubleLog(`欢迎用户: ${result.data.nickname}   手机号：${result.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}`);
+		} else {
+			DoubleLog(`用户查询:失败 ❌ 了呢,原因未知！`);
+			console.log(result);
+			return ck_status = false;
+		}
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+
+// 积分查询 	httpGet
 async function Points_Enquiry(name) {
 	DoubleLog(`\n开始 ${name}`);
 	try {
