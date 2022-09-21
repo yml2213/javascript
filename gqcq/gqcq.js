@@ -116,7 +116,7 @@ async function user_info(name) {
 		let result = await httpGet(Options, name);
 
 		if (result.errorCode == 200) {
-			DoubleLog(`欢迎用户: ${result.data.nickname}   手机号：${result.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}`);
+			DoubleLog(`欢迎用户: ${result.data.nickname}	手机号：${phone_num(result.data.mobile)}`);
 		} else {
 			DoubleLog(`用户查询:失败 ❌ 了呢,原因未知！`);
 			console.log(result);
@@ -558,6 +558,17 @@ function Version_Check(name, type) {
 
 
 
+/**
+ * 手机号中间遮挡
+ */
+function phone_num(phone_num) {
+	if (phone_num.length == 11) {
+		let data = phone_num.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+		return data;
+	} else {
+		return phone_num;
+	}
+}
 
 
 
