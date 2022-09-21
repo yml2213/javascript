@@ -11,7 +11,9 @@
  * 5-21     	更新通知,优化代码
  * 6-10		    更新模板,修改部分逻辑!
  * 9-12         修复抽奖，增加签到宝箱开启
- *
+ * 9-21         增加用户信息输出
+ * 
+ * 
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
  * 变量格式: export gqcq_data='token @ token'  多个账号用 换行 或 @分割
@@ -42,66 +44,101 @@ ram_num = randomInt(1, 5)
 let text = textarr[ram_num];
 let add_comment_text = add_comment_text_arr[ram_num];
 ///////////////////////////////////////////////////////////////////
-let VersionCheck = "1.0.2"
+let VersionCheck = "1.0.3"
 let Change = '更新模板,修改部分逻辑!'
 let thank = `\n感谢 xx 的投稿`
 ///////////////////////////////////////////////////////////////////
 
 async function tips(ckArr) {
-	let Version_latest = await Version_Check('gqcq');
-	let Version = `\n📌 本地脚本: V 1.0.1  远程仓库脚本: V ${Version_latest}`
-	console.log(`${Version}`);
-	msg += `${Version}`
-	console.log(`📌 🆙 更新内容: ${Change}\n`);
-	msg += `${Change}`
+    let Version_latest = await Version_Check('gqcq');
+    let Version = `\n📌 本地脚本: V 1.0.3  远程仓库脚本: V ${Version_latest}`
+    console.log(`${Version}`);
+    msg += `${Version}`
+    console.log(`📌 🆙 更新内容: ${Change}\n`);
+    msg += `${Change}`
 
-	// console.log(thank);
-	// msg += `${thank}`
+    // console.log(thank);
+    // msg += `${thank}`
 
-	await wyy();
-	console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
-	msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
-	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
+    await wyy();
+    console.log(`\n================= 共找到 ${ckArr.length} 个账号 =================`);
+    msg += `\n================= 共找到 ${ckArr.length} 个账号 =================`
+    debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
 
 
 !(async () => {
-	let ckArr = await getCks(ckStr, "gqcq_data");
-	await tips(ckArr);
-	for (let index = 0; index < ckArr.length; index++) {
-		let num = index + 1;
-		console.log(`\n------------- 开始【第 ${num} 个账号】------------- `);
-		msg += `\n------------- 开始【第 ${num} 个账号】------------- `
-		ck = ckArr[index].split("&");
-		debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
-		await start();
-	}
-	await SendMsg(msg);
+    let ckArr = await getCks(ckStr, "gqcq_data");
+    await tips(ckArr);
+    for (let index = 0; index < ckArr.length; index++) {
+        let num = index + 1;
+        console.log(`\n------------- 开始【第 ${num} 个账号】------------- `);
+        msg += `\n------------- 开始【第 ${num} 个账号】------------- `
+        ck = ckArr[index].split("&");
+        debugLog(`【debug】 这是你第 ${num} 账号信息:\n ${ck}`);
+        await start();
+    }
+    await SendMsg(msg);
 })()
-	.catch((e) => $.logErr(e))
-	.finally(() => $.done());
+    .catch((e) => $.logErr(e))
+    .finally(() => $.done());
 
 
 async function start() {
 
-	console.log("\n开始 积分查询");
-	await Points_Enquiry();
+    console.log("\n开始 用户查询");
+    await user_info();
 
-	if (!ck_status) {
-		console.log("\n开始 任务列表");
-		await task_list();
-		console.log("\n开始 宝箱查询");
-		await unopenlist();
+    console.log("\n开始 积分查询");
+    await Points_Enquiry();
 
-		await lottery();
+    console.log("\n开始 宝箱查询");
+    await unopenlist();
 
-	}
+    //console.log("\n开始 抽奖");
+    //await dolottery();
+
+    if (!ck_status) {
+        console.log("\n开始 任务列表");
+        await task_list();
+
+    }
 
 
 
 }
 
 
+
+/**
+ * 用户查询    httpGet
+ * https://gsp.gacmotor.com/gateway/app-api/my/statsV3
+ */
+async function user_info() {
+    let url = {
+        url: `${hostname}/gateway/webapi/account/getUserInfoV2`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": host,
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+    };
+    let result = await httpGet(url, `用户查询`);
+
+    if (result.errorCode == 200) {
+        DoubleLog(`欢迎用户: ${result.data.nickname}   手机号：${result.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}`);
+    } else {
+        DoubleLog(`用户查询:失败 ❌ 了呢,原因未知！`);
+        console.log(result);
+        return ck_status = false;
+    }
+}
 
 
 /**
@@ -109,29 +146,29 @@ async function start() {
  * https://gsp.gacmotor.com/gateway/app-api/my/statsV3
  */
 async function Points_Enquiry() {
-	let url = {
-		url: `${hostname}/gateway/app-api/my/statsV3`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": host,
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-	};
-	let result = await httpGet(url, `积分查询`);
+    let url = {
+        url: `${hostname}/gateway/app-api/my/statsV3`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": host,
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+    };
+    let result = await httpGet(url, `积分查询`);
 
-	if (result.errorCode == 200) {
-		DoubleLog(`积分查询:您当前有 ${result.data.pointCount} 积分`);
-	} else {
-		DoubleLog(`积分查询:失败 ❌ 了呢,原因未知！`);
-		console.log(result);
-		return ck_status = false;
-	}
+    if (result.errorCode == 200) {
+        DoubleLog(`积分查询:您当前有 ${result.data.pointCount} 积分`);
+    } else {
+        DoubleLog(`积分查询:失败 ❌ 了呢,原因未知！`);
+        console.log(result);
+        return ck_status = false;
+    }
 }
 
 
@@ -142,64 +179,65 @@ async function Points_Enquiry() {
  * https://gsp.gacmotor.com/gw/app/community/api/mission/getlistv1?place=1
  */
 async function task_list() {
-	let reqNonc = randomInt(100000, 999999)
-	let ts = ts10();
-	let reqSign = MD5Encrypt(`signature${reqNonc}${ts}${salt}`)
-	let Options = {
-		url: `${hostname}/gw/app/community/api/mission/getlistv1?place=1`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": "gsp.gacmotor.com",
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-		body: ''
-	};
-	let result = await httpPost(Options, `任务列表`);
+    let reqNonc = randomInt(100000, 999999)
+    let ts = ts10();
+    let reqSign = MD5Encrypt(`signature${reqNonc}${ts}${salt}`)
+    let Options = {
+        url: `${hostname}/gw/app/community/api/mission/getlistv1?place=1`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": "gsp.gacmotor.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+        body: ''
+    };
+    let result = await httpPost(Options, `任务列表`);
 
-	if (result.errorCode == 20000) {
-		if (result.data[0].finishedNum == 0) {
-			DoubleLog(`签到状态： 未签到，去执行签到 ,顺便抽个奖`);
-			await signin();
-		} else if (result.data[0].finishedNum == 1) {
-			DoubleLog(`签到状态：今天已经签到过了鸭，明天再来吧！`);
-		} else {
-			DoubleLog(`获取签到状态:  失败 ❌ 了呢,原因未知！`)
-		}
+    if (result.errorCode == 20000) {
+        if (result.data[0].finishedNum == 0) {
+            DoubleLog(`签到状态： 未签到，去执行签到 ,顺便抽个奖`);
+            await signin();
+            await dolottery();
+        } else if (result.data[0].finishedNum == 1) {
+            DoubleLog(`签到状态：今天已经签到过了鸭，明天再来吧！`);
+        } else {
+            DoubleLog(`获取签到状态:  失败 ❌ 了呢,原因未知！`)
+        }
 
-		if (result.data[1].finishedNum < 2) {
-			DoubleLog(`发帖：${result.data[1].finishedNum} / ${result.data[1].total}`);
-			DoubleLog(`发帖：执行第一次发帖,评论，删除评论`);
-			await post_topic();
-			DoubleLog(`发帖：执行第二次发帖,评论，删除评论`);
-			await post_topic();
-		} else if (result.data[1].finishedNum == 2) {
-			DoubleLog(`今天已经发帖了，明天再来吧!`);
-		} else {
-			DoubleLog(`获取发帖状态:  失败 ❌ 了呢,原因未知!`);
-		}
+        if (result.data[1].finishedNum < 2) {
+            DoubleLog(`发帖：${result.data[1].finishedNum} / ${result.data[1].total}`);
+            DoubleLog(`发帖：执行第一次发帖,评论，删除评论`);
+            await post_topic();
+            DoubleLog(`发帖：执行第二次发帖,评论，删除评论`);
+            await post_topic();
+        } else if (result.data[1].finishedNum == 2) {
+            DoubleLog(`今天已经发帖了，明天再来吧!`);
+        } else {
+            DoubleLog(`获取发帖状态:  失败 ❌ 了呢,原因未知!`);
+        }
 
 
-		if (result.data[3].finishedNum < 2) {
-			DoubleLog(`分享状态：${result.data[3].finishedNum} / ${result.data[3].total}`);
-			await share();
-			await share();
-		} else if (result.data[3].finishedNum == 2) {
+        if (result.data[3].finishedNum < 2) {
+            DoubleLog(`分享状态：${result.data[3].finishedNum} / ${result.data[3].total}`);
+            await share();
+            await share();
+        } else if (result.data[3].finishedNum == 2) {
 
-			DoubleLog(`今天已经分享过了鸭，明天再来吧!`);
-		} else {
-			DoubleLog(`获取分享状态:  失败 ❌ 了呢,原因未知!`)
-		}
+            DoubleLog(`今天已经分享过了鸭，明天再来吧!`);
+        } else {
+            DoubleLog(`获取分享状态:  失败 ❌ 了呢,原因未知!`)
+        }
 
-	} else {
-		DoubleLog(`任务列表: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    } else {
+        DoubleLog(`任务列表: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -208,30 +246,30 @@ async function task_list() {
  * https://gsp.gacmotor.com/gateway/app-api/sign/submit
  */
 async function signin() {
-	let url = {
-		url: `${hostname}/gateway/app-api/sign/submit`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": "gsp.gacmotor.com",
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-	};
-	let result = await httpGet(url, `签到`);
+    let url = {
+        url: `${hostname}/gateway/app-api/sign/submit`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": "gsp.gacmotor.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+    };
+    let result = await httpGet(url, `签到`);
 
-	if (result.errorCode == 200) {
-		DoubleLog(`签到:${result.errorMessage} ,你已经连续签到 ${result.data.dayCount} 天 ,签到获得G豆 ${result.data.operationValue} 个`);
-	} else if (result.errorCode == "200015") {
-		DoubleLog(`签到: ${result.errorMessage}`);
-	} else {
-		DoubleLog(`签到: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    if (result.errorCode == 200) {
+        DoubleLog(`签到:${result.errorMessage} ,你已经连续签到 ${result.data.dayCount} 天 ,签到获得G豆 ${result.data.operationValue} 个`);
+    } else if (result.errorCode == "200015") {
+        DoubleLog(`签到: ${result.errorMessage}`);
+    } else {
+        DoubleLog(`签到: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -240,44 +278,44 @@ async function signin() {
  * https://gsp.gacmotor.com/gw/app/activity/api/winrecord/unopenlist
  */
 async function unopenlist() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/activity/api/winrecord/unopenlist`,
-		headers: {
-			"token": ck[0],
-			"Host": "gsp.gacmotor.com",
-			"Origin": "https://gsp.gacmotor.com",
-			"Accept": "application/json, text/plain, */*",
-			"Cache-Control": "no-cache",
-			"Sec-Fetch-Dest": "empty",
-			"X-Requested-With": "com.cloudy.component",
-			"Sec-Fetch-Site": "same-origin",
-			"Sec-Fetch-Mode": "cors",
-			"Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
-			"Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		form: {
-			'activityCode': 'SIGN-BOX'
-		},
-	};
-	let result = await httpPost(url, `宝箱列表`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/activity/api/winrecord/unopenlist`,
+        headers: {
+            "token": ck[0],
+            "Host": "gsp.gacmotor.com",
+            "Origin": "https://gsp.gacmotor.com",
+            "Accept": "application/json, text/plain, */*",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "empty",
+            "X-Requested-With": "com.cloudy.component",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        form: {
+            'activityCode': 'SIGN-BOX'
+        },
+    };
+    let result = await httpPost(url, `宝箱列表`);
 
-	if (result.errorCode == 20000) {
-		box = result.data;
-		//console.log(box.length);
-		DoubleLog(`共有宝箱:${box.length}个!`);
-		//console.log(boxid.length);
-		if (box.length > 0) {
-			for (let i = 0; i < box.length; i++) {
-				boxid = box[i].recordId;
-				await openbox();
-				await wait(2);
-			}
-		}
-	} else {
-		DoubleLog(`宝箱列表获取: 失败❌了呢,原因:${result.errorMessage}!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        box = result.data;
+        //console.log(box.length);
+        DoubleLog(`共有宝箱:${box.length}个!`);
+        //console.log(boxid.length);
+        if (box.length > 0) {
+            for (let i = 0; i < box.length; i++) {
+                boxid = box[i].recordId;
+                await openbox();
+                await wait(2);
+            }
+        }
+    } else {
+        DoubleLog(`宝箱列表获取: 失败❌了呢,原因:${result.errorMessage}!`);
+        console.log(result);
+    }
 }
 
 
@@ -286,35 +324,35 @@ async function unopenlist() {
  * https://gsp.gacmotor.com/gw/app/activity/api/medal/openbox
  */
 async function openbox() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/activity/api/medal/openbox`,
-		headers: {
-			"token": ck[0],
-			"Host": "gsp.gacmotor.com",
-			"Origin": "https://gsp.gacmotor.com",
-			"Accept": "application/json, text/plain, */*",
-			"Cache-Control": "no-cache",
-			"Sec-Fetch-Dest": "empty",
-			"X-Requested-With": "com.cloudy.component",
-			"Sec-Fetch-Site": "same-origin",
-			"Sec-Fetch-Mode": "cors",
-			"Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
-			"Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		form: {
-			'activityCode': 'OPEN-BOX',
-			'recordId': boxid,
-		},
-	};
-	let result = await httpPost(url, `开宝箱`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/activity/api/medal/openbox`,
+        headers: {
+            "token": ck[0],
+            "Host": "gsp.gacmotor.com",
+            "Origin": "https://gsp.gacmotor.com",
+            "Accept": "application/json, text/plain, */*",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "empty",
+            "X-Requested-With": "com.cloudy.component",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        form: {
+            'activityCode': 'OPEN-BOX',
+            'recordId': boxid,
+        },
+    };
+    let result = await httpPost(url, `开宝箱`);
 
-	if (result.errorCode == 20000) {
-		DoubleLog(`开宝箱:${result.errorMessage} ,恭喜你获得 ${result.data.medalName} 奖品为 ${result.data.medalDescription}`);
-	} else {
-		DoubleLog(`抽奖: 失败❌了呢,原因:${result.errorMessage}!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        DoubleLog(`开宝箱:${result.errorMessage} ,恭喜你获得 ${result.data.medalName} 奖品为 ${result.data.medalDescription}`);
+    } else {
+        DoubleLog(`抽奖: 失败❌了呢,原因:${result.errorMessage}!`);
+        console.log(result);
+    }
 }
 
 
@@ -323,28 +361,38 @@ async function openbox() {
  * https://gsp.gacmotor.com/gw/app/activity/shopDraw/getchances
  */
 async function lottery() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/activity/shopDraw/getchances`,
-		headers: {
-			"token": ck[0],
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		form: {
-			'activityCode': 'shop-draw'
-		},
-	};
-	let result = await httpPost(url, `抽奖查询`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/activity/shopDraw/getchances`,
+        headers: {
+            "token": ck[0],
+            "Host": "gsp.gacmotor.com",
+            "Origin": "https://gsp.gacmotor.com",
+            "Accept": "application/json, text/plain, */*",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "empty",
+            "X-Requested-With": "com.cloudy.component",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        form: {
+            'activityCode': 'shop-draw'
+        },
+    };
+    let result = await httpPost(url, `抽奖查询`);
 
-	if (result.errorCode == 20000) {
-		if (result.data == 10) {
-			await dolottery();
-			await wait(2);
-		}
-
-	} else {
-		DoubleLog(`抽奖: 失败❌了呢,原因:${result.errorMessage}!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        chances = result.data;
+        if (chances = 10) {
+            await dolottery();
+            await wait(2);
+        }
+    } else {
+        DoubleLog(`抽奖: 失败❌了呢,原因:${result.errorMessage}!`);
+        console.log(result);
+    }
 }
 
 /**
@@ -352,34 +400,34 @@ async function lottery() {
  * https://gsp.gacmotor.com/gw/app/activity/shopDraw/luckyDraw
  */
 async function dolottery() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/activity/shopDraw/luckyDraw`,
-		headers: {
-			"token": ck[0],
-			"Host": "gsp.gacmotor.com",
-			"Origin": "https://gsp.gacmotor.com",
-			"Accept": "application/json, text/plain, */*",
-			"Cache-Control": "no-cache",
-			"Sec-Fetch-Dest": "empty",
-			"X-Requested-With": "com.cloudy.component",
-			"Sec-Fetch-Site": "same-origin",
-			"Sec-Fetch-Mode": "cors",
-			"Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
-			"Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-		form: {
-			'activityCode': 'shop-draw'
-		},
-	};
-	let result = await httpPost(url, `抽奖`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/activity/shopDraw/luckyDraw`,
+        headers: {
+            "token": ck[0],
+            "Host": "gsp.gacmotor.com",
+            "Origin": "https://gsp.gacmotor.com",
+            "Accept": "application/json, text/plain, */*",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "empty",
+            "X-Requested-With": "com.cloudy.component",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        form: {
+            'activityCode': 'shop-draw'
+        },
+    };
+    let result = await httpPost(url, `抽奖`);
 
-	if (result.errorCode == 20000) {
-		DoubleLog(`抽奖:${result.errorMessage} ,恭喜你获得 ${result.data.medalName} 奖品为 ${result.data.medalDescription}`);
-	} else {
-		DoubleLog(`抽奖: 失败❌了呢,原因:${result.errorMessage}!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        DoubleLog(`抽奖:${result.errorMessage} ,恭喜你获得 ${result.data.medalName} 奖品为 ${result.data.medalDescription}`);
+    } else {
+        DoubleLog(`抽奖: 失败❌了呢,原因:${result.errorMessage}!`);
+        console.log(result);
+    }
 }
 
 
@@ -389,33 +437,33 @@ async function dolottery() {
  * https://gsp.gacmotor.com/gw/app/community/api/topic/appsavepost
  */
 async function post_topic() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/community/api/topic/appsavepost`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": "gsp.gacmotor.com",
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-		body: `postId=&postType=2&topicId=176&columnId=&postTitle=那些年我们看过的电影&postContent=[{"text":"${text}"}]&coverImg=https://pic-gsp.gacmotor.com/app/42a97ad9-0bfb-4205-b838-8170ad3289e2.png&publishedTime=&contentWords=${text}&contentImgNums=1&lng=&lat=&address=&cityId=`,
-	};
-	let result = await httpPost(url, `发布帖子`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/community/api/topic/appsavepost`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": "gsp.gacmotor.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+        body: `postId=&postType=2&topicId=176&columnId=&postTitle=那些年我们看过的电影&postContent=[{"text":"${text}"}]&coverImg=https://pic-gsp.gacmotor.com/app/42a97ad9-0bfb-4205-b838-8170ad3289e2.png&publishedTime=&contentWords=${text}&contentImgNums=1&lng=&lat=&address=&cityId=`,
+    };
+    let result = await httpPost(url, `发布帖子`);
 
-	if (result.errorCode == 20000) {
-		DoubleLog(`发布帖子:${result.errorMessage} ,帖子ID: ${result.data.postId}`);
-		topic_id = result.data.postId;
-		await wait(30);
-		await add_comment();
+    if (result.errorCode == 20000) {
+        DoubleLog(`发布帖子:${result.errorMessage} ,帖子ID: ${result.data.postId}`);
+        topic_id = result.data.postId;
+        await wait(30);
+        await add_comment();
 
-	} else {
-		DoubleLog(`发布帖子: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    } else {
+        DoubleLog(`发布帖子: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -425,31 +473,31 @@ async function post_topic() {
  * https://gsp.gacmotor.com/gw/app/community/api/comment/add
  */
 async function add_comment() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/community/api/comment/add`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": "gsp.gacmotor.com",
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-		body: `commentType=0&postId=${topic_id}&commentContent=${add_comment_text}&commentId=0&commentatorId=NDIwNTA0NQ==&isReplyComment=1`,
-	};
-	let result = await httpPost(url, `评论帖子`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/community/api/comment/add`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": "gsp.gacmotor.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+        body: `commentType=0&postId=${topic_id}&commentContent=${add_comment_text}&commentId=0&commentatorId=NDIwNTA0NQ==&isReplyComment=1`,
+    };
+    let result = await httpPost(url, `评论帖子`);
 
-	if (result.errorCode == 20000) {
-		DoubleLog(`评论帖子: 评论 ${topic_id} 帖子 ${result.errorMessage}`);
-		await wait(2);
-		await delete_topic();
-	} else {
-		DoubleLog(`评论帖子: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        DoubleLog(`评论帖子: 评论 ${topic_id} 帖子 ${result.errorMessage}`);
+        await wait(2);
+        await delete_topic();
+    } else {
+        DoubleLog(`评论帖子: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -460,32 +508,32 @@ async function add_comment() {
  * https://gsp.gacmotor.com/gw/app/community/api/post/delete
  */
 async function delete_topic() {
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/community/api/post/delete`,
-		headers: {
-			"token": ck[0],
-			"Origin": "https://gsp.gacmotor.com",
-			"Accept": "application/json, text/plain, */*",
-			"Cache-Control": "no-cache",
-			"Sec-Fetch-Dest": "empty",
-			"X-Requested-With": "com.cloudy.component",
-			"Sec-Fetch-Site": "same-origin",
-			"Sec-Fetch-Mode": "cors",
-			"Referer": "https://gsp.gacmotor.com/h5/html/community/myHome.html?userId=NDIwNTA0NQ==&version=newApp",
-			"Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-			"Content-Type": "application/x-www-form-urlencoded"
-		},
-		body: `postId=${topic_id}`,
-	};
-	let result = await httpPost(url, `删除帖子`);
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/community/api/post/delete`,
+        headers: {
+            "token": ck[0],
+            "Origin": "https://gsp.gacmotor.com",
+            "Accept": "application/json, text/plain, */*",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "empty",
+            "X-Requested-With": "com.cloudy.component",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Referer": "https://gsp.gacmotor.com/h5/html/community/myHome.html?userId=NDIwNTA0NQ==&version=newApp",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `postId=${topic_id}`,
+    };
+    let result = await httpPost(url, `删除帖子`);
 
-	if (result.errorCode == 20000) {
-		DoubleLog(`删除帖子: 帖子ID: ${topic_id} , 执行删除 ${result.errorMessage}`);
-		await wait(2);
-	} else {
-		DoubleLog(`删除帖子: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        DoubleLog(`删除帖子: 帖子ID: ${topic_id} , 执行删除 ${result.errorMessage}`);
+        await wait(2);
+    } else {
+        DoubleLog(`删除帖子: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -497,32 +545,32 @@ async function delete_topic() {
  * https://gsp.gacmotor.com/gw/app/community/api/post/forward
  */
 async function share() {
-	postId = '';
-	await Article_list();
-	let url = {
-		url: `https://gsp.gacmotor.com/gw/app/community/api/post/forward`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": "gsp.gacmotor.com",
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-		body: `postId=${postId}&userId=`,
-	};
-	let result = await httpPost(url, `分享文章`);
+    postId = '';
+    await Article_list();
+    let url = {
+        url: `https://gsp.gacmotor.com/gw/app/community/api/post/forward`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": "gsp.gacmotor.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+        body: `postId=${postId}&userId=`,
+    };
+    let result = await httpPost(url, `分享文章`);
 
-	if (result.errorCode == 20000) {
-		DoubleLog(`分享文章:${result.errorMessage}`);
-		await wait(2);
-	} else {
-		DoubleLog(`分享文章: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    if (result.errorCode == 20000) {
+        DoubleLog(`分享文章:${result.errorMessage}`);
+        await wait(2);
+    } else {
+        DoubleLog(`分享文章: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -532,30 +580,30 @@ async function share() {
  * https://gsp.gacmotor.com/gw/app/community/api/post/channelPostList?current=1&size=20&channelId=&sortType=1
  */
 async function Article_list() {
-	let url = {
-		url: `${hostname}/gw/app/community/api/post/channelPostList?current=1&size=20&channelId=&sortType=1`,
-		headers: {
-			"User-Agent": "okhttp/3.10.0",
-			"token": ck[0],
-			"verification": "signature",
-			"reqTs": ts,
-			"reqNonc": reqNonc,
-			"reqSign": reqSign,
-			"Host": "gsp.gacmotor.com",
-			"Connection": "Keep-Alive",
-			"Accept-Encoding": "gzip",
-		},
-	};
-	let result = await httpGet(url, `文章列表`);
+    let url = {
+        url: `${hostname}/gw/app/community/api/post/channelPostList?current=1&size=20&channelId=&sortType=1`,
+        headers: {
+            "User-Agent": "okhttp/3.10.0",
+            "token": ck[0],
+            "verification": "signature",
+            "reqTs": ts,
+            "reqNonc": reqNonc,
+            "reqSign": reqSign,
+            "Host": "gsp.gacmotor.com",
+            "Connection": "Keep-Alive",
+            "Accept-Encoding": "gzip",
+        },
+    };
+    let result = await httpGet(url, `文章列表`);
 
-	if (result.errorCode === "20000") {
-		let num = randomInt(1, 19);
-		DoubleLog(`分享的文章: ${result.data.records[num].topicNames}  文章ID:${result.data.records[num].postId}`);
-		postId = result.data.records[num].postId;
-	} else {
-		DoubleLog(`分享文章: 失败 ❌ 了呢,原因未知!`);
-		console.log(result);
-	}
+    if (result.errorCode === "20000") {
+        let num = randomInt(1, 19);
+        DoubleLog(`分享的文章: ${result.data.records[num].topicNames}  文章ID:${result.data.records[num].postId}`);
+        postId = result.data.records[num].postId;
+    } else {
+        DoubleLog(`分享文章: 失败 ❌ 了呢,原因未知!`);
+        console.log(result);
+    }
 }
 
 
@@ -582,28 +630,28 @@ async function Article_list() {
  * 变量检查
  */
 async function getCks(ck, str) {
-	return new Promise((resolve) => {
-		let ckArr = []
-		if (ck) {
-			if (ck.indexOf("@") !== -1) {
+    return new Promise((resolve) => {
+        let ckArr = []
+        if (ck) {
+            if (ck.indexOf("@") !== -1) {
 
-				ck.split("@").forEach((item) => {
-					ckArr.push(item);
-				});
-			} else if (ck.indexOf("\n") !== -1) {
+                ck.split("@").forEach((item) => {
+                    ckArr.push(item);
+                });
+            } else if (ck.indexOf("\n") !== -1) {
 
-				ck.split("\n").forEach((item) => {
-					ckArr.push(item);
-				});
-			} else {
-				ckArr.push(ck);
-			}
-			resolve(ckArr)
-		} else {
-			console.log(` :未填写变量 ${str}`)
-		}
-	}
-	)
+                ck.split("\n").forEach((item) => {
+                    ckArr.push(item);
+                });
+            } else {
+                ckArr.push(ck);
+            }
+            resolve(ckArr)
+        } else {
+            console.log(` :未填写变量 ${str}`)
+        }
+    }
+    )
 }
 
 
@@ -611,38 +659,38 @@ async function getCks(ck, str) {
  * 获取远程版本
  */
 function Version_Check(name) {
-	return new Promise((resolve) => {
-		let url = {
-			url: `https://raw.gh.fakev.cn/yml2213/javascript/master/${name}/${name}.js`,
-		}
-		$.get(url, async (err, resp, data) => {
-			try {
-				VersionCheck = resp.body.match(/VersionCheck = "([\d\.]+)"/)[1]
-			} catch (e) {
-				$.logErr(e, resp);
-			} finally {
-				resolve(VersionCheck)
-			}
-		}, timeout = 3)
-	})
+    return new Promise((resolve) => {
+        let url = {
+            url: `https://raw.gh.fakev.cn/yml2213/javascript/master/${name}/${name}.js`,
+        }
+        $.get(url, async (err, resp, data) => {
+            try {
+                VersionCheck = resp.body.match(/VersionCheck = "([\d\.]+)"/)[1]
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve(VersionCheck)
+            }
+        }, timeout = 3)
+    })
 }
 
 /**
  * 发送消息
  */
 async function SendMsg(message) {
-	if (!message) return;
+    if (!message) return;
 
-	if (Notify > 0) {
-		if ($.isNode()) {
-			var notify = require("./sendNotify");
-			await notify.sendNotify($.name, message);
-		} else {
-			$.msg(message);
-		}
-	} else {
-		console.log(message);
-	}
+    if (Notify > 0) {
+        if ($.isNode()) {
+            var notify = require("./sendNotify");
+            await notify.sendNotify($.name, message);
+        } else {
+            $.msg(message);
+        }
+    } else {
+        console.log(message);
+    }
 }
 
 /**
@@ -650,13 +698,13 @@ async function SendMsg(message) {
  */
 
 function randomszdx(e) {
-	e = e || 32;
-	var t = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890",
-		a = t.length,
-		n = "";
+    e = e || 32;
+    var t = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890",
+        a = t.length,
+        n = "";
 
-	for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
-	return n;
+    for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+    return n;
 }
 
 
@@ -665,13 +713,13 @@ function randomszdx(e) {
  */
 
 function randomszxx(e) {
-	e = e || 32;
-	var t = "qwertyuioplkjhgfdsazxcvbnm1234567890",
-		a = t.length,
-		n = "";
+    e = e || 32;
+    var t = "qwertyuioplkjhgfdsazxcvbnm1234567890",
+        a = t.length,
+        n = "";
 
-	for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
-	return n;
+    for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a));
+    return n;
 }
 
 
@@ -682,7 +730,7 @@ function randomszxx(e) {
  */
 
 function randomInt(min, max) {
-	return Math.round(Math.random() * (max - min) + min);
+    return Math.round(Math.random() * (max - min) + min);
 }
 
 
@@ -690,32 +738,32 @@ function randomInt(min, max) {
  * 时间戳 13位
  */
 function ts13() {
-	return Math.round(new Date().getTime()).toString();
+    return Math.round(new Date().getTime()).toString();
 }
 
 /**
  * 时间戳 10位
  */
 function ts10() {
-	return Math.round(new Date().getTime() / 1000).toString();
+    return Math.round(new Date().getTime() / 1000).toString();
 }
 
 /**
  * 获取当前小时数
  */
 function local_hours() {
-	let myDate = new Date();
-	h = myDate.getHours();
-	return h;
+    let myDate = new Date();
+    h = myDate.getHours();
+    return h;
 }
 
 /**
  * 获取当前分钟数
  */
 function local_minutes() {
-	let myDate = new Date();
-	m = myDate.getMinutes();
-	return m;
+    let myDate = new Date();
+    m = myDate.getMinutes();
+    return m;
 }
 
 
@@ -723,9 +771,9 @@ function local_minutes() {
  * 等待 X 秒
  */
 function wait(n) {
-	return new Promise(function (resolve) {
-		setTimeout(resolve, n * 1000);
-	});
+    return new Promise(function (resolve) {
+        setTimeout(resolve, n * 1000);
+    });
 }
 
 
@@ -733,159 +781,159 @@ function wait(n) {
  * 每日网抑云
  */
 function wyy() {
-	return new Promise((resolve) => {
-		let url = {
-			url: `http://ovooa.com/API/wyrp/api.php`,
-		}
-		$.get(url, async (err, resp, data) => {
-			try {
-				data = JSON.parse(data)
-				// console.log(data);
-				console.log(`【网抑云时间】 ${data.data.Content}  by--${data.data.Music}`);
+    return new Promise((resolve) => {
+        let url = {
+            url: `http://ovooa.com/API/wyrp/api.php`,
+        }
+        $.get(url, async (err, resp, data) => {
+            try {
+                data = JSON.parse(data)
+                // console.log(data);
+                console.log(`【网抑云时间】 ${data.data.Content}  by--${data.data.Music}`);
 
-			} catch (e) {
-				$.logErr(e, resp);
-			} finally {
-				resolve()
-			}
-		}, timeout = 3)
-	})
+            } catch (e) {
+                $.logErr(e, resp);
+            } finally {
+                resolve()
+            }
+        }, timeout = 3)
+    })
 }
 
 /**
  * get请求
  */
 async function httpGet(getUrlObject, tip, timeout = 3) {
-	return new Promise((resolve) => {
-		let url = getUrlObject;
-		if (!tip) {
-			let tmp = arguments.callee.toString();
-			let re = /function\s*(\w*)/i;
-			let matches = re.exec(tmp);
-			tip = matches[1];
-		}
-		if (debug) {
-			console.log(`\n 【debug】=============== 这是 ${tip} 请求 url ===============`);
-			console.log(url);
-		}
+    return new Promise((resolve) => {
+        let url = getUrlObject;
+        if (!tip) {
+            let tmp = arguments.callee.toString();
+            let re = /function\s*(\w*)/i;
+            let matches = re.exec(tmp);
+            tip = matches[1];
+        }
+        if (debug) {
+            console.log(`\n 【debug】=============== 这是 ${tip} 请求 url ===============`);
+            console.log(url);
+        }
 
-		$.get(
-			url,
-			async (err, resp, data) => {
-				try {
-					if (debug) {
-						console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
-						console.log(data);
-						console.log(`======`);
-						console.log(JSON.parse(data));
-					}
-					let result = JSON.parse(data);
-					if (result == undefined) {
-						return;
-					} else {
-						resolve(result);
-					}
+        $.get(
+            url,
+            async (err, resp, data) => {
+                try {
+                    if (debug) {
+                        console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
+                        console.log(data);
+                        console.log(`======`);
+                        console.log(JSON.parse(data));
+                    }
+                    let result = JSON.parse(data);
+                    if (result == undefined) {
+                        return;
+                    } else {
+                        resolve(result);
+                    }
 
-				} catch (e) {
-					console.log(err, resp);
-					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					msg += `\n ${tip} 失败了!请稍后尝试!!`
-				} finally {
-					resolve();
-				}
-			},
-			timeout
-		);
-	});
+                } catch (e) {
+                    console.log(err, resp);
+                    console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+                    msg += `\n ${tip} 失败了!请稍后尝试!!`
+                } finally {
+                    resolve();
+                }
+            },
+            timeout
+        );
+    });
 }
 
 /**
  * post请求
  */
 async function httpPost(postUrlObject, tip, timeout = 3) {
-	return new Promise((resolve) => {
-		let url = postUrlObject;
-		if (!tip) {
-			let tmp = arguments.callee.toString();
-			let re = /function\s*(\w*)/i;
-			let matches = re.exec(tmp);
-			tip = matches[1];
-		}
-		if (debug) {
-			console.log(`\n 【debug】=============== 这是 ${tip} 请求 url ===============`);
-			console.log(url);
-		}
+    return new Promise((resolve) => {
+        let url = postUrlObject;
+        if (!tip) {
+            let tmp = arguments.callee.toString();
+            let re = /function\s*(\w*)/i;
+            let matches = re.exec(tmp);
+            tip = matches[1];
+        }
+        if (debug) {
+            console.log(`\n 【debug】=============== 这是 ${tip} 请求 url ===============`);
+            console.log(url);
+        }
 
-		$.post(
-			url,
-			async (err, resp, data) => {
-				try {
-					if (debug) {
-						console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
-						console.log(data);
-						console.log(`======`);
-						console.log(JSON.parse(data));
-					}
-					let result = JSON.parse(data);
-					if (result == undefined) {
-						return;
-					} else {
-						resolve(result);
-					}
+        $.post(
+            url,
+            async (err, resp, data) => {
+                try {
+                    if (debug) {
+                        console.log(`\n\n 【debug】===============这是 ${tip} 返回data==============`);
+                        console.log(data);
+                        console.log(`======`);
+                        console.log(JSON.parse(data));
+                    }
+                    let result = JSON.parse(data);
+                    if (result == undefined) {
+                        return;
+                    } else {
+                        resolve(result);
+                    }
 
-				} catch (e) {
-					console.log(err, resp);
-					console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-					msg += `\n ${tip} 失败了!请稍后尝试!!`
-				} finally {
-					resolve();
-				}
-			},
-			timeout
-		);
-	});
+                } catch (e) {
+                    console.log(err, resp);
+                    console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+                    msg += `\n ${tip} 失败了!请稍后尝试!!`
+                } finally {
+                    resolve();
+                }
+            },
+            timeout
+        );
+    });
 }
 
 /**
  * 网络请求 (get, post等)
  */
 async function httpRequest(postOptionsObject, tip, timeout = 3) {
-	return new Promise((resolve) => {
+    return new Promise((resolve) => {
 
-		let options = postOptionsObject;
-		let request = require('request');
-		if (!tip) {
-			let tmp = arguments.callee.toString();
-			let re = /function\s*(\w*)/i;
-			let matches = re.exec(tmp);
-			tip = matches[1];
-		}
-		if (debug) {
-			console.log(`\n 【debug】=============== 这是 ${tip} 请求 信息 ===============`);
-			console.log(options);
-		}
+        let options = postOptionsObject;
+        let request = require('request');
+        if (!tip) {
+            let tmp = arguments.callee.toString();
+            let re = /function\s*(\w*)/i;
+            let matches = re.exec(tmp);
+            tip = matches[1];
+        }
+        if (debug) {
+            console.log(`\n 【debug】=============== 这是 ${tip} 请求 信息 ===============`);
+            console.log(options);
+        }
 
-		request(options, async (err, resp, data) => {
-			try {
-				if (debug) {
-					console.log(`\n\n 【debug】===============这是 ${tip} 返回数据==============`);
-					console.log(data);
-					console.log(`\n 【debug】=============这是 ${tip} json解析后数据============`);
-					console.log(JSON.parse(data));
-				}
-				let result = JSON.parse(data);
-				if (!result) return;
-				resolve(result);
-			} catch (e) {
-				console.log(err, resp);
-				console.log(`\n ${tip} 失败了!请稍后尝试!!`);
-				msg += `\n ${tip} 失败了!请稍后尝试!!`
-			} finally {
-				resolve();
-			}
-		}), timeout
+        request(options, async (err, resp, data) => {
+            try {
+                if (debug) {
+                    console.log(`\n\n 【debug】===============这是 ${tip} 返回数据==============`);
+                    console.log(data);
+                    console.log(`\n 【debug】=============这是 ${tip} json解析后数据============`);
+                    console.log(JSON.parse(data));
+                }
+                let result = JSON.parse(data);
+                if (!result) return;
+                resolve(result);
+            } catch (e) {
+                console.log(err, resp);
+                console.log(`\n ${tip} 失败了!请稍后尝试!!`);
+                msg += `\n ${tip} 失败了!请稍后尝试!!`
+            } finally {
+                resolve();
+            }
+        }), timeout
 
-	});
+    });
 }
 
 
@@ -893,19 +941,19 @@ async function httpRequest(postOptionsObject, tip, timeout = 3) {
  * debug调试
  */
 function debugLog(...args) {
-	if (debug) {
-		console.log(...args);
-	}
+    if (debug) {
+        console.log(...args);
+    }
 }
 
 /**
  * 双平台log输出
  */
 function DoubleLog(data) {
-	if (data) {
-		console.log(`    ${data}`);
-		msg += `\n    ${data}`;
-	}
+    if (data) {
+        console.log(`    ${data}`);
+        msg += `\n    ${data}`;
+    }
 }
 
 // /**
