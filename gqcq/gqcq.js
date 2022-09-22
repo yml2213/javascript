@@ -9,6 +9,7 @@
  * 6-10		    更新模板,修改部分逻辑!
  * 9-12         修复抽奖，增加签到宝箱开启
  * 9-21         增加用户信息输出
+ * 9-22			修复开宝箱错误
  *
  * ========= 青龙--配置文件--贴心复制区域 =========
  
@@ -33,8 +34,8 @@ let ckStr = process.env[alias_name];
 let msg, ck;
 let ck_status = true;
 //---------------------------------------------------------------------------------------------------------
-let VersionCheck = "1.1.3"
-let Change = '增加用户信息输出'
+let VersionCheck = "1.1.4"
+let Change = '修复开宝箱错误'
 let thank = `\n感谢 群友 的投稿\n`
 //---------------------------------------------------------------------------------------------------------
 
@@ -258,7 +259,7 @@ async function unopenlist(name) {
 			if (box.length > 0) {
 				for (let i = 0; i < box.length; i++) {
 					boxid = box[i].recordId;
-					await openbox();
+					await openbox('开宝箱', boxid);
 					await wait(2);
 				}
 			}
@@ -275,7 +276,7 @@ async function unopenlist(name) {
 
 
 // 开宝箱   httpPost
-async function openbox(name) {
+async function openbox(name, boxid) {
 	DoubleLog(`\n开始 ${name}`);
 	try {
 		let Options = {
