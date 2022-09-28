@@ -45,7 +45,7 @@ async function tips(ckArr) {
 	let Version = `\n📌 本地脚本: V ${VersionCheck}  远程仓库脚本: V ${Version_latest}`
 	DoubleLog(`${Version}\n📌 🆙 更新内容: ${Change}`);
 	// DoubleLog(`${thank}`);
-	await wyy();
+	await yiyan();
 	DoubleLog(`\n========== 共找到 ${ckArr.length} 个账号 ==========`);
 	debugLog(`【debug】 这是你的账号数组:\n ${ckArr}`);
 }
@@ -761,20 +761,20 @@ function wait(n) {
 
 
 /**
- * 每日网抑云
+ * 一言
  */
-function wyy() {
+function yiyan() {
 	return new Promise((resolve) => {
 		let url = {
-			url: `https://api.qqsuu.cn/api/comment?format=json`,
+			url: `https://v1.hitokoto.cn/`,
 		}
 		$.get(url, async (err, resp, data) => {
 			try {
+				// console.log(data);
 				data = JSON.parse(data);
-				content = data.data[0].content
-				source = data.data[0].source
-				msg = `[网抑云时间]: ${content}  by--${source}`
-				DoubleLog(msg);
+				msg = `[一言]: ${data.hitokoto}  by--${data.from}`
+				console.log(msg);
+				msg += `\nmsg`;
 			} catch (e) {
 				$.logErr(e, resp);
 			} finally {
@@ -783,6 +783,8 @@ function wyy() {
 		}, timeout = 3)
 	})
 }
+
+
 
 /**
  * get请求
