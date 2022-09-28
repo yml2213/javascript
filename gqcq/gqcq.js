@@ -9,12 +9,13 @@
  * 6-10		    更新模板,修改部分逻辑!
  * 9-12         修复抽奖，增加签到宝箱开启
  * 9-21         增加用户信息输出
- * 9-22			修复开宝箱错误
+ * 9-22		修复开宝箱错误
+ * 9-28		修复删除帖子错误
  *
  * ========= 青龙--配置文件--贴心复制区域 =========
  
 # 广汽传祺
-export gqcq_data='token @ token'
+export gqcq='token @ token'
 
  * 
  * 多账号用 换行 或 @ 分割
@@ -34,7 +35,7 @@ let ckStr = process.env[alias_name];
 let msg, ck;
 let ck_status = true;
 //---------------------------------------------------------------------------------------------------------
-let VersionCheck = "1.1.4"
+let VersionCheck = "1.2.5"
 let Change = '修复开宝箱错误'
 let thank = `\n感谢 群友 的投稿\n`
 //---------------------------------------------------------------------------------------------------------
@@ -368,7 +369,7 @@ async function add_comment(name) {
 		if (result.errorCode == 20000) {
 			DoubleLog(`评论帖子: 评论 ${topic_id} 帖子 ${result.errorMessage}`);
 			await wait(2);
-			await delete_topic();
+			await delete_topic('删除帖子');
 		} else {
 			DoubleLog(`评论帖子: 失败 ❌ 了呢,原因未知!`);
 			console.log(result);
