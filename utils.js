@@ -1,3 +1,7 @@
+/* 
+10-9	第一版完成，改用 request，支持青龙
+
+*/
 module.exports = {
 	checkEnv: checkEnv,
 	phone_num: phone_num,
@@ -15,51 +19,32 @@ module.exports = {
 	local_day: local_day,
 	local_day_two: local_day_two,
 	MD5Encrypt: MD5Encrypt,
-	DoubleLog: DoubleLog,
 	yiyan: yiyan,
 	wait: wait,
-	debugLog: debugLog,
 	httpRequest: httpRequest,
 };
 
-let msg;
 var request = require("request");
 
 //
 /**
  * 测试get post合一   10-9改 request
  */
-async function httpRequest(options, tip, debug, timeout = 3) {
+async function httpRequest(name, options) {
 	return new Promise((resolve) => {
-		if (!tip) {
+		if (!name) {
 			let tmp = arguments.callee.toString();
 			let re = /function\s*(\w*)/i;
 			let matches = re.exec(tmp);
-			tip = matches[1];
+			name = matches[1];
 		}
-		if (debug) {
-			console.log(
-				`\n 【debug】=============== 这是 ${tip} 请求 url ===============`
-			);
-			console.log(url);
-		}
+
 		request(options, function (error, response) {
 			if (error) throw new Error(error);
 			// response.body
 			let data = response.body;
 			try {
-				if (debug) {
-					console.log(
-						`\n\n 【debug】===============这是 ${tip} 返回data==============`
-					);
-					console.log(data);
-					console.log(
-						`\n 【debug】=============这是 ${tip} json解析后数据============`
-					);
-					console.log(JSON.parse(data));
-				}
 				// console.log(typeof (data));
-
 				if (typeof data == "string") {
 					if (isJsonString(data)) {
 						let result = JSON.parse(data);
@@ -86,7 +71,7 @@ async function httpRequest(options, tip, debug, timeout = 3) {
 				}
 			} catch (e) {
 				console.log(error, response);
-				DoubleLog(`\n ${tip} 失败了!请稍后尝试!!`);
+				console.log(`\n ${name} 失败了!请稍后尝试!!`);
 			} finally {
 				resolve();
 			}
@@ -94,14 +79,7 @@ async function httpRequest(options, tip, debug, timeout = 3) {
 	});
 }
 
-/**
- * debug调试
- */
-function debugLog(debug, ...args) {
-	if (debug) {
-		console.log(...args);
-	}
-}
+
 
 /**
  * 一言
@@ -119,10 +97,11 @@ function yiyan() {
 				// console.log(data);
 				let data = JSON.parse(response.body);
 				let data_ = `[一言]: ${data.hitokoto}  by--${data.from}`;
-				// console.log(msg);
-				DoubleLog(data_);
+				console.log(data_);
+				msg += `\n    ${data}`;
+				// return data_
 			} catch (e) {
-				$.logErr(e, resp);
+				// console.log(error, response);
 			} finally {
 				resolve();
 			}
@@ -165,13 +144,7 @@ async function checkEnv(ck, name) {
 	});
 }
 
-/**
- * 双平台log输出
- */
-function DoubleLog(data) {
-	console.log(`    ${data}`);
-	msg += `\n    ${data}`;
-}
+
 
 /**
  * 获取远程版本
@@ -194,7 +167,7 @@ function Version_Check(name, type) {
 				try {
 					VersionCheck = resp.body.match(/VersionCheck = "([\d\.]+)"/)[1];
 				} catch (e) {
-					$.logErr(e, resp);
+					console.log(e, resp);
 				} finally {
 					resolve(VersionCheck);
 				}
