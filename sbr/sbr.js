@@ -58,7 +58,7 @@ async function start() {
 	}
 }
 
-let host, hostname, apiname, sbr_hd, _id;
+let host, hostname, apiname, sbr_hd, _id, _list, _id_list, num, collect_name;
 class Sbr {
 	constructor(token, cookie) {
 		this.token = token;
