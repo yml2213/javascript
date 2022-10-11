@@ -117,7 +117,7 @@ async function sign_info(name) {
 	};
 	let result = await network_request(name, options);
 
-	if (result.data.is_sign == 'false') {
+	if (result.data.is_sign == false) {
 		DoubleLog(`${name}: 未签到 ,去签到喽!`);
 		await do_sign("签到")
 	} else if (result.data.is_sign == true) {
