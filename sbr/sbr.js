@@ -4,6 +4,7 @@ cron 10 7 * * *  sbr.js
 
 7.13   		完成 签到, 偷大米, 浏览菜谱 任务
 10.11		更新抽奖
+12.24		改用 yml2213-utils 依赖
 
 ------------------------  青龙--配置文件-贴心复制区域  ---------------------- 
 # 苏泊尔
@@ -19,10 +20,11 @@ export sbr=" token & cookie @ token & cookie "
 tg频道: https://t.me/yml2213_tg  
 
 */
-const utils = require("./utils");
+
 const $ = new Env("苏泊尔");
 const alias_name = "sbr";
-// const request = require('request');
+const utils = require("yml2213-utils");
+
 const notify = $.isNode() ? require("./sendNotify") : "";
 const Notify = 1; 			//0为关闭通知,1为打开通知,默认为1
 //---------------------------------------------------------------------------------------------------------
@@ -30,8 +32,8 @@ let ckStr = process.env[alias_name];
 let msg, ck;
 let ck_status = 1;
 //---------------------------------------------------------------------------------------------------------
-let VersionCheck = "0.3";
-let Change = "\n报错的自己下载 utils.js  放在脚本同级目录下\n报错的自己下载 utils.js  放在脚本同级目录下\n报错的自己下载 utils.js  放在脚本同级目录下";
+let VersionCheck = "0.4";
+let Change = "\n报错的自己下载 yml2213-utils 依赖";
 let thank = `\n感谢 心雨大佬脚本\n`;
 //---------------------------------------------------------------------------------------------------------
 
@@ -87,7 +89,7 @@ class Sbr {
 			url: `${apiname}/login/auto-login?token=${this.token}`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 	}
 
 	// 用户信息   httpGet
@@ -98,7 +100,7 @@ class Sbr {
 			url: `${apiname}/users/get-user-info`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		if (result.code == 1) {
 			DoubleLog(`${name}: ${result.msg} , 欢迎 ${result.data.nickname}`);
@@ -120,7 +122,7 @@ class Sbr {
 			url: `${apiname}/signIn/sign-list`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		if (result.data.is_sign == false) {
 			DoubleLog(`${name}: 未签到 ,去签到喽!`);
@@ -143,7 +145,7 @@ class Sbr {
 			headers: sbr_hd,
 			body: `https://growrice.supor.com/rice/backend/public/index.php/api/signIn/sign`,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		if (result.code == 1) {
 			DoubleLog(`${name}:${result.msg} ,获得 ${result.data.get_rice_num} 大米`);
@@ -165,7 +167,7 @@ class Sbr {
 			url: `${apiname}/task/index`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 
 		// console.log(result);
@@ -208,7 +210,7 @@ class Sbr {
 				headers: sbr_hd,
 				body: `&friend_id=${_id}`,
 			};
-			let result = await network_request(name, options);
+			let result = await httpResult(name, options);
 
 			if (result.code == 1) {
 				DoubleLog(`${name}:${result.msg} , 当前已有 ${result.data.sign_rice_num} 大米`);
@@ -232,7 +234,7 @@ class Sbr {
 			url: `${apiname}/users/same-city-list`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		if (result.code == 1) {
@@ -268,7 +270,7 @@ class Sbr {
 			headers: sbr_hd,
 			body: `&id=8&other_id=3`,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		if (result.code == 1) {
@@ -287,7 +289,7 @@ class Sbr {
 			url: `${apiname}/index/index`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		let rice_list = result.data.rice_list
@@ -315,7 +317,7 @@ class Sbr {
 			headers: sbr_hd,
 			body: `&id=${_id}`,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		if (result.code == 1) {
@@ -336,7 +338,7 @@ class Sbr {
 			url: `${apiname}/prize/index`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		if (result.code == 1) {
@@ -365,7 +367,7 @@ class Sbr {
 			headers: sbr_hd,
 			body: `cate=${type}`,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		if (result.code == 1) {
@@ -390,7 +392,7 @@ class Sbr {
 			url: `${apiname}/index/granary?&page=1&pagesize=10`,
 			headers: sbr_hd,
 		};
-		let result = await network_request(name, options);
+		let result = await httpResult(name, options);
 
 		// console.log(result);
 		if (result.code == 1) {
@@ -437,79 +439,6 @@ class Sbr {
 	.catch((e) => console.log(e))
 	.finally(() => $.done());
 
-/**
- * 发送消息
- */
-async function SendMsg(message) {
-	if (!message) return;
-	if (Notify > 0) {
-		if ($.isNode()) {
-			var notify = require("./sendNotify");
-			await notify.sendNotify($.name, message);
-		} else {
-			console.log($.name, "", message);
-		}
-	} else {
-		console.log(message);
-	}
-}
 
-/**
- * 双平台log输出
- */
-function DoubleLog(data) {
-	console.log(`    ${data}`);
-	msg += `\n    ${data}`;
-}
-
-// 网络请求   network_request
-async function network_request(name, options) {
-	if (!name) {
-		name = /function\s*(\w*)/i.exec(arguments.callee.toString())[1];
-	}
-	DoubleLog(`\n开始 ${name}`);
-	try {
-		let result = await utils.httpRequest(name, options);
-		if (result) {
-			return result
-		} {
-			DoubleLog(`未知错误(1`)
-		}
-	} catch (error) {
-		console.log(error);
-	}
-}
-
-
-// 精简 Env
-function Env(name, e) {
-	class s {
-		constructor(name) {
-			this.env = name;
-		}
-	}
-	return new (class {
-		constructor(name) {
-			(this.name = name),
-				(this.logs = []),
-				(this.startTime = new Date().getTime()),
-				this.log(`\n🔔${this.name}, 开始!`);
-		}
-		isNode() {
-			return "undefined" != typeof module && !!module.exports;
-		}
-
-		log(...name) {
-			name.length > 0 && (this.logs = [...this.logs, ...name]),
-				console.log(name.join(this.logSeparator));
-		}
-
-		done() {
-			const e = new Date().getTime(),
-				s = (e - this.startTime) / 1e3;
-			this.log(`\n🔔${this.name}, 结束! 🕛 ${s} 秒`)
-		}
-	})(name, e);
-}
-
+	function Env(name, e) { class s { constructor(name) { this.env = name; } } return new (class { constructor(name) { (this.name = name), (this.logs = []), (this.startTime = new Date().getTime()), this.log(`\n🔔${this.name}, 开始!`); } isNode() { return "undefined" != typeof module && !!module.exports; } log(...name) { name.length > 0 && (this.logs = [...this.logs, ...name]), console.log(name.join(this.logSeparator)); } done() { const e = new Date().getTime(), s = (e - this.startTime) / 1e3; this.log(`\n🔔${this.name}, 结束! 🕛 ${s} 秒`); } })(name, e); } async function httpResult(name, options) { if (!name) { name = /function\s*(\w*)/i.exec(arguments.callee.toString())[1]; } try { let result = await utils.httpRequest(name, options); if (result) { return result; } { DoubleLog(`未知错误(1)`); } } catch (error) { console.log(error); } } async function SendMsg(message) { if (!message) return; if (Notify > 0) { if ($.isNode()) { var notify = require("./sendNotify"); await notify.sendNotify($.name, message); } else { console.log($.name, "", message); } } else { console.log(message); } } function wait(n) { return new Promise(function (resolve) { setTimeout(resolve, n * 1000); }); } function DoubleLog(data) { console.log(`    ${data}`); msg += `\n    ${data}`; }
 //#endregion
