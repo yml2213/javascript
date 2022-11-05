@@ -7,7 +7,7 @@
  * 3-25   完成圈x、青龙双平台，增加运行通知（理论v2p也兼容，未测试）
  * 感谢所有测试人员
  * ========= 青龙--配置文件 =========
- * 变量格式：  export xlhCookies='sessionKey的值 & userId的值@sessionKey的值&userId的值'  多个账号用 @分割 
+ * 变量格式：  export xlhCookies='sessionKey & userId @ sessionKey & userId '  多个账号用 @分割 
  * qualcomm.growthideadata.com  关键词的包   基本每个包都有变量
  * 
  * ========= V2P，QX重写 =========
