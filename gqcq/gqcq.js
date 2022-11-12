@@ -290,7 +290,7 @@ class UserInfo {
 				headers: this.cq_headers2,
 				form: {
 					'activityCode': 'OPEN-BOX',
-					'recordId': boxid,
+					'recordId': this.boxid,
 				}
 			};
 			// console.log(options);
