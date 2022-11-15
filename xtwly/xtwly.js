@@ -90,7 +90,7 @@ async function start() {
 // https://www.xtwtour.com/api/activity/normal/sign_in/get_sign_in_user
 async function GetRewrite() {
 	if ($request.url.indexOf("activity/normal/sign_in/get_sign_in_user") > -1) {
-		ck = $request.headers.user - login - tokenn;
+		ck = $request.headers["user-login-token"];
 		if (ckStr) {
 			if (ckStr.indexOf(ck) == -1) {  // 找不到返回 -1
 				ckStr = ckStr + "@" + ck;
