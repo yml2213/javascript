@@ -124,7 +124,7 @@ class UserClass {
             this.nickname = resp.data.nickname
             this.ckFlog = true
         } else if (resp.errorCode == 40100) {
-            $.log(`${this.idx}: ${resp.errorMessage}`)
+            $.log(`${this.idx}: ${resp.errorMessage}`, { notify: true })
             this.ckFlog = false
         } else console.log(`${options.fn}: 失败, ${resp}`), this.ckFlog = false
 
@@ -221,7 +221,7 @@ class UserClass {
         let resp = await $.request(options)
         // console.log(resp)
         if (resp.errorCode == 200) {
-            $.log(`${this.idx}: ${this.nickname}, 积分查询:您当前有 ${resp.data.pointCount} 积分`)
+            $.log(`${this.idx}: ${this.nickname}, 积分查询:您当前有 ${resp.data.pointCount} 积分`, { notify: true })
         } else console.log(`${options.fn}: 失败, ${resp}`)
     }
 
@@ -465,7 +465,7 @@ function Env(name) {
             this.log(`[${this.name}]开始运行`, { time: true })
 
             this.notifyStr = []
-            this.notifyFlag = false
+            this.notifyFlag = true
 
             this.userIdx = 0
             this.userList = []
