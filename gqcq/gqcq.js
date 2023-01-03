@@ -46,6 +46,7 @@ let userCount = 0
 //---------------------- 自定义变量区域 -----------------------------------
 let app_id = 14
 let text = sign = ''
+let ckFlog = true
 //---------------------------------------------------------
 
 async function start() {
@@ -58,20 +59,24 @@ async function start() {
     }
     await Promise.all(taskall)
 
-    console.log('\n================== 任务列表 ==================\n')
-    taskall = []
-    for (let user of userList) {
-        taskall.push(user.task_list('任务列表'))
-        taskall.push(user.unopenlist('宝箱查询'))
-    }
-    await Promise.all(taskall)
+    if (ckFlog) {
+        console.log('\n================== 任务列表 ==================\n')
+        taskall = []
+        for (let user of userList) {
+            taskall.push(user.task_list('任务列表'))
+            taskall.push(user.unopenlist('宝箱查询'))
+        }
+        await Promise.all(taskall)
 
-    console.log('\n================== 积分查询 ==================\n')
-    taskall = []
-    for (let user of userList) {
-        taskall.push(user.Points_Enquiry('积分查询'))
+        console.log('\n================== 积分查询 ==================\n')
+        taskall = []
+        for (let user of userList) {
+            taskall.push(user.Points_Enquiry('积分查询'))
+        }
+        await Promise.all(taskall)
     }
-    await Promise.all(taskall)
+
+
 
 
 }
@@ -111,21 +116,21 @@ class UserInfo {
             'verification': 'signature',
             'Host': 'gsp.gacmotor.com',
             'User-Agent': 'okhttp/3.10.0',
-        },
-            this.cq_headers2 = {
-                "token": this.ck,
-                "Host": "gsp.gacmotor.com",
-                "Origin": "https://gsp.gacmotor.com",
-                "Accept": "application/json, text/plain, */*",
-                "Cache-Control": "no-cache",
-                "Sec-Fetch-Dest": "empty",
-                "X-Requested-With": "com.cloudy.component",
-                "Sec-Fetch-Site": "same-origin",
-                "Sec-Fetch-Mode": "cors",
-                "Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
-                "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
-                "Content-Type": "application/x-www-form-urlencoded",
-            }
+        }
+        this.cq_headers2 = {
+            "token": this.ck,
+            "Host": "gsp.gacmotor.com",
+            "Origin": "https://gsp.gacmotor.com",
+            "Accept": "application/json, text/plain, */*",
+            "Cache-Control": "no-cache",
+            "Sec-Fetch-Dest": "empty",
+            "X-Requested-With": "com.cloudy.component",
+            "Sec-Fetch-Site": "same-origin",
+            "Sec-Fetch-Mode": "cors",
+            "Referer": "https://gsp.gacmotor.com/h5/html/draw/index.html",
+            "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
 
     }
 
@@ -142,12 +147,15 @@ class UserInfo {
             if (result.errorCode == 200) {
                 DoubleLog(`账号[${this.index}]  欢迎用户: ${result.data.nickname}   手机号：${result.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}`)
                 this.nickname = result.data.nickname
+                return ckFlog = true
             } else {
                 DoubleLog(`账号[${this.index}]  用户查询:失败 ❌ 了呢,原因未知！`)
                 console.log(result)
+                return ckFlog = false
             }
         } catch (error) {
             console.log(error)
+            return ckFlog = false
         }
     }
 
