@@ -1,108 +1,82 @@
-/**
- * 广汽传祺  app 
- *
- * cron 10 7 * * *  gqcq.js
- *
- * 4-13     	完成签到 抽奖 分享 发帖 评论 任务   有bug及时反馈
- * 4-14     	修复已知bug  恢复正常使用
- * 5-21     	更新通知,优化代码
- * 6-10		    更新模板,修改部分逻辑!
- * 9-12         修复抽奖，增加签到宝箱开启
- * 9-21         增加用户信息输出
- * 9-22			修复开宝箱错误
- * 9-28			修复删除帖子错误
- * 9-29			增加了快递信息查询,不用来回看了
- * 10-10		感谢 banxiaya 大佬修复
- * 12.14        查询增加手机号
- *
- * ========= 青龙--配置文件--贴心复制区域 =========
- 
+/*
+广汽传祺 app             cron 22 8,12 * * *  gqcq.js
+
+4-13     	完成签到 抽奖 分享 发帖 评论 任务   有bug及时反馈
+4-14     	修复已知bug  恢复正常使用
+5-21     	更新通知,优化代码
+6-10		更新模板,修改部分逻辑!
+9-12        修复抽奖，增加签到宝箱开启
+9-21        增加用户信息输出
+9-22		修复开宝箱错误
+9-28		修复删除帖子错误
+9-29		增加了快递信息查询,不用来回看了
+10-10		感谢 banxiaya 大佬修复
+12.14       查询增加手机号
+23/1/3      更换模版
+
+-------------------  青龙-配置文件-复制区域  -------------------
 # 广汽传祺
-export gqcq='token @ token'
+export gqcq=" token @ token "  
 
- * 
- * 多账号用 换行 或 @ 分割
- * 抓包 gsp.gacmotor.com , 找到 token 即可
- * ====================================
- * tg频道: https://t.me/yml2213_tg  
- */
+抓 gsp.gacmotor.com 的 token
 
+多账号用 换行 或 @ 分割  
+tg频道: https://t.me/yml2213_tg  
+*/
+const $ = Env('广汽传祺')
+const { MD5 } = require('crypto-js')
+const notify = require('./sendNotify')
 
-
-const utils = require("yml2213-utils")
-const $ = new Env("广汽传祺")
-const ckName = "gqcq"
-//check_utils("utils.js");
-//-------------------- 一般不动变量区域 -------------------------------------
-const notify = $.isNode() ? require("./sendNotify") : ""
-const Notify = 1		 //0为关闭通知,1为打开通知,默认为1
-let envSplitor = ["@", "\n", "&"]
-let ck = msg = ''
-let host, hostname
-let userCookie = process.env[ckName]
-let userList = []
-let userIdx = 0
-let userCount = 0
-//---------------------- 自定义变量区域 -----------------------------------
-let app_id = 14
-let text = sign = ''
-let ckFlog = true
-//---------------------------------------------------------
-
-async function start() {
+const envSplitor = ['\n', '&', '@']     //支持多种分割，但要保证变量里不存在这个字符
+const ckNames = ['gqcq']                //支持多变量
+//====================================================================================================
+let DEFAULT_RETRY = 2           // 默认重试次数
+//====================================================================================================
 
 
-    console.log('\n================== 用户信息 ==================\n')
-    taskall = []
-    for (let user of userList) {
-        taskall.push(user.user_info('用户信息'))
-    }
-    await Promise.all(taskall)
+async function userTasks() {
 
-    if (ckFlog) {
-        console.log('\n================== 任务列表 ==================\n')
-        taskall = []
-        for (let user of userList) {
-            taskall.push(user.task_list('任务列表'))
-            taskall.push(user.unopenlist('宝箱查询'))
+    $.log('用户信息', { sp: true, console: false })  // 带分割的打印
+    list = []
+    for (let user of $.userList) {
+        list.push(user.userInfo())
+    } await Promise.all(list)
+
+    $.log('任务列表', { sp: true, console: false })
+    list = []
+    // console.log(user.ckFlog)
+    for (let user of $.userList) {
+        if (user.ckFlog) {
+            list.push(user.taskList())
+            list.push(user.boxList())
         }
-        await Promise.all(taskall)
+    } await Promise.all(list)
 
-        console.log('\n================== 积分查询 ==================\n')
-        taskall = []
-        for (let user of userList) {
-            taskall.push(user.Points_Enquiry('积分查询'))
+    $.log('积分查询', { sp: true, console: false })
+    list = []
+    for (let user of $.userList) {
+        if (user.ckFlog) {
+            list.push(user.points())
         }
-        await Promise.all(taskall)
-    }
-
-
+    } await Promise.all(list)
 
 
 }
 
 
-class UserInfo {
-    constructor(str) {
-        this.index = ++userIdx
-        this.ck = str.split('&')[0]
 
-        this.host = "gsp.gacmotor.com"
-        this.hostname = "https://" + this.host
-        this.salt = '17aaf8118ffb270b766c6d6774317a133.8.0'
-        this.reqNonc = randomInt(100000, 999999)
-        this.ts = utils.ts13()
-        this.reqSign = MD5_Encrypt(`signature${this.reqNonc}${this.ts}${this.salt}`)
-        this.textarr = ['最简单的提高观赏性的办法就是把地球故事的部分剪辑掉半小时， emo的部分剪辑掉半小时。这样剩下的90分钟我们就看看外星人，看看月球，看看灾难片大场面就不错。', '顶着叛国罪的风险无比坚信前妻，这种还会离婚？', '你以为它是灾难片，其实它是科幻片；你以为它是科幻片，其实它是恐怖片；你以为它是恐怖片，其实它是科教片', '我的天，剧情真的好阴谋论，但是还算是能自圆其说', '大杂烩啊……我能理解这电影为什么在海外卖的不好了，因为核心创意真的已经太老套了', '一开始我以为这就是外国人看《流浪地球》时的感受啊，后来发现这不是我当初看《胜利号》的感受么']
-        this.add_comment_text_arr = ['感谢推荐的电影呢', '有时间一定看看这个电影怎么样', '晚上就去看', '66666666666', '这部电影我看过，非常好看']
-        this.ram_num = randomInt(1, 5)
-        this.text = this.textarr[this.ram_num]
-        this.add_comment_text = this.add_comment_text_arr[this.ram_num]
+class UserClass {
+    constructor(ck) {
+        this.idx = `账号[${++$.userIdx}]`
+        this.ckFlog = true
+        this.token = ck
+        this.ts = $.ts(13)
+        this.reqNonc = $.randomInt(100000, 999999)
 
         this.cq_headers = {
-            'token': this.ck,
+            'token': this.token,
             'reqTs': this.ts,
-            'reqSign': this.reqSign,
+            'reqSign': this.getSign(this.ts, this.reqNonc),
             'reqNonc': this.reqNonc,
             'channel': 'unknown',
             'platformNo': 'Android',
@@ -118,7 +92,7 @@ class UserInfo {
             'User-Agent': 'okhttp/3.10.0',
         }
         this.cq_headers2 = {
-            "token": this.ck,
+            "token": this.token,
             "Host": "gsp.gacmotor.com",
             "Origin": "https://gsp.gacmotor.com",
             "Accept": "application/json, text/plain, */*",
@@ -131,437 +105,624 @@ class UserInfo {
             "Accept-Language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
             "Content-Type": "application/x-www-form-urlencoded",
         }
-
     }
 
-    async user_info(name) { // 用户信息
-        try {
-            let options = {
-                method: "Get",
-                url: `${this.hostname}/gateway/webapi/account/getUserInfoV2`,
-                headers: this.cq_headers,
-            }
-            //console.log(options);
-            let result = await httpRequest(name, options)
-            //console.log(result);
-            if (result.errorCode == 200) {
-                DoubleLog(`账号[${this.index}]  欢迎用户: ${result.data.nickname}   手机号：${result.data.mobile.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}`)
-                this.nickname = result.data.nickname
-                return ckFlog = true
-            } else {
-                DoubleLog(`账号[${this.index}]  用户查询:失败 ❌ 了呢,原因未知！`)
-                console.log(result)
-                return ckFlog = false
-            }
-        } catch (error) {
-            console.log(error)
-            return ckFlog = false
+
+
+    async userInfo() {
+        let options = {
+            fn: 'userInfo',
+            method: 'get',
+            url: 'https://gsp.gacmotor.com/gateway/webapi/account/getUserInfoV2',
+            headers: this.cq_headers,
         }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.log(resp)
+        if (resp.errorCode == 200) {
+            $.log(`${this.idx}: 欢迎用户: ${resp.data.nickname}, 手机号：${$.phoneNum(resp.data.mobile)}`)
+            this.nickname = resp.data.nickname
+            this.ckFlog = true
+        } else if (resp.errorCode == 40100) {
+            $.log(`${this.idx}: ${resp.errorMessage}`)
+            this.ckFlog = false
+        } else console.log(`${options.fn}: 失败, ${resp}`), this.ckFlog = false
+
     }
 
+    async taskList() {
+        let options = {
+            fn: 'taskList',
+            method: 'post',
+            url: 'https://gsp.gacmotor.com/gw/app/community/api/mission/getlistv1?place=1',
+            headers: this.cq_headers,
+            json: 'https://gsp.gacmotor.com/gw/app/community/api/mission/getlistv1?place=1'
 
-    async Points_Enquiry(name) { //积分查询
-        try {
-            let options = {
-                method: "Get",
-                url: `${this.hostname}/gateway/app-api/my/statsV3`,
-                headers: this.cq_headers,
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 200) {
-                DoubleLog(`账号[${this.index}]  ${this.nickname} 积分查询:您当前有 ${result.data.pointCount} 积分`)
-            } else {
-                DoubleLog(`账号[${this.index}]  积分查询:失败 ❌ 了呢,原因未知！`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
         }
-    }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.log(resp)
+        if (resp.errorCode == 20000) {
+            let tasks = resp.data
+            for (let index = 0; index < tasks.length; index++) {
+                const element = tasks[index]
 
-    // 任务列表   
-    async task_list(name) {
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/community/api/mission/getlistv1?place=1`,
-                headers: this.cq_headers,
-                body: 'https://gsp.gacmotor.com/gw/app/community/api/mission/getlistv1?place=1'
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                if (result.data[0].finishedNum == 0) {
-                    DoubleLog(`账号[${this.index}]  签到状态： 未签到，去执行签到 ,顺便抽个奖`)
-                    await this.signin('签到')
-                    await this.dolottery('抽奖')
-                } else if (result.data[0].finishedNum == 1) {
-                    DoubleLog(`账号[${this.index}]  签到状态：今天已经签到过了鸭，明天再来吧！`)
-                } else {
-                    DoubleLog(`账号[${this.index}]  获取签到状态:  失败 ❌ 了呢,原因未知！`)
-                }
-                if (result.data[1].finishedNum < 2) {
-                    DoubleLog(`账号[${this.index}]  发帖：${result.data[1].finishedNum} / ${result.data[1].total}`)
-                    DoubleLog(`账号[${this.index}]  发帖：执行第一次发帖,评论，删除评论`)
-                    await this.post_topic('发帖')
-                    DoubleLog(`账号[${this.index}]  发帖：执行第二次发帖,评论，删除评论`)
-                    await this.post_topic('发帖')
-                } else if (result.data[1].finishedNum == 2) {
-                    DoubleLog(`账号[${this.index}]  今天已经发帖了，明天再来吧!`)
-                } else {
-                    DoubleLog(`账号[${this.index}]  获取发帖状态:  失败 ❌ 了呢,原因未知!`)
-                }
-                if (result.data[3].finishedNum < 2) {
-                    DoubleLog(`账号[${this.index}]  分享状态：${result.data[3].finishedNum} / ${result.data[3].total}`)
-                    await this.share('分享文章')
-                    await this.share('分享文章')
-                } else if (result.data[3].finishedNum == 2) {
-                    DoubleLog(`账号[${this.index}]  今天已经分享过了鸭，明天再来吧!`)
-                } else {
-                    DoubleLog(`账号[${this.index}]  获取分享状态:  失败 ❌ 了呢,原因未知!`)
-                }
+                let itemType = element.itemType
+                switch (itemType) {
+                    case 0:
+                        if (element.finishedNum == 0) {
+                            $.log(`${this.idx}: ${this.nickname}, 未签到，去执行签到 ,顺便抽个奖`)
+                            await this.signIn()
+                            await this.doLottery()
+                        } else if (element.finishedNum == 1) {
+                            $.log(`${this.idx}: ${this.nickname}, 今天已经签到过了鸭，明天再来吧！`)
+                        }
+                        break
 
-            } else {
-                DoubleLog(`账号[${this.index}]  任务列表: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+                    case 1:
+                        if (element.finishedNum < element.total) {
+                            let num = element.total - element.finishedNum
+                            for (let index = 0; index < num; index++) {
+                                await this.postTopic()
+                            }
+                        } else if (element.finishedNum == 2) {
+                            $.log(`${this.idx}: ${this.nickname}, 今天已经发帖了，明天再来吧!`)
+                        }
+                        break
 
-    async signin(name) {   //签到  get
-        try {
-            let options = {
-                method: "Get",
-                url: `${this.hostname}/gateway/app-api/sign/submit`,
-                headers: this.cq_headers,
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 200) {
-                DoubleLog(`账号[${this.index}]  签到:${result.errorMessage} ,你已经连续签到 ${result.data.dayCount} 天 ,签到获得G豆 ${result.data.operationValue} 个`)
-            } else if (result.errorCode == "200015") {
-                DoubleLog(`账号[${this.index}]  签到: ${result.errorMessage}`)
-            } else {
-                DoubleLog(`账号[${this.index}]  签到: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
+                    case 3:
+                        if (element.finishedNum < element.total) {
+                            let num = element.total - element.finishedNum
+                            for (let index = 0; index < num; index++) {
+                                await this.share()
+                            }
+                        } else if (element.finishedNum == 2) {
+                            $.log(`${this.idx}: ${this.nickname}, 今天已经分享过了鸭，明天再来吧!`)
+                        }
+                        break
 
 
-    async unopenlist(name) {// 签到宝箱列表   httpPost
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/activity/api/winrecord/unopenlist`,
-                headers: this.cq_headers2,
-                form: {
-                    'activityCode': 'SIGN-BOX'
-                }
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                this.box = result.data
-                //console.log(box.length);
-                DoubleLog(`账号[${this.index}]  共有宝箱:${this.box.length}个!`)
-                //console.log(boxid.length);
-                if (this.box.length > 0) {
-                    for (let i = 0; i < this.box.length; i++) {
-                        this.boxid = this.box[i].recordId
-                        await this.openbox()
-                        await wait(2)
-                    }
-                }
-            } else {
-                DoubleLog(`账号[${this.index}]  宝箱列表获取: 失败❌了呢,原因:${result.errorMessage}!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-    async openbox(name) {// 开宝箱   httpPost
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/activity/api/medal/openbox`,
-                headers: this.cq_headers2,
-                form: {
-                    'activityCode': 'OPEN-BOX',
-                    'recordId': this.boxid,
-                }
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                DoubleLog(`账号[${this.index}]  开宝箱:${result.errorMessage} ,恭喜你获得 ${result.data.medalName} 奖品为 ${result.data.medalDescription}`)
-            } else {
-                DoubleLog(`账号[${this.index}]  开宝箱: 失败❌了呢,原因:${result.errorMessage}!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-    async dolottery(name) { //抽奖   httpPost
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/activity/shopDraw/luckyDraw`,
-                headers: this.cq_headers2,
-                form: {
-                    'activityCode': 'shop-draw'
-                }
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                DoubleLog(`账号[${this.index}]  抽奖:${result.errorMessage} ,恭喜你获得 ${result.data.medalName} 奖品为 ${result.data.medalDescription}`)
-            } else {
-                DoubleLog(`账号[${this.index}]  抽奖: 失败❌了呢,原因:${result.errorMessage}!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-    async post_topic(name) {// 发布帖子   httpPost
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/community/api/topic/appsavepost`,
-                headers: this.cq_headers,
-                form: {
-                    'postId': '',
-                    'postType': '2',
-                    'channelInfoId': '116',
-                    'columnId': '',
-                    'postContent': `[{"text":"${this.text}"}]`,
-                    'coverImg': 'https://pic-gsp.gacmotor.com/app/712e2529-7b85-4d70-8c71-22b994b445b5.jpg',
-                    'publishedTime': '',
-                    'contentWords': `${this.text}`,
-                    'contentImgNums': '1',
-                    'lng': '',
-                    'lat': '',
-                    'address': '',
-                    'cityId': ''
-                }
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                DoubleLog(`账号[${this.index}]  发布帖子:${result.errorMessage} ,帖子ID: ${result.data.postId}`)
-                this.topic_id = result.data.postId
-                await wait(30)
-                await this.add_comment('评论帖子')
-            } else {
-                DoubleLog(`账号[${this.index}]  发布帖子: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-
-    async add_comment(name) {// 评论帖子   httpPost
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/community/api/comment/add`,
-                headers: this.cq_headers,
-                form: {
-                    'commentType': '0',
-                    'postId': `${this.topic_id}`,
-                    'commentContent': `${this.add_comment_text}`,
-                    'commentId': '0',
-                    'commentatorId': 'NDc3ODY1MA==',
-                    'isReplyComment': '1'
+                    default:
+                        break
                 }
             }
 
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                DoubleLog(`账号[${this.index}]  评论帖子: 评论 ${this.topic_id} 帖子 ${result.errorMessage}`)
-                await wait(2)
-                await this.delete_topic('删除帖子')
-            } else {
-                DoubleLog(`账号[${this.index}]  评论帖子: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
+    }
+
+    // 签到
+    async signIn() {
+        let options = {
+            fn: 'signIn',
+            method: 'get',
+            url: 'https://gsp.gacmotor.com/gateway/app-api/sign/submit',
+            headers: this.cq_headers,
         }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.log(resp)
+        if (resp.errorCode == 200) {
+            $.log(`${this.idx}: ${this.nickname}, ${resp.errorMessage} ,你已经连续签到 ${resp.data.dayCount} 天 ,签到获得G豆 ${resp.data.operationValue} 个`)
+        } else if (resp.errorCode == 200015) {
+            $.log(`${this.idx}: ${this.nickname}, ${resp.errorMessage}`)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+    }
+
+    // 积分查询
+    async points() {
+        let options = {
+            fn: 'points',
+            method: 'get',
+            url: 'https://gsp.gacmotor.com/gateway/app-api/my/statsV3',
+            headers: this.cq_headers,
+        }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.log(resp)
+        if (resp.errorCode == 200) {
+            $.log(`${this.idx}: ${this.nickname}, 积分查询:您当前有 ${resp.data.pointCount} 积分`)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
     }
 
 
-
-    async delete_topic(name) {// 删除帖子   httpPost
-        try {
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/community/api/post/delete?postId=${this.topic_id}`,
-                headers: this.cq_headers,
-                form: {
-                    'postId': `'${this.topic_id}'`
-                },
-            }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode == 20000) {
-                DoubleLog(`账号[${this.index}]  删除帖子: 帖子ID: ${this.topic_id} , 执行删除 ${result.errorMessage}`)
-                await wait(2)
-            } else {
-                DoubleLog(`账号[${this.index}]  删除帖子: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
+    // 签到宝箱列表
+    async boxList() {
+        let options = {
+            fn: 'boxList',
+            method: 'post',
+            url: 'https://gsp.gacmotor.com/gw/app/activity/api/winrecord/unopenlist',
+            headers: this.cq_headers2,
+            form: { 'activityCode': 'SIGN-BOX' }
         }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.log(resp)
+        if (resp.errorCode == 20000) {
+            this.box = resp.data
+            $.log(`${this.idx}: ${this.nickname}, 共有宝箱:${this.box.length}个!`)
+
+            if (this.box.length > 0) {
+                for (let i = 0; i < this.box.length; i++) {
+                    this.boxid = this.box[i].recordId
+                    await this.openBox()
+                    await $.wait(2)
+                }
+            }
+        } else console.log(`${options.fn}: 失败, ${resp}`)
     }
 
 
-    async share(name) {// 分享文章   每天两次   httpPost
-        try {
-            this.postId = ''
-            await this.Article_list('获取文章id')
-            let options = {
-                method: "Post",
-                url: `${this.hostname}/gw/app/community/api/post/forward`,
-                headers: this.cq_headers,
-                form: {
-                    'postId': `${this.postId}`,
-                    'userId': ''
-                },
+    async openBox() {
+        let options = {
+            fn: 'openBox',
+            method: 'post',
+            url: 'https://gsp.gacmotor.com/gw/app/activity/api/medal/openbox',
+            headers: this.cq_headers2,
+            form: {
+                'activityCode': 'OPEN-BOX',
+                'recordId': this.boxid,
             }
-            //console.log(options);
-            let result = await httpRequest(name, options)
-            //console.log(result);
-            if (result.errorCode == 20000) {
-                DoubleLog(`账号[${this.index}]  分享文章:${result.errorMessage}`)
-                await wait(2)
-            } else {
-                DoubleLog(`账号[${this.index}]  分享文章: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
         }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            $.log(`${this.idx}: ${this.nickname}, 开宝箱:${resp.errorMessage} ,恭喜你获得 ${resp.data.medalName} 奖品为 ${resp.data.medalDescription}`)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
     }
 
-
-    async Article_list(name) {  // 文章列表  httpGet
-        try {
-            let options = {
-                method: "Get",
-                url: `${this.hostname}/gw/app/community/api/post/channelPostList?current=1&size=20&channelId=&sortType=1`,
-                headers: this.cq_headers,
+    async doLottery() {
+        let options = {
+            fn: 'doLottery',
+            method: 'post',
+            url: 'https://gsp.gacmotor.com/gw/app/activity/shopDraw/luckyDraw',
+            headers: this.cq_headers2,
+            form: {
+                'activityCode': 'shop-draw'
             }
-            // console.log(options);
-            let result = await httpRequest(name, options)
-            // console.log(result);
-            if (result.errorCode === "20000") {
-                let num = randomInt(1, 19)
-                DoubleLog(`账号[${this.index}]  分享的文章: ${result.data.records[num].topicNames}  文章ID:${result.data.records[num].postId}`)
-                this.postId = result.data.records[num].postId
-                //console.log(this.postId);
-                return this.postId
-            } else {
-                DoubleLog(`账号[${this.index}] 获取分享文章: 失败 ❌ 了呢,原因未知!`)
-                console.log(result)
-            }
-        } catch (error) {
-            console.log(error)
         }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            $.log(`${this.idx}: ${this.nickname}, 抽奖:${resp.errorMessage} ,恭喜你获得 ${resp.data.medalName} 奖品为 ${resp.data.medalDescription}`)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
     }
 
+    // 发布帖子
+    async postTopic() {
+        let options = {
+            fn: 'postTopic',
+            method: 'post',
+            url: 'https://gsp.gacmotor.com/gw/app/community/api/topic/appsavepost',
+            headers: this.cq_headers,
+            form: {
+                'postId': '',
+                'postType': '2',
+                'channelInfoId': '116',
+                'columnId': '',
+                'postContent': `[{"text":"${this.getText()}"}]`,
+                'coverImg': 'https://pic-gsp.gacmotor.com/app/712e2529-7b85-4d70-8c71-22b994b445b5.jpg',
+                'publishedTime': '',
+                'contentWords': `${this.getText()}`,
+                'contentImgNums': '1',
+                'lng': '',
+                'lat': '',
+                'address': '',
+                'cityId': ''
+            }
+        }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            $.log(`${this.idx}: ${this.nickname},发布帖子:${resp.errorMessage} ,帖子ID: ${resp.data.postId}`)
+            this.topic_id = resp.data.postId
+            await $.wait(10)
+            await this.addComment()
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
+    }
+
+    // 评论帖子
+    async addComment() {
+        let options = {
+            fn: 'addComment',
+            method: 'post',
+            url: 'https://gsp.gacmotor.com/gw/app/community/api/comment/add',
+            headers: this.cq_headers,
+            form: {
+                'commentType': '0',
+                'postId': `${this.topic_id}`,
+                'commentContent': `${this.getCommentText()}`,
+                'commentId': '0',
+                'commentatorId': 'NDc3ODY1MA==',
+                'isReplyComment': '1'
+            }
+        }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            $.log(`${this.idx}: ${this.nickname}, 评论帖子: 评论 ${this.topic_id} 帖子 ${resp.errorMessage}`)
+            await $.wait(2)
+            await this.deleteTopic('删除帖子')
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
+    }
+
+    // 删除帖子
+    async deleteTopic() {
+        let options = {
+            fn: 'deleteTopic',
+            method: 'post',
+            url: `https://gsp.gacmotor.com/gw/app/community/api/post/delete?postId=${this.topic_id}`,
+            headers: this.cq_headers,
+            form: {
+                'postId': `${this.topic_id}`,
+            }
+        }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            $.log(`${this.idx}: ${this.nickname},  删除帖子: 帖子ID: ${this.topic_id} , 执行删除 ${resp.errorMessage}`)
+            await $.wait(2)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
+    }
+
+    // 分享文章
+    async share() {
+        this.postId = ''
+        await this.ArticleList()
+        let options = {
+            fn: 'deleteTopic',
+            method: 'post',
+            url: `https://gsp.gacmotor.com/gw/app/community/api/post/forward`,
+            headers: this.cq_headers,
+            form: {
+                'postId': this.postId,
+                'userId': ''
+            }
+        }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            $.log(`${this.idx}: ${this.nickname}, 分享文章:${resp.errorMessage}`)
+            await $.wait(2)
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
+    }
+
+    // 文章列表
+    async ArticleList() {
+        let options = {
+            fn: 'ArticleList',
+            method: 'get',
+            url: `https://gsp.gacmotor.com/gw/app/community/api/post/channelPostList?current=1&size=20&channelId=&sortType=1`,
+            headers: this.cq_headers,
+
+        }
+        // console.log(options)
+        let resp = await $.request(options)
+        // console.(resp)
+        if (resp.errorCode == 20000) {
+            let num = $.randomInt(1, 19)
+
+            $.log(`${this.idx}: ${this.nickname},  分享的文章: ${resp.data.records[num].topicNames}  文章ID:${resp.data.records[num].postId}`)
+            this.postId = resp.data.records[num].postId
+
+        } else console.log(`${options.fn}: 失败, ${resp}`)
+
+    }
+
+    getSign(ts, reqNonc) {
+        let salt = '17aaf8118ffb270b766c6d6774317a133.8.0'
+        let sign = MD5(`signature${reqNonc}${ts}${salt}`).toString()
+        return sign
+    }
+
+    getText() {
+        let textarr = ['最简单的提高观赏性的办法就是把地球故事的部分剪辑掉半小时， emo的部分剪辑掉半小时。这样剩下的90分钟我们就看看外星人，看看月球，看看灾难片大场面就不错。', '顶着叛国罪的风险无比坚信前妻，这种还会离婚？', '你以为它是灾难片，其实它是科幻片；你以为它是科幻片，其实它是恐怖片；你以为它是恐怖片，其实它是科教片', '我的天，剧情真的好阴谋论，但是还算是能自圆其说', '大杂烩啊……我能理解这电影为什么在海外卖的不好了，因为核心创意真的已经太老套了', '一开始我以为这就是外国人看《流浪地球》时的感受啊，后来发现这不是我当初看《胜利号》的感受么']
+        let ranNum = $.randomInt(1, textarr.length)
+        let text = textarr[ranNum]
+        return text
+    }
+    getCommentText() {
+        let add_comment_text_arr = ['感谢推荐的电影呢', '有时间一定看看这个电影怎么样', '晚上就去看', '66666666666', '这部电影我看过，非常好看']
+        let ranNum = $.randomInt(1, add_comment_text_arr.length)
+        let text = add_comment_text_arr[ranNum]
+        return text
+    }
 
 
 }
+
 
 !(async () => {
-    if (!(await checkEnv())) return
-    if (userList.length > 0) {
-        await start()
-    }
-    await SendMsg(msg)
+    console.log(await $.yiyan())
+    $.read_env(UserClass)
+
+    await userTasks()
+
 })()
-    .catch((e) => console.log(e))
-    .finally(() => $.done())
+    .catch((e) => $.log(e))
+    .finally(() => $.exitNow())
 
 
-// #region ********************************************************  固定代码  ********************************************************
 
+//===============================================================     
+function Env(name) {
+    return new class {
+        constructor(name) {
+            this.name = name
+            this.startTime = Date.now()
+            this.log(`[${this.name}]开始运行`, { time: true })
 
-// 变量检查与处理
-async function checkEnv() {
-    if (userCookie) {
-        // console.log(userCookie);
-        let e = envSplitor[0]
-        for (let o of envSplitor)
-            if (userCookie.indexOf(o) > -1) {
-                e = o
-                break
+            this.notifyStr = []
+            this.notifyFlag = false
+
+            this.userIdx = 0
+            this.userList = []
+            this.userCount = 0
+        }
+        async request(opt) {
+            const got = require('got')
+            let DEFAULT_TIMEOUT = 8000      // 默认超时时间
+            let resp = null, count = 0
+            let fn = opt.fn || opt.url
+            let resp_opt = opt.resp_opt || 'body'
+            opt.timeout = opt.timeout || DEFAULT_TIMEOUT
+            opt.retry = opt.retry || { limit: 0 }
+            opt.method = opt?.method?.toUpperCase() || 'GET'
+            while (count++ < DEFAULT_RETRY) {
+                try {
+                    resp = await got(opt)
+                    break
+                } catch (e) {
+                    if (e.name == 'TimeoutError') {
+                        this.log(`[${fn}]请求超时，重试第${count}次`)
+                    } else {
+                        this.log(`[${fn}]请求错误(${e.message})，重试第${count}次`)
+                    }
+                }
             }
-        for (let n of userCookie.split(e)) n && userList.push(new UserInfo(n))
-        userCount = userList.length
-    } else {
-        console.log("未找到CK")
-        return
-    }
-    return console.log(`共找到${userCount}个账号`), !0
+            if (resp == null) return Promise.resolve({ statusCode: 'timeout', headers: null, body: null })
+            let { statusCode, headers, body } = resp
+            if (body) try { body = JSON.parse(body) } catch { }
+            if (resp_opt == 'body') {
+                return Promise.resolve(body)
+            } else if (resp_opt == 'hd') {
+                return Promise.resolve(headers)
+            } else if (resp_opt == 'statusCode') {
+                return Promise.resolve(statusCode)
+            }
+
+        }
+
+        log(msg, options = {}) {
+            let opt = { console: true }
+            Object.assign(opt, options)
+
+            if (opt.time) {
+                let fmt = opt.fmt || 'hh:mm:ss'
+                msg = `[${this.time(fmt)}]` + msg
+            }
+            if (opt.notify) {
+                this.notifyStr.push(msg)
+            }
+            if (opt.console) {
+                console.log(msg)
+            }
+            if (opt.sp) {
+                console.log(`\n-------------- ${msg} --------------`)
+            }
+        }
+        read_env(Class) {
+            let envStrList = ckNames.map(x => process.env[x])
+            for (let env_str of envStrList.filter(x => !!x)) {
+                let sp = envSplitor.filter(x => env_str.includes(x))
+                let splitor = sp.length > 0 ? sp[0] : envSplitor[0]
+                for (let ck of env_str.split(splitor).filter(x => !!x)) {
+                    this.userList.push(new Class(ck))
+                }
+            }
+            this.userCount = this.userList.length
+            if (!this.userCount) {
+                this.log(`未找到变量，请检查变量${ckNames.map(x => '[' + x + ']').join('或')}`, { notify: true })
+                return false
+            }
+            this.log(`共找到${this.userCount}个账号`)
+            return true
+        }
+        async taskThread(taskName, conf, opt = {}) {
+            while (conf.idx < $.userList.length) {
+                let user = $.userList[conf.idx++]
+                await user[taskName](opt)
+            }
+        }
+        async threadManager(taskName, thread) {
+            let taskAll = []
+            let taskConf = { idx: 0 }
+            while (thread--) {
+                taskAll.push(this.taskThread(taskName, taskConf))
+            }
+            await Promise.all(taskAll)
+        }
+        time(t, x = null) {
+            let xt = x ? new Date(x) : new Date
+            let e = {
+                "M+": xt.getMonth() + 1,
+                "d+": xt.getDate(),
+                "h+": xt.getHours(),
+                "m+": xt.getMinutes(),
+                "s+": xt.getSeconds(),
+                "q+": Math.floor((xt.getMonth() + 3) / 3),
+                S: this.padStr(xt.getMilliseconds(), 3)
+            };
+            /(y+)/.test(t) && (t = t.replace(RegExp.$1, (xt.getFullYear() + "").substr(4 - RegExp.$1.length)))
+            for (let s in e)
+                new RegExp("(" + s + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? e[s] : ("00" + e[s]).substr(("" + e[s]).length)))
+            return t
+        }
+        async showmsg() {
+            if (!this.notifyFlag) return
+            if (!this.notifyStr) return
+            let notify = require('./sendNotify')
+            this.log('\n============== 推送 ==============')
+            await notify.sendNotify(this.name, this.notifyStr.join('\n'))
+        }
+        padStr(num, length, opt = {}) {
+            let padding = opt.padding || '0'
+            let mode = opt.mode || 'l'
+            let numStr = String(num)
+            let numPad = (length > numStr.length) ? (length - numStr.length) : 0
+            let pads = ''
+            for (let i = 0; i < numPad; i++) {
+                pads += padding
+            }
+            if (mode == 'r') {
+                numStr = numStr + pads
+            } else {
+                numStr = pads + numStr
+            }
+            return numStr
+        }
+        json2str(obj, c, encode = false) {
+            let ret = []
+            for (let keys of Object.keys(obj).sort()) {
+                let v = obj[keys]
+                if (v && encode) v = encodeURIComponent(v)
+                ret.push(keys + '=' + v)
+            }
+            return ret.join(c)
+        }
+        str2json(str, decode = false) {
+            let ret = {}
+            for (let item of str.split('&')) {
+                if (!item) continue
+                let idx = item.indexOf('=')
+                if (idx == -1) continue
+                let k = item.substr(0, idx)
+                let v = item.substr(idx + 1)
+                if (decode) v = decodeURIComponent(v)
+                ret[k] = v
+            }
+            return ret
+        }
+        phoneNum(phone_num) {
+            if (phone_num.length == 11) {
+                let data = phone_num.replace(/(\d{3})\d{4}(\d{4})/, "$1****$2")
+                return data
+            } else {
+                return phone_num
+            }
+        }
+        randomInt(min, max) {
+            return Math.round(Math.random() * (max - min) + min)
+        }
+        async yiyan() {
+            const got = require('got')
+            return new Promise((resolve) => {
+                (async () => {
+                    try {
+                        const response = await got('https://v1.hitokoto.cn')
+                        // console.log(response.body)
+                        let data = JSON.parse(response.body)
+                        let data_ = `[一言]: ${data.hitokoto}  by--${data.from}`
+                        // console.log(data_)
+                        resolve(data_)
+                    } catch (error) {
+                        console.log(error.response.body)
+                    }
+                })()
+            })
+        }
+        ts(type = false, _data = "") {
+            let myDate = new Date()
+            let a = ""
+            switch (type) {
+                case 10:
+                    a = Math.round(new Date().getTime() / 1000).toString()
+                    break
+                case 13:
+                    a = Math.round(new Date().getTime()).toString()
+                    break
+                case "h":
+                    a = myDate.getHours()
+                    break
+                case "m":
+                    a = myDate.getMinutes()
+                    break
+                case "y":
+                    a = myDate.getFullYear()
+                    break
+                case "h":
+                    a = myDate.getHours()
+                    break
+                case "mo":
+                    a = myDate.getMonth()
+                    break
+                case "d":
+                    a = myDate.getDate()
+                    break
+                case "ts2Data":
+                    if (_data != "") {
+                        time = _data
+                        if (time.toString().length == 13) {
+                            let date = new Date(time + 8 * 3600 * 1000)
+                            a = date.toJSON().substr(0, 19).replace("T", " ")
+                        } else if (time.toString().length == 10) {
+                            time = time * 1000
+                            let date = new Date(time + 8 * 3600 * 1000)
+                            a = date.toJSON().substr(0, 19).replace("T", " ")
+                        }
+                    }
+                    break
+                default:
+                    a = "未知错误,请检查"
+                    break
+            }
+            return a
+        }
+        randomPattern(pattern, charset = 'abcdef0123456789') {
+            let str = ''
+            for (let chars of pattern) {
+                if (chars == 'x') {
+                    str += charset.charAt(Math.floor(Math.random() * charset.length))
+                } else if (chars == 'X') {
+                    str += charset.charAt(Math.floor(Math.random() * charset.length)).toUpperCase()
+                } else {
+                    str += chars
+                }
+            }
+            return str
+        }
+        randomString(len, charset = 'abcdef0123456789') {
+            let str = ''
+            for (let i = 0; i < len; i++) {
+                str += charset.charAt(Math.floor(Math.random() * charset.length))
+            }
+            return str
+        }
+        randomList(a) {
+            let idx = Math.floor(Math.random() * a.length)
+            return a[idx]
+        }
+        wait(t) {
+            return new Promise(e => setTimeout(e, t * 1000))
+        }
+        async exitNow() {
+            await this.showmsg()
+            let e = Date.now()
+            let s = (e - this.startTime) / 1000
+            this.log(`[${this.name}]运行结束，共运行了${s}秒`)
+            process.exit(0)
+        }
+    }(name)
 }
-
-
-
-// =========================================== 不懂不要动 =========================================================
-function Env(name, e) { class s { constructor(name) { this.env = name } } return new (class { constructor(name) { (this.name = name), (this.logs = []), (this.startTime = new Date().getTime()), this.log(`\n🔔${this.name}, 开始!`) } isNode() { return "undefined" != typeof module && !!module.exports } log(...name) { name.length > 0 && (this.logs = [...this.logs, ...name]), console.log(name.join(this.logSeparator)) } done() { const e = new Date().getTime(), s = (e - this.startTime) / 1e3; this.log(`\n🔔${this.name}, 结束! 🕛 ${s} 秒`) } })(name, e) } async function httpRequest(name, options) { if (!name) { name = /function\s*(\w*)/i.exec(arguments.callee.toString())[1] } try { let result = await utils.httpRequest(name, options); if (result) { return result } { DoubleLog(`未知错误(1)`) } } catch (error) { console.log(error) } } async function SendMsg(message) { if (!message) return; if (Notify > 0) { if ($.isNode()) { var notify = require("./sendNotify"); await notify.sendNotify($.name, message) } else { console.log($.name, "", message) } } else { console.log(message) } } function wait(n) { return new Promise(function (resolve) { setTimeout(resolve, n * 1000) }) } function DoubleLog(data) { console.log(`    ${data}`); msg += `\n    ${data}` }
-
-/**
- * 随机 数字 + 小写字母 生成
- */
-function randomszxx(e) {
-    e = e || 32
-    var t = "qwertyuioplkjhgfdsazxcvbnm1234567890",
-        a = t.length,
-        n = ""
-
-    for (i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a))
-    return n
-}
-
-/**
- * 随机整数生成
- */
-function randomInt(min, max) {
-    return Math.round(Math.random() * (max - min) + min)
-}
-
-/**
- * md5 加密
- */
-function MD5_Encrypt(a) { function b(a, b) { return (a << b) | (a >>> (32 - b)) } function c(a, b) { var c, d, e, f, g; return ((e = 2147483648 & a), (f = 2147483648 & b), (c = 1073741824 & a), (d = 1073741824 & b), (g = (1073741823 & a) + (1073741823 & b)), c & d ? 2147483648 ^ g ^ e ^ f : c | d ? 1073741824 & g ? 3221225472 ^ g ^ e ^ f : 1073741824 ^ g ^ e ^ f : g ^ e ^ f) } function d(a, b, c) { return (a & b) | (~a & c) } function e(a, b, c) { return (a & c) | (b & ~c) } function f(a, b, c) { return a ^ b ^ c } function g(a, b, c) { return b ^ (a | ~c) } function h(a, e, f, g, h, i, j) { return (a = c(a, c(c(d(e, f, g), h), j))), c(b(a, i), e) } function i(a, d, f, g, h, i, j) { return (a = c(a, c(c(e(d, f, g), h), j))), c(b(a, i), d) } function j(a, d, e, g, h, i, j) { return (a = c(a, c(c(f(d, e, g), h), j))), c(b(a, i), d) } function k(a, d, e, f, h, i, j) { return (a = c(a, c(c(g(d, e, f), h), j))), c(b(a, i), d) } function l(a) { for (var b, c = a.length, d = c + 8, e = (d - (d % 64)) / 64, f = 16 * (e + 1), g = new Array(f - 1), h = 0, i = 0; c > i;) (b = (i - (i % 4)) / 4), (h = (i % 4) * 8), (g[b] = g[b] | (a.charCodeAt(i) << h)), i++; return ((b = (i - (i % 4)) / 4), (h = (i % 4) * 8), (g[b] = g[b] | (128 << h)), (g[f - 2] = c << 3), (g[f - 1] = c >>> 29), g) } function m(a) { var b, c, d = "", e = ""; for (c = 0; 3 >= c; c++) (b = (a >>> (8 * c)) & 255), (e = "0" + b.toString(16)), (d += e.substr(e.length - 2, 2)); return d } function n(a) { a = a.replace(/\r\n/g, "\n"); for (var b = "", c = 0; c < a.length; c++) { var d = a.charCodeAt(c); 128 > d ? (b += String.fromCharCode(d)) : d > 127 && 2048 > d ? ((b += String.fromCharCode((d >> 6) | 192)), (b += String.fromCharCode((63 & d) | 128))) : ((b += String.fromCharCode((d >> 12) | 224)), (b += String.fromCharCode(((d >> 6) & 63) | 128)), (b += String.fromCharCode((63 & d) | 128))) } return b } var o, p, q, r, s, t, u, v, w, x = [], y = 7, z = 12, A = 17, B = 22, C = 5, D = 9, E = 14, F = 20, G = 4, H = 11, I = 16, J = 23, K = 6, L = 10, M = 15, N = 21; for (a = n(a), x = l(a), t = 1732584193, u = 4023233417, v = 2562383102, w = 271733878, o = 0; o < x.length; o += 16) (p = t), (q = u), (r = v), (s = w), (t = h(t, u, v, w, x[o + 0], y, 3614090360)), (w = h(w, t, u, v, x[o + 1], z, 3905402710)), (v = h(v, w, t, u, x[o + 2], A, 606105819)), (u = h(u, v, w, t, x[o + 3], B, 3250441966)), (t = h(t, u, v, w, x[o + 4], y, 4118548399)), (w = h(w, t, u, v, x[o + 5], z, 1200080426)), (v = h(v, w, t, u, x[o + 6], A, 2821735955)), (u = h(u, v, w, t, x[o + 7], B, 4249261313)), (t = h(t, u, v, w, x[o + 8], y, 1770035416)), (w = h(w, t, u, v, x[o + 9], z, 2336552879)), (v = h(v, w, t, u, x[o + 10], A, 4294925233)), (u = h(u, v, w, t, x[o + 11], B, 2304563134)), (t = h(t, u, v, w, x[o + 12], y, 1804603682)), (w = h(w, t, u, v, x[o + 13], z, 4254626195)), (v = h(v, w, t, u, x[o + 14], A, 2792965006)), (u = h(u, v, w, t, x[o + 15], B, 1236535329)), (t = i(t, u, v, w, x[o + 1], C, 4129170786)), (w = i(w, t, u, v, x[o + 6], D, 3225465664)), (v = i(v, w, t, u, x[o + 11], E, 643717713)), (u = i(u, v, w, t, x[o + 0], F, 3921069994)), (t = i(t, u, v, w, x[o + 5], C, 3593408605)), (w = i(w, t, u, v, x[o + 10], D, 38016083)), (v = i(v, w, t, u, x[o + 15], E, 3634488961)), (u = i(u, v, w, t, x[o + 4], F, 3889429448)), (t = i(t, u, v, w, x[o + 9], C, 568446438)), (w = i(w, t, u, v, x[o + 14], D, 3275163606)), (v = i(v, w, t, u, x[o + 3], E, 4107603335)), (u = i(u, v, w, t, x[o + 8], F, 1163531501)), (t = i(t, u, v, w, x[o + 13], C, 2850285829)), (w = i(w, t, u, v, x[o + 2], D, 4243563512)), (v = i(v, w, t, u, x[o + 7], E, 1735328473)), (u = i(u, v, w, t, x[o + 12], F, 2368359562)), (t = j(t, u, v, w, x[o + 5], G, 4294588738)), (w = j(w, t, u, v, x[o + 8], H, 2272392833)), (v = j(v, w, t, u, x[o + 11], I, 1839030562)), (u = j(u, v, w, t, x[o + 14], J, 4259657740)), (t = j(t, u, v, w, x[o + 1], G, 2763975236)), (w = j(w, t, u, v, x[o + 4], H, 1272893353)), (v = j(v, w, t, u, x[o + 7], I, 4139469664)), (u = j(u, v, w, t, x[o + 10], J, 3200236656)), (t = j(t, u, v, w, x[o + 13], G, 681279174)), (w = j(w, t, u, v, x[o + 0], H, 3936430074)), (v = j(v, w, t, u, x[o + 3], I, 3572445317)), (u = j(u, v, w, t, x[o + 6], J, 76029189)), (t = j(t, u, v, w, x[o + 9], G, 3654602809)), (w = j(w, t, u, v, x[o + 12], H, 3873151461)), (v = j(v, w, t, u, x[o + 15], I, 530742520)), (u = j(u, v, w, t, x[o + 2], J, 3299628645)), (t = k(t, u, v, w, x[o + 0], K, 4096336452)), (w = k(w, t, u, v, x[o + 7], L, 1126891415)), (v = k(v, w, t, u, x[o + 14], M, 2878612391)), (u = k(u, v, w, t, x[o + 5], N, 4237533241)), (t = k(t, u, v, w, x[o + 12], K, 1700485571)), (w = k(w, t, u, v, x[o + 3], L, 2399980690)), (v = k(v, w, t, u, x[o + 10], M, 4293915773)), (u = k(u, v, w, t, x[o + 1], N, 2240044497)), (t = k(t, u, v, w, x[o + 8], K, 1873313359)), (w = k(w, t, u, v, x[o + 15], L, 4264355552)), (v = k(v, w, t, u, x[o + 6], M, 2734768916)), (u = k(u, v, w, t, x[o + 13], N, 1309151649)), (t = k(t, u, v, w, x[o + 4], K, 4149444226)), (w = k(w, t, u, v, x[o + 11], L, 3174756917)), (v = k(v, w, t, u, x[o + 2], M, 718787259)), (u = k(u, v, w, t, x[o + 9], N, 3951481745)), (t = c(t, p)), (u = c(u, q)), (v = c(v, r)), (w = c(w, s)); var O = m(t) + m(u) + m(v) + m(w); return O.toLowerCase() }
-
-//async function check_utils(file_name) { await check(file_name); try { utils = require("./utils"); return utils; } catch (error) { console.log(error); } async function check(file_name) { const fs = require("fs"); const path = require("path"); dirPath = path.resolve(__dirname); let files = fs.readdirSync(dirPath); if (files.indexOf(file_name) > -1) { console.log(`当前目录 [${dirPath}] 依赖 ${file_name} 文件状态正常!`); utils = require("./utils"); return utils; } else { console.log(`当前目录 [${dirPath}] 未找到 ${file_name} , 将下载到该目录!`); write_utils(file_name); } function write_utils(file_name) { var request = require("request"); var options = { method: "GET", url: "https://raw.gh.fakev.cn/yml2213/javascript/master/utils.js", headers: {}, }; request(options, function (error, response) { if (error) throw new Error(error); text = response.body; fs.writeFile(`${dirPath}/${file_name}`, text, `utf-8`, (err) => { if (err) { console.log(`目录 [${dirPath}]  ${file_name} 文件 写入失败`); } console.log(`\n目录 [${dirPath}]  ${file_name} 文件写入成功\n请再次运行脚本!\n请再次运行脚本!\n请再次运行脚本!`); }); }); } } }
