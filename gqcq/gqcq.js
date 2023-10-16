@@ -29,6 +29,7 @@ const notify = require('./sendNotify')
 
 const envSplitor = ['\n', '&', '@']     //支持多种分割，但要保证变量里不存在这个字符
 const ckNames = ['gqcq']                //支持多变量
+const appVersion = '4.3.8'
 //====================================================================================================
 let DEFAULT_RETRY = 2           // 默认重试次数
 //====================================================================================================
@@ -81,7 +82,7 @@ class UserClass {
             'channel': 'unknown',
             'platformNo': 'Android',
             'osVersion': '10',
-            'version': '3.8.0',
+            'version': appVersion,
             'imei': 'a4dad7a1b1f865bc',
             'imsi': 'unknown',
             'deviceModel': 'MI 8',
@@ -422,7 +423,7 @@ class UserClass {
     }
 
     getSign(ts, reqNonc) {
-        let salt = '17aaf8118ffb270b766c6d6774317a133.8.0'
+        let salt = '17aaf8118ffb270b766c6d6774317a13' + appVersion
         let sign = MD5(`signature${reqNonc}${ts}${salt}`).toString()
         return sign
     }
