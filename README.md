@@ -45,7 +45,7 @@ ql repo https://github.com/yml2213/javascript.git "" "invalid" "" "master"
 ### 交流
 
 </a>&nbsp;&nbsp;&nbsp;电报频道&nbsp;&nbsp;<a href="https://t.me/yml2213_tg"><img alt="Telegram" src="https://img.shields.io/badge/chat-telegram-blue.svg?logo=telegram&style=flat-square"/></a>
-&nbsp;&nbsp;&nbsp;交流群&nbsp;&nbsp;[![Telegram](https://img.shields.io/static/v1?label=Telegram&message=Chat&color=0088cc)]([https://t.me/yml_scripts](https://t.me/yml2213_club))
+&nbsp;&nbsp;&nbsp;交流群&nbsp;&nbsp;[![Telegram](https://img.shields.io/static/v1?label=Telegram&message=Chat&color=0088cc)](https://t.me/yml2213_club)
 
 ### 赞赏码 ☕️
 
