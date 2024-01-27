@@ -4,26 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="85fd45c6-25c9-4b5c-b7b5-6ef75f3b18f8" name="更改" comment="">
+    <list default="true" id="85fd45c6-25c9-4b5c-b7b5-6ef75f3b18f8" name="更改" comment="picc农场更新  移除旧的脚本  开工">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cdlm/cdlm.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/cdlm/cdlm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cyh/cyh.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/cyh/cyh.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cyh/cyh.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/cyh/cyh.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gqcq/gqcq.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/gqcq/gqcq.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ks/2.16.3/11.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/ks/2.16.3/11.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ks/2.16.3/kuaishou_dt_sig4_v1.jsc" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/ks/2.16.3/kuaishou_dt_sig4_v1.jsc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ks/2.16.3/kuaishou_dt_sign_v2.jsc" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/ks/2.16.3/kuaishou_dt_sign_v2.jsc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sbr/sbr.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/sbr/sbr.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sytt/sytt.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/sytt/sytt.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tpyqc/tpyqc.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/tpyqc/tpyqc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/wyyx_app/wyyx_app.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/wyyx_app/wyyx_app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xmly/xmly.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/xmly/xmly.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xtwly/xtwly.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/xtwly/xtwly.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/xtwly/xtwly.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/xtwly/xtwly.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yml/tipe.txt" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/yml/tipe.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zhwl/zhwl.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/zhwl/zhwl.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/zzjk/zzjk.js" beforeDir="false" afterPath="$PROJECT_DIR$/invalid/zzjk/zzjk.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,6 +20,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2bWieaO3s7PqvhUvOLQxX5kAwI7" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -47,6 +33,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "D:/js_tg/piccnc",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -57,6 +44,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\js_tg\piccnc" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\js_tg\invalid" />
     </key>
@@ -69,11 +59,24 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1706337332011</updated>
-      <workItem from="1706337333058" duration="698000" />
+      <workItem from="1706337333058" duration="952000" />
     </task>
+    <task id="LOCAL-00001" summary="picc农场更新  移除旧的脚本  开工">
+      <option name="closed" value="true" />
+      <created>1706339934851</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1706339934851</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="picc农场更新  移除旧的脚本  开工" />
+    <option name="LAST_COMMIT_MESSAGE" value="picc农场更新  移除旧的脚本  开工" />
   </component>
 </project>
