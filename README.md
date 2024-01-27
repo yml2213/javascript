@@ -22,11 +22,15 @@
 
 * [x] 青龙拉库
 
-国外机子
 
 ```
-ql repo https://github.com/yml2213/javascript.git "" "invalid" "" "master"
+https://github.com/yml2213/javascript.git
 ```
+黑名单: `invalid`
+黑名单: `invalid`
+黑名单: `invalid`
+定时: 随你  追更可以 *
+
 
 - [x] 脚本排错
 
