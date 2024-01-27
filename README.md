@@ -28,12 +28,6 @@
 ql repo https://github.com/yml2213/javascript.git "" "invalid" "" "master"
 ```
 
-国内机子
-
-```
-ql repo https://github.com/yml2213/javascript.git "" "invalid" "" "master"
-```
-
 - [x] 脚本排错
 
 ```
