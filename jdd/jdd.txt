@@ -1,0 +1,14 @@
+群友投稿  金杜丹 小程序
+24.1.31 完成
+定时  cron "14 10,12 * * *"
+变量:
+export JDD='备注#access_token'
+export YMLCARD='卡密'   通用一个即可
+
+1.31        签到, 阅读
+
+
+抓包:
+抓 tianxin.jmd724.com 的包, 找到  access_token 就行
+
+积分换实物的, 一个年终奖系列 +1
