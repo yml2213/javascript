@@ -1,5 +1,14 @@
 群友投稿
 24.1.31 完成
 定时  cron "24 10,12 * * *"
-变量: export MCYP='备注#content-openid#mobile#content_uid#unionid#content-skey'  export YMLCARD='卡密'
+变量:
+
+export MCYP='备注#content-openid#mobile#content_uid#unionid#content-skey'
+export MCYP_LT='1'    1 参与抽奖  0 不参与(默认)
+export YMLCARD='卡密'   通用一个即可
+
+
+1.31        更新抽奖, 优化打印  v1.1
+
+
 抓包: 抓 小程序 名创优品  https://cdn-storeexpress.miniso.com/wechat/login 的包, 找到  需要的就行
