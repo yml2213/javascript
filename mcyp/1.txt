@@ -1,0 +1,5 @@
+群友投稿
+24.1.31 完成
+定时  cron "24 10,12 * * *"
+变量: export MCYP='备注#content-openid#mobile#content_uid#unionid#content-skey'  export YMLCARD='卡密'
+抓包: 抓 小程序 名创优品  https://cdn-storeexpress.miniso.com/wechat/login 的包, 找到  需要的就行
