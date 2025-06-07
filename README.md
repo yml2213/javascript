@@ -52,3 +52,6 @@ https://github.com/yml2213/javascript.git
 ### Star History
 
 [![Stargazers over time](https://starchart.cc/yml2213/javascript.svg)](https://starchart.cc/yml2213/javascript)
+### 感谢
+
+[![Powered by DartNode](https://dartnode.com/branding/DN-Open-Source-sm.png)](https://dartnode.com "Powered by DartNode - Free VPS for Open Source")
